@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from app.database import get_session
 from app.managers import TopicManager
-from app.models import WikiTopic
+from app.models import WikiTopic, WikiTopicPublic
 
 router = APIRouter()
 
-@router.get("/topics/{slug}", response_model=WikiTopic)
+@router.get("/topics/{slug}", response_model=WikiTopicPublic)
 async def get_topic(slug: str, session: Session = Depends(get_session)):
     manager = TopicManager(session)
     topic = await manager.get_topic_with_history(slug)
