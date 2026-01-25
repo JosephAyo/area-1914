@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class TopicManager:
     STALE_THRESHOLD = timedelta(hours=24)
     # Default history to fetch if never fetched before (e.g. 5 years)
-    DEFAULT_HISTORY_DAYS = 365 * 5 
+    DEFAULT_HISTORY_DAYS = 365 * 5
 
     def __init__(self, session: Session):
         self.session = session
@@ -41,7 +41,7 @@ class TopicManager:
         # Refresh local object to ensure relationships are loaded if needed
         if topic:
             self.session.refresh(topic)
-            
+
         return topic
 
     async def _create_new_topic(self, slug: str) -> Optional[WikiTopic]:
@@ -65,9 +65,9 @@ class TopicManager:
         # Fetch History (Backfill)
         end_date = date.today()
         start_date = end_date - timedelta(days=self.DEFAULT_HISTORY_DAYS)
-        
+
         await self._fetch_and_store_pageviews(topic, start_date, end_date)
-        
+
         return topic
 
     async def _update_topic_data(self, topic: WikiTopic):
@@ -79,40 +79,40 @@ class TopicManager:
             topic.thumbnail_url = summary.get("thumbnail_url", topic.thumbnail_url)
 
         # Calculate fetch range
-        # Start from the day after the last known data point? 
-        # Or just overlap a bit to be safe? 
-        # For simplicity, if updating, we assume we have old data, 
+        # Start from the day after the last known data point?
+        # Or just overlap a bit to be safe?
+        # For simplicity, if updating, we assume we have old data,
         # so we fetch from (last_fetched_at.date or defaults) to today.
-        
+
         end_date = date.today()
-        
+
         # Determine start date based on what we have?
         # A simple query to find the max date in DB for this topic would be better,
         # but relying on `last_fetched_at` is a decent proxy for the "gap".
         start_date = topic.last_fetched_at.date() if topic.last_fetched_at else (end_date - timedelta(days=30))
-        
+
         if start_date < end_date:
             await self._fetch_and_store_pageviews(topic, start_date, end_date)
-            
+
         topic.last_fetched_at = datetime.utcnow()
         self.session.add(topic)
         self.session.commit()
 
     async def _fetch_and_store_pageviews(self, topic: WikiTopic, start_date: date, end_date: date):
         views_data = await wikipedia_service.get_pageviews(topic.slug, start_date, end_date)
-        
+
         if not views_data:
             return
 
         # Optimization: We could use bulk_insert, but SQLModel is object-centric.
         # For a few thousand rows, iterating is "okay", but let's be careful.
         # We need to avoid duplicates.
-        
-        # Simple strategy: Delete existing range and re-insert? 
+
+        # Simple strategy: Delete existing range and re-insert?
         # Or "Upsert"? SQLite supports "INSERT OR REPLACE" or "ON CONFLICT".
         # SQLModel doesn't support UPSERT natively easily without raw SQL.
         # Let's simple check: Query existing dates in this range to avoid Dupes.
-        
+
         # Get existing dates for this topic
         statement = select(WikiPageview).where(
             WikiPageview.topic_id == topic.id,
@@ -134,7 +134,7 @@ class TopicManager:
                     topic_id=topic.id
                 )
                 new_records.append(record)
-        
+
         if new_records:
             self.session.add_all(new_records)
             self.session.commit()

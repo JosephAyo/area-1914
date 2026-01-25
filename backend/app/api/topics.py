@@ -10,8 +10,8 @@ router = APIRouter()
 async def get_topic(slug: str, session: Session = Depends(get_session)):
     manager = TopicManager(session)
     topic = await manager.get_topic_with_history(slug)
-    
+
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found on Wikipedia")
-        
+
     return topic
