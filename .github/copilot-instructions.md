@@ -25,3 +25,5 @@ Your focus is on setting up the FastAPI scaffold, the SQLModel database connecti
 * Use Python 3.10+ type hinting.
 * Use `async/await` for all I/O operations.
 * Comment complex logic, especially around date parsing and data normalization.
+* Always check for pylance and other linter warnings/errors before finalizing code.
+* Add unit tests for critical functions, especially the Wikipedia data fetcher and database interactions.
