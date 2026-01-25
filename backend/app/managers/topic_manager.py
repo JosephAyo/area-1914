@@ -114,13 +114,14 @@ class TopicManager:
         # Let's simple check: Query existing dates in this range to avoid Dupes.
         
         # Get existing dates for this topic
-        statement = select(WikiPageview.date).where(
+        statement = select(WikiPageview).where(
             WikiPageview.topic_id == topic.id,
             WikiPageview.date >= start_date,
             WikiPageview.date <= end_date
         )
-        existing_dates_result = self.session.exec(statement).all()
-        existing_dates = set(existing_dates_result)
+        # Fetch full objects to avoid typing issues with selecting individual columns
+        existing_records = self.session.exec(statement).all()
+        existing_dates = {record.date for record in existing_records}
 
         new_records = []
         for item in views_data:

@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from datetime import datetime, date
+from datetime import datetime, date as dt_date
 
 class WikiTopic(SQLModel, table=True):
     """
@@ -27,7 +27,7 @@ class WikiPageview(SQLModel, table=True):
     Daily pageview data for a specific topic.
     """
     id: Optional[int] = Field(default=None, primary_key=True)
-    date: date = Field(index=True)
+    date: dt_date = Field(index=True)
     views: int
     
     # Foreign Key
