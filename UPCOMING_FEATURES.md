@@ -1,0 +1,2 @@
+- Curated list, e.g.: Past leaders, major events, elections, etc. This will be accompanied by their respective pulses.
+- Fix the inclusion of non-Nigerian topics. This is a bug that needs to be fixed probably during the archiving phase. We'll need to find a way to filter out non-Nigerian topics.
