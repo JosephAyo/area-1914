@@ -1,0 +1,123 @@
+.trendingContainer {
+  margin-top: var(--space-xl);
+
+  h2 {
+    color: var(--accent-primary);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.rank {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  min-width: 2.5rem;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+
+  .title {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.stats {
+  text-align: right;
+  min-width: 80px;
+
+  .trend {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+
+    &.positive { color: var(--accent-primary); }
+    &.negative { color: #ff6b6b; }
+  }
+
+  .views {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+}
+
+.loading {
+  color: var(--accent-secondary);
+  animation: pulse 1.5s infinite ease-in-out;
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
