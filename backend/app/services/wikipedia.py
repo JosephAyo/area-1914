@@ -11,13 +11,14 @@ logger = logging.getLogger(__name__)
 class WikipediaService:
     BASE_URL_PAGEVIEWS = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"
     BASE_URL_SUMMARY = "https://en.wikipedia.org/api/rest_v1/page/summary"
+    BASE_URL_ACTION_API = "https://en.wikipedia.org/w/api.php"
 
     def __init__(self):
         self.headers = {
             "User-Agent": settings.WIKIMEDIA_USER_AGENT
         }
 
-    async def _request(self, url: str) -> Optional[Dict[str, Any]]:
+    async def _request(self, url: str) -> Optional[Any]:
         """
         Internal helper to make requests with retry logic for rate limiting (429).
         """
@@ -107,6 +108,45 @@ class WikipediaService:
                 })
 
         return results
+
+    async def get_article_wikitext(self, title: str) -> Optional[str]:
+        """
+        Fetches the raw wikitext of an article using the MediaWiki Action API.
+        """
+        url = (
+            f"{self.BASE_URL_ACTION_API}?action=query&prop=revisions&"
+            f"titles={title}&rvslots=*&rvprop=content&format=json"
+        )
+        data = await self._request(url)
+
+        if not data or "query" not in data or "pages" not in data["query"]:
+            return None
+
+        pages = data["query"]["pages"]
+        # The pages dict is keyed by pageid.
+        for page_id, page_data in pages.items():
+            if page_id == "-1":
+                return None  # Page not found
+
+            revisions = page_data.get("revisions", [])
+            if revisions and "slots" in revisions[0] and "main" in revisions[0]["slots"]:
+                return revisions[0]["slots"]["main"].get("*")
+
+        return None
+
+    async def search_articles(self, query: str, limit: int = 5) -> List[str]:
+        """
+        Searches Wikipedia using the Opensearch API and returns matching titles.
+        """
+        url = f"{self.BASE_URL_ACTION_API}?action=opensearch&search={query}&limit={limit}&format=json"
+
+        data = await self._request(url)
+
+        # Opensearch format: [ "query", ["Result1", "Result2"], ["Summary1", "Summary2"], ["URL1", "URL2"] ]
+        if data and isinstance(data, list) and len(data) >= 2:
+            return data[1]
+
+        return []
 
 # Singleton instance
 wikipedia_service = WikipediaService()
