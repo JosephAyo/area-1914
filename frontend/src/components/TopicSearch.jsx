@@ -9,15 +9,13 @@ export function TopicSearch({ onSearch, activeTopic }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Sync with activeTopic changes (e.g. going back to home page clears the input)
-  useEffect(() => {
-    if (!activeTopic) {
-      setQuery('');
-      setDebouncedQuery('');
-    } else {
-      setQuery(activeTopic);
-    }
-  }, [activeTopic]);
+  // Update local state during render when the activeTopic prop changes
+  const [prevTopic, setPrevTopic] = useState(activeTopic);
+  if (activeTopic !== prevTopic) {
+    setPrevTopic(activeTopic);
+    setQuery(activeTopic || '');
+    setDebouncedQuery('');
+  }
 
   // Simple debounce logic inline for search to avoid external deps if not present
   useEffect(() => {
