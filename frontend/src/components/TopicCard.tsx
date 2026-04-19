@@ -23,7 +23,15 @@ export function TopicCard({ topic }: TopicCardProps) {
           <p className={styles.noDesc}>No description available.</p>
         )}
         <div className={styles.meta}>
-          <span className={styles.badge}>Wikipedia Topic</span>
+          <a
+            href={`https://en.wikipedia.org/wiki/${encodeURIComponent(topic.slug)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.badge}
+            title="Read full article on Wikipedia"
+          >
+            Read on Wikipedia ↗
+          </a>
         </div>
       </div>
     </div>

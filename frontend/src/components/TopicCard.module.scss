@@ -64,6 +64,13 @@
         font-size: 0.85rem;
         font-weight: 600;
         border: 1px solid var(--glass-border);
+        text-decoration: none;
+        transition: all var(--transition-short);
+
+        &:hover {
+          background: rgba(102, 252, 241, 0.2);
+          transform: translateY(-1px);
+        }
       }
     }
   }
