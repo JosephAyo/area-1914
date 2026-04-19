@@ -10,6 +10,12 @@ export const fetchTopicData = async (slug: string): Promise<TopicData> => {
     if (response.status === 404) {
       throw new Error("Topic not found on Wikipedia.");
     }
+    if (response.status === 422) {
+      const data = await response.json();
+      throw new Error(
+        data.detail || "This topic doesn't appear to be related to Nigeria.",
+      );
+    }
     throw new Error("Failed to fetch topic data.");
   }
   return response.json();

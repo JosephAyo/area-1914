@@ -148,5 +148,33 @@ class WikipediaService:
 
         return []
 
+    async def get_page_categories(self, title: str, limit: int = 50) -> List[str]:
+        """
+        Fetches category names for a given Wikipedia article.
+        Returns a list of category strings (without the 'Category:' prefix).
+        """
+        url = (
+            f"{self.BASE_URL_ACTION_API}?action=query&prop=categories"
+            f"&titles={title}&cllimit={limit}&format=json&redirects=1"
+        )
+        data = await self._request(url)
+
+        if not data or "query" not in data or "pages" not in data["query"]:
+            return []
+
+        categories: List[str] = []
+        pages = data["query"]["pages"]
+        for page_id, page_data in pages.items():
+            if page_id == "-1":
+                return []
+            for cat in page_data.get("categories", []):
+                # Category titles come as "Category:Nigerian musicians"
+                cat_title = cat.get("title", "")
+                if cat_title.startswith("Category:"):
+                    cat_title = cat_title[len("Category:"):]
+                categories.append(cat_title)
+
+        return categories
+
 # Singleton instance
 wikipedia_service = WikipediaService()

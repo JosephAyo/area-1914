@@ -17,7 +17,10 @@ class BatchTopicRequest(BaseModel):
 @router.get("/topics/{slug}", response_model=WikiTopicPublic)
 async def get_topic(slug: str, session: Session = Depends(get_session)):
     manager = TopicManager(session)
-    topic = await manager.get_topic_with_history(slug)
+    try:
+        topic = await manager.get_topic_with_history(slug)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found on Wikipedia")

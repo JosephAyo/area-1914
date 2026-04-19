@@ -3,6 +3,7 @@ from typing import Optional
 from sqlmodel import Session, select
 from app.models import WikiTopic, WikiPageview
 from app.services.wikipedia import wikipedia_service
+from app.services.relevance import is_nigerian_topic
 import logging
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,14 @@ class TopicManager:
         if not summary:
             logger.warning(f"Could not find summary for slug: {slug}")
             return None
+
+        # Check Nigerian relevance before archiving
+        if not await is_nigerian_topic(slug):
+            title = summary.get("title", slug)
+            raise ValueError(
+                f"'{title}' does not appear to be related to Nigeria. "
+                f"Only Nigerian topics can be tracked."
+            )
 
         topic = WikiTopic(
             slug=slug,
