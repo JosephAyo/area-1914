@@ -8,28 +8,66 @@ import {
   Tooltip
 } from 'recharts';
 import styles from './PulseChart.module.scss';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 export function PulseChart({ pageviews = [] }) {
+  const [timeframe, setTimeframe] = useState('30d');
+
   // Format the dates and ensure views is an integer
   const chartData = useMemo(() => {
-    return pageviews.map(d => ({
+    // Sort ascending to ensure chronological order
+    const sorted = [...pageviews].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Apply timeframe filter
+    let filtered = sorted;
+    if (timeframe === '30d') {
+      filtered = sorted.slice(-30);
+    } else if (timeframe === '1y') {
+      filtered = sorted.slice(-365);
+    }
+    
+    return filtered.map(d => ({
       ...d,
       dateFormatted: new Date(d.date).toLocaleDateString(undefined, {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        year: '2-digit'
       }),
       views: Number(d.views)
     }));
-  }, [pageviews]);
+  }, [pageviews, timeframe]);
 
   if (chartData.length === 0) {
     return <div className={styles.emptyChart}>No pulse data available.</div>;
   }
 
   return (
-    <div className={styles.chartWrapper}>
-      <ResponsiveContainer width="100%" height={300}>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2>{timeframe === '30d' ? '30-Day Pulse' : timeframe === '1y' ? '1-Year Pulse' : 'Historical Pulse'}</h2>
+        <div className={styles.toggles}>
+          <button 
+            className={timeframe === '30d' ? styles.active : ''} 
+            onClick={() => setTimeframe('30d')}
+          >
+            30 Days
+          </button>
+          <button 
+            className={timeframe === '1y' ? styles.active : ''} 
+            onClick={() => setTimeframe('1y')}
+          >
+            1 Year
+          </button>
+          <button 
+            className={timeframe === 'all' ? styles.active : ''} 
+            onClick={() => setTimeframe('all')}
+          >
+            All Time
+          </button>
+        </div>
+      </div>
+      <div className={styles.chartWrapper}>
+        <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
@@ -72,6 +110,7 @@ export function PulseChart({ pageviews = [] }) {
           />
         </AreaChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }

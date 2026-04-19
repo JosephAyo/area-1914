@@ -42,7 +42,6 @@ function App() {
               <div className={styles.resultsGrid}>
                 <TopicCard topic={data} />
                 <div className={styles.chartSection}>
-                  <h2>30-Day Pulse</h2>
                   <PulseChart pageviews={data.pageviews} />
                 </div>
               </div>
