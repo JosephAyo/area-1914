@@ -154,6 +154,10 @@ export function PulseChart({ pageviews = [] }: PulseChartProps) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+      <p className={styles.disclaimer}>
+        * Based on Wikipedia pageviews. Data may contain inaccuracies or missing
+        periods.
+      </p>
     </div>
   );
 }
