@@ -6,6 +6,7 @@ import { TopicCard } from "./components/TopicCard";
 import { PulseChart } from "./components/PulseChart";
 import { TrendingSection } from "./components/TrendingSection";
 import { FeaturedTopics } from "./components/FeaturedTopics";
+import { Methodology } from "./components/Methodology";
 import { CitationSources } from "./components/CitationSources";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
@@ -62,6 +63,7 @@ function App() {
             <>
               <FeaturedTopics onSelectTopic={setActiveTopic} />
               <TrendingSection onSelectTopic={setActiveTopic} />
+              <Methodology />
             </>
           )}
         </div>
