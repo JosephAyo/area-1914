@@ -4,7 +4,7 @@ A web application that visualizes the historical relevance of Nigerian events an
 
 ## Project Structure
 
-This project follows a monorepo-style structure separating the backend and frontend (upcoming).
+This project follows a monorepo-style structure separating the backend and frontend.
 
 ### `backend/`
 The Python FastAPI backend responsible for data fetching, caching, and serving the API.
@@ -41,8 +41,16 @@ Comprehensive test suite using `pytest` and `respx` for mocking.
 - **`test_api_topics.py`**: End-to-end API tests.
 - **`test_wikipedia.py`**: Unit tests for the external service adapter.
 
+### `frontend/`
+The React + TypeScript frontend built with Vite.
+- **TypeScript** with strict mode
+- **React 19**, **Recharts**, **TanStack React Query**
+- **SCSS Modules** for component styling
+- See [`frontend/README.md`](frontend/README.md) for details.
+
 ### Configuration Files
 - **`.pre-commit-config.yaml`**: Git hooks for code quality (whitespace, end-of-file).
+- **`.husky/pre-commit`**: Husky pre-commit hook running lint-staged on the frontend.
 - **`backend/requirements.txt`**: Production dependencies.
 - **`backend/requirements-dev.txt`**: Development dependencies (testing, linting).
 - **`backend/pyrightconfig.json`**: Configuration for the Pyright static type checker.
@@ -74,3 +82,26 @@ Comprehensive test suite using `pytest` and `respx` for mocking.
 
 5. **API Documentation:**
    Open [http://localhost:8000/api/docs](http://localhost:8000/api/docs) to view the Swagger UI.
+
+## Getting Started (Frontend)
+
+1. **Prerequisites:** Node.js v24+ (use `nvm use` in the frontend directory)
+
+2. **Navigate to the frontend:**
+   ```bash
+   cd frontend
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   nvm use
+   yarn install
+   ```
+
+4. **Run the dev server:**
+   ```bash
+   yarn dev
+   ```
+
+5. **Open the app:**
+   Visit [http://localhost:5173](http://localhost:5173)

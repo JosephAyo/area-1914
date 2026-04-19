@@ -9,7 +9,7 @@ if [ -d "$HOME/.nvm/versions/node" ]; then
   fi
 
   if [ -n "$NVMRC_VERSION" ]; then
-    # Find the matching version directory (e.g. "v20" matches "v20.19.6")
+    # Find the matching version directory (e.g. "v24" matches "v24.x.x")
     NODE_DIR=$(ls -d "$HOME/.nvm/versions/node/${NVMRC_VERSION}"* 2>/dev/null | sort -V | tail -1)
   fi
 

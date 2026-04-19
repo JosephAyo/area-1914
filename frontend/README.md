@@ -1,16 +1,61 @@
-# React + Vite
+# The Nigerian History Pulse — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript frontend built with Vite, visualizing historical relevance of Nigerian events and people.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** with TypeScript (strict mode)
+- **Vite 8** for dev server and bundling
+- **Recharts** for data visualization
+- **TanStack React Query** for data fetching and caching
+- **SCSS Modules** for component-scoped styling
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Node.js v24+** (managed via `.nvmrc`)
+- **Yarn** (v1.x classic)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Use the correct Node version
+nvm use
+
+# Install dependencies
+yarn install
+
+# Start dev server
+yarn dev
+```
+
+The dev server runs at [http://localhost:5173](http://localhost:5173).
+
+## Available Scripts
+
+| Script           | Description                      |
+| ---------------- | -------------------------------- |
+| `yarn dev`       | Start Vite dev server with HMR   |
+| `yarn build`     | Production build to `dist/`      |
+| `yarn preview`   | Preview production build locally |
+| `yarn lint`      | Run ESLint on all files          |
+| `yarn typecheck` | Run `tsc --noEmit` type checking |
+
+## Pre-commit Hooks
+
+Husky + lint-staged runs on every commit:
+
+- **`.ts/.tsx`** → ESLint auto-fix + Prettier
+- **`.json/.scss/.css/.md`** → Prettier
+
+## Project Structure
+
+```
+src/
+├── types/          # Shared TypeScript interfaces
+├── services/       # API client (fetch wrappers)
+├── config/         # Curated topic categories
+├── components/     # React components (with .module.scss)
+├── styles/         # Global SCSS tokens and base styles
+├── App.tsx         # Root component
+└── main.tsx        # Entry point
+```
