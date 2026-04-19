@@ -1,6 +1,11 @@
-import styles from './TopicCard.module.scss';
+import styles from "./TopicCard.module.scss";
+import type { TopicData } from "../types/index";
 
-export function TopicCard({ topic }) {
+interface TopicCardProps {
+  topic: TopicData;
+}
+
+export function TopicCard({ topic }: TopicCardProps) {
   if (!topic) return null;
 
   return (

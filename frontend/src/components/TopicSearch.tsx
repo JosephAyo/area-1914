@@ -1,20 +1,25 @@
-import { useState, useRef, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchSearchResults } from '../services/api';
-import styles from './TopicSearch.module.scss';
+import React, { useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSearchResults } from "../services/api";
+import styles from "./TopicSearch.module.scss";
 
-export function TopicSearch({ onSearch, activeTopic }) {
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+interface TopicSearchProps {
+  onSearch: (topic: string | null) => void;
+  activeTopic: string | null;
+}
+
+export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Update local state during render when the activeTopic prop changes
   const [prevTopic, setPrevTopic] = useState(activeTopic);
   if (activeTopic !== prevTopic) {
     setPrevTopic(activeTopic);
-    setQuery(activeTopic || '');
-    setDebouncedQuery('');
+    setQuery(activeTopic || "");
+    setDebouncedQuery("");
   }
 
   // Simple debounce logic inline for search to avoid external deps if not present
@@ -23,16 +28,19 @@ export function TopicSearch({ onSearch, activeTopic }) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const { data: suggestions, isLoading } = useQuery({
-    queryKey: ['search', debouncedQuery],
+  const { data: suggestions, isLoading } = useQuery<string[]>({
+    queryKey: ["search", debouncedQuery],
     queryFn: () => fetchSearchResults(debouncedQuery),
     enabled: debouncedQuery.trim().length > 1,
   });
 
   // Click outside to close
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -40,32 +48,33 @@ export function TopicSearch({ onSearch, activeTopic }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
       // If we submit the form directly, we can either submit the query string
       // or map to the first suggestion. Given user typically hits enter after typing an exact or close name.
       // We take the first suggestion if available to resolve exact slug, otherwise use query.
-      const resolvedQuery = (suggestions && suggestions.length > 0) ? suggestions[0] : query.trim();
+      const resolvedQuery =
+        suggestions && suggestions.length > 0 ? suggestions[0] : query.trim();
       onSearch(resolvedQuery);
       setIsOpen(false);
     }
   };
 
   const handleClear = () => {
-    setQuery('');
-    setDebouncedQuery('');
+    setQuery("");
+    setDebouncedQuery("");
     setIsOpen(false);
     onSearch(null); // Return to home view
   };
 
-  const handleSelect = (suggestion) => {
+  const handleSelect = (suggestion: string) => {
     setQuery(suggestion);
     onSearch(suggestion);
     setIsOpen(false);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setIsOpen(true);
   };
@@ -114,7 +123,17 @@ export function TopicSearch({ onSearch, activeTopic }) {
           )}
         </div>
         <button type="submit" aria-label="Search">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>

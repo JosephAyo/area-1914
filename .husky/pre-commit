@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+# Resolve node path from nvm (works in non-interactive shells)
+# Respects frontend/.nvmrc if present
+if [ -d "$HOME/.nvm/versions/node" ]; then
+  NVMRC_VERSION=""
+  if [ -f "frontend/.nvmrc" ]; then
+    NVMRC_VERSION=$(cat frontend/.nvmrc | tr -d '[:space:]')
+  fi
+
+  if [ -n "$NVMRC_VERSION" ]; then
+    # Find the matching version directory (e.g. "v20" matches "v20.19.6")
+    NODE_DIR=$(ls -d "$HOME/.nvm/versions/node/${NVMRC_VERSION}"* 2>/dev/null | sort -V | tail -1)
+  fi
+
+  # Fallback to latest installed version
+  if [ -z "$NODE_DIR" ]; then
+    NODE_DIR=$(ls -d "$HOME/.nvm/versions/node/"* 2>/dev/null | sort -V | tail -1)
+  fi
+
+  if [ -n "$NODE_DIR" ]; then
+    export PATH="$NODE_DIR/bin:$PATH"
+  fi
+fi
+
+cd frontend && npx lint-staged

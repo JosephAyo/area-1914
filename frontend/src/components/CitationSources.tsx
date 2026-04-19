@@ -1,16 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchCitationSources } from '../services/api';
-import styles from './CitationSources.module.scss';
+import { useQuery } from "@tanstack/react-query";
+import { fetchCitationSources } from "../services/api";
+import type { CitationData } from "../types/index";
+import styles from "./CitationSources.module.scss";
 
-export function CitationSources({ slug }) {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['citations', slug],
+interface CitationSourcesProps {
+  slug: string;
+}
+
+export function CitationSources({ slug }: CitationSourcesProps) {
+  const { data, isLoading, isError } = useQuery<CitationData>({
+    queryKey: ["citations", slug],
     queryFn: () => fetchCitationSources(slug),
     enabled: !!slug,
   });
 
   if (isLoading) {
-    return <div className={styles.container}><div className={styles.loading}>Analyzing sources...</div></div>;
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Analyzing sources...</div>
+      </div>
+    );
   }
 
   if (isError || !data || data.total_citations === 0) {
@@ -30,17 +39,17 @@ export function CitationSources({ slug }) {
             {Object.entries(category_breakdown)
               .sort((a, b) => b[1] - a[1])
               .map(([category, count]) => (
-              <li key={category}>
-                <span className={styles.label}>{category}</span>
-                <span className={styles.barContainer}>
-                  <div
-                    className={`${styles.bar} ${styles[category] || styles.other}`}
-                    style={{ width: `${(count / total_citations) * 100}%` }}
-                  />
-                </span>
-                <span className={styles.count}>{count}</span>
-              </li>
-            ))}
+                <li key={category}>
+                  <span className={styles.label}>{category}</span>
+                  <span className={styles.barContainer}>
+                    <div
+                      className={`${styles.bar} ${styles[category] || styles.other}`}
+                      style={{ width: `${(count / total_citations) * 100}%` }}
+                    />
+                  </span>
+                  <span className={styles.count}>{count}</span>
+                </li>
+              ))}
           </ul>
         </div>
 

@@ -1,4 +1,6 @@
-export const CURATED_CATEGORIES = [
+import type { CuratedCategory } from "../types/index";
+
+export const CURATED_CATEGORIES: CuratedCategory[] = [
   {
     name: "Military Leaders",
     icon: "🎖️",

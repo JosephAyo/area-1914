@@ -1,6 +1,10 @@
-import styles from './Header.module.scss';
+import styles from "./Header.module.scss";
 
-export function Header({ onHomeClick }) {
+interface HeaderProps {
+  onHomeClick: () => void;
+}
+
+export function Header({ onHomeClick }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div
