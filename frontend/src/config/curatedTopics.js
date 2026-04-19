@@ -36,6 +36,7 @@ export const CURATED_CATEGORIES = [
       "Tafawa_Balewa",
       "Anthony_Enahoro",
     ],
+    randomize: true,
   },
   {
     name: "Major Events",
@@ -75,6 +76,7 @@ export const CURATED_CATEGORIES = [
       "Igbo_Ukwu",
       "Ife_Empire",
     ],
+    randomize: true,
   },
   {
     name: "Colonial Era",
@@ -97,10 +99,32 @@ export const CURATED_CATEGORIES = [
       "Nollywood",
       "Afrobeat",
       "Highlife_music",
-      "Yoruba_culture",
-      "Igbo_culture",
-      "Hausa_Fulani_culture",
+
+      // Major ethnic groups
+      "Yoruba_people",
+      "Igbo_people",
+      "Hausa_people",
+      "Fula_people",
+
+      // Regionally significant groups
+      "Edo_people",
+      "Efik_people",
+      "Ibibio_people",
+      "Ijaw_people",
+      "Kanuri_people",
+      "Tiv_people",
+      "Nupe_people",
+      "Urhobo_people",
+      "Itsekiri_people",
+      "Egba_people",
+      "Isoko_people",
+      "Esan_people",
+      "Afemai_people",
+      "Ogu_people",
+      "Owan_people",
+      "Ogoni_people",
     ],
+    randomize: true,
   },
   {
     name: "Economy & Industry",
@@ -113,6 +137,7 @@ export const CURATED_CATEGORIES = [
       "Agriculture_in_Nigeria",
       "Banking_industry_in_Nigeria",
     ],
+    randomize: true,
   },
   {
     name: "Conflicts & Security",
@@ -135,6 +160,7 @@ export const CURATED_CATEGORIES = [
       "Sharia_law_in_Nigeria",
       "Ethnic_groups_in_Nigeria",
     ],
+    randomize: true,
   },
   {
     name: "Modern Nigeria & Global Influence",

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import styles from './FeaturedTopics.module.scss';
 import { CURATED_CATEGORIES } from '../config/curatedTopics';
 import { MiniPulseChart } from './MiniPulseChart';
@@ -36,6 +37,18 @@ export function FeaturedTopics({ onSelectTopic }) {
     staleTime: 1000 * 60 * 60 // Cache for 1 hour
   });
 
+  const displayCategories = useMemo(() => {
+    return CURATED_CATEGORIES.map(category => {
+      if (category.randomize) {
+        return {
+          ...category,
+          slugs: [...category.slugs].sort(() => Math.random() - 0.5)
+        };
+      }
+      return category;
+    });
+  }, []);
+
   return (
     <div className={styles.container}>
       <h2>✨ Discover History</h2>
@@ -44,7 +57,7 @@ export function FeaturedTopics({ onSelectTopic }) {
 
       {!isLoading && !isError && topicsData && (
         <div className={styles.categoriesWrapper}>
-          {CURATED_CATEGORIES.map((category) => (
+          {displayCategories.map((category) => (
             <div key={category.name} className={styles.categorySection}>
               <h3 className={styles.categoryTitle}>{category.icon} {category.name}</h3>
               <div className={styles.grid}>
