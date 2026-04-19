@@ -1,43 +1,151 @@
 export const CURATED_CATEGORIES = [
   {
-    name: 'Past Leaders',
-    icon: '👑',
+    name: "Military Leaders",
+    icon: "🎖️",
     slugs: [
-      'Nnamdi_Azikiwe',
-      'Obafemi_Awolowo',
-      'Ahmadu_Bello',
-      'Olusegun_Obasanjo',
-      'Goodluck_Jonathan',
-      'Muhammadu_Buhari'
-    ]
+      "Aguiyi_Ironsi",
+      "Yakubu_Gowon",
+      "Murtala_Muhammed",
+      "Olusegun_Obasanjo",
+      "Muhammadu_Buhari",
+      "Ibrahim_Babangida",
+      "Sani_Abacha",
+      "Abdulsalami_Abubakar",
+    ],
   },
   {
-    name: 'Major Events',
-    icon: '📰',
+    name: "Civilian Presidents",
+    icon: "🧑‍⚖️",
     slugs: [
-      'Nigerian_Civil_War',
-      'End_SARS',
-      'Amalgamation_of_Nigeria',
-      'Chibok_schoolgirls_kidnapping'
-    ]
+      "Nnamdi_Azikiwe",
+      "Shehu_Shagari",
+      "Olusegun_Obasanjo",
+      "Umaru_Musa_YarAdua",
+      "Goodluck_Jonathan",
+      "Muhammadu_Buhari",
+      "Bola_Ahmed_Tinubu",
+    ],
   },
   {
-    name: 'Elections & Politics',
-    icon: '🗳️',
+    name: "Nationalists & Regional Leaders",
+    icon: "🧭",
     slugs: [
-      '2023_Nigerian_presidential_election',
-      '1993_Nigerian_presidential_election',
-      'Fourth_Nigerian_Republic'
-    ]
+      "Nnamdi_Azikiwe",
+      "Obafemi_Awolowo",
+      "Ahmadu_Bello",
+      "Tafawa_Balewa",
+      "Anthony_Enahoro",
+    ],
   },
   {
-    name: 'Arts & Culture',
-    icon: '🎭',
+    name: "Major Events",
+    icon: "📰",
     slugs: [
-      'Fela_Kuti',
-      'Chinua_Achebe',
-      'Nollywood',
-      'Afrobeat'
-    ]
-  }
+      "Nigerian_Civil_War",
+      "End_SARS",
+      "Amalgamation_of_Nigeria",
+      "Chibok_schoolgirls_kidnapping",
+      "June_12_1993_election_crisis",
+      "Return_to_civilian_rule_1999",
+      "Boko_Haram_insurgency",
+    ],
+  },
+  {
+    name: "Elections & Politics",
+    icon: "🗳️",
+    slugs: [
+      "2023_Nigerian_presidential_election",
+      "1993_Nigerian_presidential_election",
+      "Fourth_Nigerian_Republic",
+      "First_Nigerian_Republic",
+      "Second_Nigerian_Republic",
+      "Nigerian_National_Assembly",
+      "Independent_National_Electoral_Commission",
+    ],
+  },
+  {
+    name: "Pre-Colonial Kingdoms & Empires",
+    icon: "🏺",
+    slugs: [
+      "Benin_Empire",
+      "Oyo_Empire",
+      "Sokoto_Caliphate",
+      "Kanem_Bornu_Empire",
+      "Nri_Kingdom",
+      "Igbo_Ukwu",
+      "Ife_Empire",
+    ],
+  },
+  {
+    name: "Colonial Era",
+    icon: "⚓",
+    slugs: [
+      "British_colonial_rule_in_Nigeria",
+      "Royal_Niger_Company",
+      "Indirect_rule",
+      "Lugard_Amalgamation_1914",
+      "Nationalist_movements_in_Nigeria",
+    ],
+  },
+  {
+    name: "Arts & Culture",
+    icon: "🎭",
+    slugs: [
+      "Fela_Kuti",
+      "Chinua_Achebe",
+      "Wole_Soyinka",
+      "Nollywood",
+      "Afrobeat",
+      "Highlife_music",
+      "Yoruba_culture",
+      "Igbo_culture",
+      "Hausa_Fulani_culture",
+    ],
+  },
+  {
+    name: "Economy & Industry",
+    icon: "💰",
+    slugs: [
+      "Nigerian_economy",
+      "Petroleum_industry_in_Nigeria",
+      "Niger_Delta",
+      "Dangote_Group",
+      "Agriculture_in_Nigeria",
+      "Banking_industry_in_Nigeria",
+    ],
+  },
+  {
+    name: "Conflicts & Security",
+    icon: "⚔️",
+    slugs: [
+      "Nigerian_Civil_War",
+      "Boko_Haram_insurgency",
+      "Niger_Delta_conflict",
+      "Herder_farmer_conflicts",
+      "Nigerian_military_coups",
+    ],
+  },
+  {
+    name: "Religion & Society",
+    icon: "⛪",
+    slugs: [
+      "Islam_in_Nigeria",
+      "Christianity_in_Nigeria",
+      "Traditional_African_religions_in_Nigeria",
+      "Sharia_law_in_Nigeria",
+      "Ethnic_groups_in_Nigeria",
+    ],
+  },
+  {
+    name: "Modern Nigeria & Global Influence",
+    icon: "🌍",
+    slugs: [
+      "Afrobeats",
+      "Nigerian_diaspora",
+      "Tech_industry_in_Nigeria",
+      "Fintech_in_Nigeria",
+      "Nigerian_pop_culture",
+      "Lagos_as_a_megacity",
+    ],
+  },
 ];

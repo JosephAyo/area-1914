@@ -17,15 +17,22 @@ export function PulseChart({ pageviews = [] }) {
   const chartData = useMemo(() => {
     // Sort ascending to ensure chronological order
     const sorted = [...pageviews].sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    // Apply timeframe filter
+
+    // Apply timeframe filter using actual date logic to prevent spanning extra years
     let filtered = sorted;
-    if (timeframe === '30d') {
-      filtered = sorted.slice(-30);
-    } else if (timeframe === '1y') {
-      filtered = sorted.slice(-365);
+    if (sorted.length > 0) {
+      const maxDate = new Date(sorted[sorted.length - 1].date);
+
+      if (timeframe === '30d') {
+        const threshold = new Date(maxDate);
+        threshold.setDate(threshold.getDate() - 30);
+        filtered = sorted.filter(d => new Date(d.date) >= threshold);
+      } else if (timeframe === '1y') {
+        const threshold = new Date(maxDate);
+        threshold.setFullYear(threshold.getFullYear() - 1);
+        filtered = sorted.filter(d => new Date(d.date) >= threshold);
+      }
     }
-    
     return filtered.map(d => ({
       ...d,
       dateFormatted: new Date(d.date).toLocaleDateString(undefined, {
@@ -46,23 +53,23 @@ export function PulseChart({ pageviews = [] }) {
       <div className={styles.header}>
         <h2>{timeframe === '30d' ? '30-Day Pulse' : timeframe === '1y' ? '1-Year Pulse' : 'Historical Pulse'}</h2>
         <div className={styles.toggles}>
-          <button 
-            className={timeframe === '30d' ? styles.active : ''} 
+          <button
+            className={timeframe === '30d' ? styles.active : ''}
             onClick={() => setTimeframe('30d')}
           >
             30 Days
           </button>
-          <button 
-            className={timeframe === '1y' ? styles.active : ''} 
+          <button
+            className={timeframe === '1y' ? styles.active : ''}
             onClick={() => setTimeframe('1y')}
           >
             1 Year
           </button>
-          <button 
-            className={timeframe === 'all' ? styles.active : ''} 
+          <button
+            className={timeframe === 'all' ? styles.active : ''}
             onClick={() => setTimeframe('all')}
           >
-            All Time
+            Max
           </button>
         </div>
       </div>
