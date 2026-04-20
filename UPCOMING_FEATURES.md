@@ -47,9 +47,9 @@ When viewing a topic (e.g., "Olusegun Obasanjo"), show a list of tightly linked 
 
 ## 🎨 User Experience (UX) improvements
 
-### 6. Dark/Light Mode Toggle
+~~### 6. Dark/Light Mode Toggle~~
 
-While the dark glassmorphic UI is stunning, offering a high-contrast light mode can improve accessibility and user preference.
+~~While the dark glassmorphic UI is stunning, offering a high-contrast light mode can improve accessibility and user preference.~~
 
 ### 7. Search Auto-complete with Thumbnails
 

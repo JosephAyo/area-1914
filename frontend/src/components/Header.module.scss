@@ -7,6 +7,9 @@
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 
   .logo {
     display: flex;
@@ -20,6 +23,48 @@
     .pulseIcon {
       color: var(--accent-primary);
       text-shadow: var(--shadow-glow);
+      transition:
+        color 0.3s ease,
+        text-shadow 0.3s ease;
+    }
+  }
+
+  .themeToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--accent-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0;
+
+    &:hover {
+      background: var(--hover-bg);
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-glow);
+      transform: scale(1.08);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    .iconWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      &.rotated {
+        transform: rotate(180deg);
+      }
     }
   }
 }

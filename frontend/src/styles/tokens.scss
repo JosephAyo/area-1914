@@ -1,18 +1,32 @@
 :root {
-  /* Vibrant, premium color palette */
+  /* ── Dark Mode (default) ── */
   --bg-color: #0b0c10;
   --bg-gradient: linear-gradient(135deg, #0b0c10 0%, #1f2833 100%);
   --text-primary: #f0f0f0;
   --text-secondary: #c5c6c7;
-  --accent-primary: #66fcf1;
-  --accent-secondary: #45a29e;
+  // --accent-primary: #66fcf1;
+  // --accent-secondary: #45a29e;
+  --accent-primary: #0fa89e;
+  --accent-secondary: #0d8a82;
 
   /* Glassmorphism / Panels */
   --glass-bg: rgba(31, 40, 51, 0.45);
   --glass-border: rgba(102, 252, 241, 0.15);
 
+  /* Theme-aware utility colors (used in component SCSS) */
+  --glass-bg-solid: rgba(20, 20, 32, 0.92);
+  --dropdown-bg: rgba(25, 25, 35, 0.95);
+  --glass-border-subtle: rgba(255, 255, 255, 0.05);
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-bg-hover: rgba(255, 255, 255, 0.08);
+  --icon-bg: rgba(255, 255, 255, 0.05);
+  --hover-border: rgba(255, 255, 255, 0.2);
+
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 
   /* Spacing */
   --space-xs: 4px;
@@ -39,6 +53,35 @@
   --shadow-glow: 0 0 15px rgba(102, 252, 241, 0.3);
 }
 
+/* ── Light Mode Overrides ── */
+[data-theme="light"] {
+  --bg-color: #f5f7fa;
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5d6e;
+  --accent-primary: #0fa89e;
+  --accent-secondary: #0d8a82;
+
+  /* Glassmorphism / Panels – light variants */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(15, 168, 158, 0.2);
+
+  /* Theme-aware utility colors – light variants */
+  --glass-bg-solid: rgba(255, 255, 255, 0.95);
+  --dropdown-bg: rgba(255, 255, 255, 0.97);
+  --glass-border-subtle: rgba(0, 0, 0, 0.06);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --card-bg: rgba(0, 0, 0, 0.02);
+  --card-bg-hover: rgba(0, 0, 0, 0.05);
+  --icon-bg: rgba(0, 0, 0, 0.04);
+  --hover-border: rgba(0, 0, 0, 0.12);
+
+  /* Shadows – softer for light mode */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 12px rgba(15, 168, 158, 0.2);
+}
+
 body {
   background: var(--bg-gradient);
   background-attachment: fixed;
@@ -46,4 +89,7 @@ body {
   font-family: var(--font-family);
   margin: 0;
   min-height: 100vh;
+  transition:
+    background 0.4s ease,
+    color 0.3s ease;
 }

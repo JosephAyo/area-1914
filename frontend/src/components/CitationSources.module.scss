@@ -25,7 +25,8 @@
   }
 }
 
-.categories, .topSources {
+.categories,
+.topSources {
   h3 {
     font-size: 1rem;
     color: var(--text-secondary);
@@ -61,7 +62,7 @@
   .barContainer {
     flex: 1;
     height: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--icon-bg);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -72,13 +73,27 @@
     min-width: 2px;
 
     // Colors per category
-    &.newspaper { background: #3498db; }
-    &.journal { background: #9b59b6; }
-    &.book { background: #e67e22; }
-    &.web { background: #1abc9c; }
-    &.magazine { background: #e74c3c; }
-    &.government { background: #34495e; }
-    &.other { background: #95a5a6; }
+    &.newspaper {
+      background: #3498db;
+    }
+    &.journal {
+      background: #9b59b6;
+    }
+    &.book {
+      background: #e67e22;
+    }
+    &.web {
+      background: #1abc9c;
+    }
+    &.magazine {
+      background: #e74c3c;
+    }
+    &.government {
+      background: #34495e;
+    }
+    &.other {
+      background: #95a5a6;
+    }
   }
 
   .count {
@@ -102,9 +117,9 @@
     align-items: center;
     gap: var(--space-sm);
     padding: var(--space-sm);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg);
     border-radius: var(--radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border-subtle);
   }
 
   .rank {
@@ -130,7 +145,13 @@
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }

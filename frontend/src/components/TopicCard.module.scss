@@ -11,7 +11,7 @@
   .imageContainer {
     width: 100%;
     height: 250px;
-    background: #000;
+    background: var(--bg-color);
 
     img {
       width: 100%;
@@ -48,7 +48,8 @@
 
     .noDesc {
       font-style: italic;
-      color: rgba(197, 198, 199, 0.5);
+      color: var(--text-secondary);
+      opacity: 0.6;
     }
 
     .meta {
