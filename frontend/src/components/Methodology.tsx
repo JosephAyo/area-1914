@@ -9,21 +9,21 @@ export function Methodology() {
           <h3>Source</h3>
           <p>
             Data is fetched directly from the official{" "}
-            <strong>Wikimedia REST API</strong>. We retrieve article summaries,
-            thumbnails, and daily pageview metrics. For relevance, we check the
-            article's Wikipedia categories (via the MediaWiki Action API) to
-            ensure it is related to Nigeria before tracking.
+            <strong>Wikimedia REST API</strong>. Article summaries, thumbnails,
+            and daily pageview metrics are retrieved. For relevance, the
+            article's Wikipedia categories are checked (via the MediaWiki Action
+            API) to ensure it is related to Nigeria before tracking.
           </p>
         </div>
         <div className={styles.card}>
           <h3>Aggregation & Caching</h3>
           <p>
-            Our <strong>FastAPI backend</strong> acts as an intelligent caching
-            layer. When a topic is requested, we fetch and store its historical
-            pageviews (up to 5 years). Subsequent requests pull from our local
-            database. We only query Wikipedia for updates if the data is older
-            than 24 hours. The &quot;Trending&quot; topics are calculated by
-            comparing the most recent 30-day views to the previous 30-day
+            The <strong>FastAPI backend</strong> acts as an intelligent caching
+            layer. When a topic is requested, its historical pageviews (up to 5
+            years) are fetched and stored. Subsequent requests pull from the
+            local database. Wikipedia is only queried for updates if the data is
+            older than 24 hours. The &quot;Trending&quot; topics are calculated
+            by comparing the most recent 30-day views to the previous 30-day
             period.
           </p>
         </div>
@@ -33,8 +33,8 @@ export function Methodology() {
             The frontend is built with <strong>React</strong> and{" "}
             <strong>TypeScript</strong>. The interactive pulse charts are
             rendered using <strong>Recharts</strong>, providing a smooth,
-            responsive area chart that allows you to easily toggle between
-            30-day, 1-year, and maximum historical views.
+            responsive area chart that supports toggling between 30-day, 1-year,
+            and maximum historical views.
           </p>
         </div>
       </div>
