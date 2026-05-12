@@ -1,0 +1,33 @@
+# Virtual environment
+.venv
+venv/
+env/
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+
+# Environment files
+.env
+
+# Database files (we start fresh; data lives in a Docker volume)
+*.db
+*.sqlite3
+
+# Testing
+.pytest_cache
+tests/
+.coverage
+htmlcov/
+coverage.xml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dev dependencies
+requirements-dev.txt
+pyrightconfig.json

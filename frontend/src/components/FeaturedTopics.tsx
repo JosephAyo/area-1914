@@ -5,7 +5,9 @@ import { CURATED_CATEGORIES } from "../config/curatedTopics";
 import { MiniPulseChart } from "./MiniPulseChart";
 import type { TopicData, CuratedCategory } from "../types/index";
 
-const BATCH_API_URL = "http://localhost:8000/api/topics/batch";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const BATCH_API_URL = `${API_BASE_URL}/topics/batch`;
 
 async function fetchBatchTopics(
   categories: CuratedCategory[],

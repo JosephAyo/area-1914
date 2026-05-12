@@ -34,3 +34,8 @@ build/
 htmlcov/
 .pytest_cache/
 coverage.xml
+
+# Environment overrides (production secrets)
+.env.production
+.env.local
+*.env.local
