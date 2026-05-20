@@ -109,10 +109,10 @@ docker compose ps
 docker compose logs -f backend
 
 # Test the API
-curl http://api-area1914.josephayo.dev/health
+curl http://api-area1914.ayojoseph.dev/health
 # Should return: {"status":"ok"}
 
-curl http://api-area1914.josephayo.dev/api/docs
+curl http://api-area1914.ayojoseph.dev/api/docs
 # Should return the FastAPI Swagger docs HTML
 ```
 
