@@ -100,7 +100,7 @@ The project includes a multi-stage `Dockerfile` (`backend/Dockerfile`):
 *   **Stage 1 (Builder):** Uses `python:3.12-slim` to install dependencies from `requirements.txt` into an isolated virtual environment (`/opt/venv`). This keeps the final image lightweight by excluding build tools.
 *   **Stage 2 (Production):** Copies the built virtual environment and application code. It sets up a dedicated `/app/data` directory for SQLite persistence and exposes port `8000`. It also includes a `HEALTHCHECK` directive.
 
-A `docker-compose.yml` is used to orchestrate the backend alongside an Nginx reverse proxy. It mounts a Docker volume (`db-data`) to `/app/data` to ensure the SQLite database (`area1914.db`) is not lost when the container restarts.
+A `docker-compose.yml` is used to run the backend container and attach it to a shared Docker network (`shared-proxy`). A separate infra repo hosts the unified Nginx reverse proxy, and the backend is reached through that proxy. The compose file also mounts a Docker volume (`db-data`) to `/app/data` to ensure the SQLite database (`area1914.db`) is not lost when the container restarts.
 
 ### 6.2. Configuration & CORS
 *   **Dynamic CORS (`ALLOWED_ORIGINS`):** The backend now reads `ALLOWED_ORIGINS` from the environment variables (defined in `app/settings.py`). This allows the API to accept requests from different frontends depending on the environment (e.g., `localhost` for development, a Vercel domain for production) without requiring code changes.

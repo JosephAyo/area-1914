@@ -94,20 +94,25 @@ EOF
 ### 1.4 Build & Run
 
 ```bash
-# Build and start all services in detached mode
+# Start the shared Nginx reverse proxy (from the infra repo)
+# cd /path/to/infra-nginx
+# docker compose up -d
+# (This creates the shared-proxy network used by the backend)
+
+# Build and start the backend container
 docker compose up -d --build
 
 # Verify everything is running
 docker compose ps
 
 # Check the logs
-docker compose logs -f
+docker compose logs -f backend
 
 # Test the API
-curl http://localhost/health
+curl http://api-area1914.josephayo.dev/health
 # Should return: {"status":"ok"}
 
-curl http://localhost/api/docs
+curl http://api-area1914.josephayo.dev/api/docs
 # Should return the FastAPI Swagger docs HTML
 ```
 
@@ -116,7 +121,9 @@ curl http://localhost/api/docs
 ```bash
 # View logs
 docker compose logs -f backend
-docker compose logs -f nginx
+# For Nginx logs, use the infra repo:
+# cd /path/to/infra-nginx
+# docker compose logs -f nginx
 
 # Restart services
 docker compose restart
@@ -199,21 +206,31 @@ sudo apt install -y certbot python3-certbot-nginx
 
 ### 3.2 Update Nginx config
 
-Update `nginx/nginx.conf` to use your domain in the `server_name` directive:
+Update `infra-nginx/nginx/conf.d/area1914.conf` to use your domain in the `server_name` directive:
 ```nginx
 server_name yourdomain.com;
+```
+
+Then restart Nginx from the infra repo:
+```bash
+cd /path/to/infra-nginx
+docker compose restart nginx
 ```
 
 ### 3.3 Obtain Certificate
 
 ```bash
+# From the infra repo
+# cd /path/to/infra-nginx
+
 # Stop nginx container temporarily
 docker compose stop nginx
 
 # Get the certificate
 sudo certbot certonly --standalone -d yourdomain.com
 
-# Mount the certs in docker-compose.yml and update nginx.conf for SSL
+# Mount the certs in infra-nginx/docker-compose.yml and update
+# infra-nginx/nginx/conf.d/area1914.conf for SSL
 # Then restart
 docker compose up -d
 ```
