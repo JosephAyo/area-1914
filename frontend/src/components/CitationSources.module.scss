@@ -27,6 +27,8 @@
 
 .categories,
 .topSources {
+  min-width: 0;
+
   h3 {
     font-size: 1rem;
     color: var(--text-secondary);
@@ -135,6 +137,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
   }
 }
 

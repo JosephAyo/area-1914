@@ -7,6 +7,12 @@ interface CitationSourcesProps {
   slug: string;
 }
 
+const cleanSource = (source: string) => {
+  // Extract text from Wikipedia link syntax [[Target|DisplayText]] or [[DisplayText]]
+  const match = source.match(/\[\[(?:[^|\]]+\|)?([^\]]+)\]\]/);
+  return match ? match[1] : source;
+};
+
 export function CitationSources({ slug }: CitationSourcesProps) {
   const { data, isLoading, isError } = useQuery<CitationData>({
     queryKey: ["citations", slug],
@@ -59,7 +65,7 @@ export function CitationSources({ slug }: CitationSourcesProps) {
             {top_sources.slice(0, 5).map((source, idx) => (
               <li key={idx}>
                 <span className={styles.rank}>{idx + 1}</span>
-                <span className={styles.name}>{source}</span>
+                <span className={styles.name}>{cleanSource(source)}</span>
               </li>
             ))}
           </ul>
