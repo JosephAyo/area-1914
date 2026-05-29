@@ -49,6 +49,9 @@ function App() {
 
           {data && (
             <>
+              <button className={styles.mobileCloseBtn} onClick={handleGoHome}>
+                ✕ Close Pulse
+              </button>
               <div className={styles.resultsGrid}>
                 <TopicCard topic={data} />
                 <div className={styles.chartSection}>
@@ -60,11 +63,17 @@ function App() {
           )}
 
           {!activeTopic && !isLoading && (
-            <>
-              <FeaturedTopics onSelectTopic={setActiveTopic} />
-              <TrendingSection onSelectTopic={setActiveTopic} />
-              <Methodology />
-            </>
+            <div className={styles.homeLayout}>
+              <div className={styles.featuredWrapper}>
+                <FeaturedTopics onSelectTopic={setActiveTopic} />
+              </div>
+              <div className={styles.trendingWrapper}>
+                <TrendingSection onSelectTopic={setActiveTopic} />
+              </div>
+              <div className={styles.methodologyWrapper}>
+                <Methodology />
+              </div>
+            </div>
           )}
         </div>
       </main>

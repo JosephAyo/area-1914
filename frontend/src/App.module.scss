@@ -69,7 +69,60 @@
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.homeLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.trendingWrapper {
+  order: -1;
+  @media (min-width: 768px) {
+    order: 1;
+  }
+}
+
+.featuredWrapper {
+  order: 0;
+  @media (min-width: 768px) {
+    order: 0;
+  }
+}
+
+.methodologyWrapper {
+  order: 2;
+}
+
+.mobileCloseBtn {
+  display: none;
+  width: 100%;
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--glass-bg-solid);
+  }
+
+  @media (max-width: 767px) {
+    display: block;
+  }
 }

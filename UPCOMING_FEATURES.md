@@ -2,6 +2,18 @@
 
 Here are some compelling, modern feature ideas designed to boost the "viral, casual-browser" appeal of the application, categorized by their primary goal:
 
+## 🪲 Bug Fixes
+
+### 1. Home Page
+
+~~- Unable to exit pulse page on mobile. There's no close button.~~
+~~- Trending section is at the bottom on mobile, it should be at the top. We could have a floating cta to scroll to trending~~
+~~- Bug in Trending logic, a page that previously had 0 views suddenly jumps to 100% increase with 1 view and becomes number 1 trending.~~
+
+## Refactoring
+
+don't you think that "POST "http://127.0.0.1:8000/api/topics/batch"" should be a GET request and the default searches be handled on the backend?
+
 ## 🚀 Virality & Social Sharing
 
 ### 1. Comparison Mode ("VS" Mode)
