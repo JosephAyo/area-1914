@@ -31,15 +31,15 @@ async def get_topic(slug: str, session: Session = Depends(get_session)):
 async def get_topics_batch(request: BatchTopicRequest, session: Session = Depends(get_session)):
     manager = TopicManager(session)
 
-    # Fetch topics concurrently
-    tasks = [manager.get_topic_with_history(slug) for slug in request.slugs]
-    topics_results = await asyncio.gather(*tasks, return_exceptions=True)
-
     valid_topics = []
-    for result in topics_results:
-        # Ignore exceptions or not found topics
-        if isinstance(result, WikiTopic) and result is not None:
-            valid_topics.append(result)
+    for slug in request.slugs:
+        try:
+            topic = await manager.get_topic_with_history(slug)
+            if topic:
+                valid_topics.append(topic)
+        except Exception as e:
+            import logging
+            logging.error(f"Error fetching topic {slug} in batch: {e}")
 
     # For batch, we want to limit the payload by only returning 30 days of pageviews
     end_date = date.today()

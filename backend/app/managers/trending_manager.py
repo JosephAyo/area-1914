@@ -29,8 +29,8 @@ class TrendingManager:
 
         results = []
 
-        # We will process limits asynchronously
-        async def process_topic(topic: WikiTopic) -> TrendingArticle | None:
+        # Process sequentially
+        for topic in topics:
             # First, check if topic data needs a refresh (using topic_manager logic)
             # This ensures pageviews are up to date.
             try:
@@ -42,7 +42,7 @@ class TrendingManager:
             # Re-fetch from DB to get updated pageviews
             topic_refreshed = self.session.exec(select(WikiTopic).where(WikiTopic.slug == topic.slug)).first()
             if not topic_refreshed:
-                return None
+                continue
 
             current_views = 0
             previous_views = 0
@@ -69,12 +69,14 @@ class TrendingManager:
 
             if current_views == 0 and previous_views == 0:
                  # No views, no trend
-                 return None
+                 continue
 
-            denominator = max(previous_views, 1)
+            # Prevent small jumps (e.g. 0 to 1 view) from creating a 100% spike
+            # by establishing a baseline denominator for trending calculations.
+            denominator = max(previous_views, 50)
             trend_score = ((current_views - previous_views) / denominator) * 100.0
 
-            return TrendingArticle(
+            result = TrendingArticle(
                 slug=topic_refreshed.slug,
                 title=topic_refreshed.title,
                 description=topic_refreshed.description,
@@ -83,13 +85,7 @@ class TrendingManager:
                 previous_views=previous_views,
                 trend_score=trend_score
             )
-
-        tasks = [process_topic(topic) for topic in topics]
-        processed_results = await asyncio.gather(*tasks)
-
-        for result in processed_results:
-            if result is not None:
-                results.append(result)
+            results.append(result)
 
         # Sort by trend_score descending
         results.sort(key=lambda x: x.trend_score, reverse=True)
