@@ -3,6 +3,7 @@ import type {
   TrendingArticle,
   CitationData,
   SearchSuggestion,
+  FeaturedCategory,
 } from "../types/index";
 
 const API_BASE_URL =
@@ -43,6 +44,14 @@ export const fetchCitationSources = async (
   );
   if (!response.ok) {
     throw new Error("Failed to fetch citation sources.");
+  }
+  return response.json();
+};
+
+export const fetchFeaturedTopics = async (): Promise<FeaturedCategory[]> => {
+  const response = await fetch(`${API_BASE_URL}/topics/featured`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch featured topics.");
   }
   return response.json();
 };

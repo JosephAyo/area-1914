@@ -36,3 +36,9 @@ export interface SearchSuggestion {
   title: string;
   thumbnail?: string | null;
 }
+
+export interface FeaturedCategory {
+  name: string;
+  icon: string;
+  topics: TopicData[];
+}
