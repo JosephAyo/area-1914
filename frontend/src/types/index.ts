@@ -31,3 +31,8 @@ export interface CuratedCategory {
   slugs: string[];
   randomize?: boolean;
 }
+
+export interface SearchSuggestion {
+  title: string;
+  thumbnail?: string | null;
+}

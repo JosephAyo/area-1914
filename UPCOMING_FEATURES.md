@@ -63,8 +63,8 @@ When viewing a topic (e.g., "Olusegun Obasanjo"), show a list of tightly linked 
 
 ~~While the dark glassmorphic UI is stunning, offering a high-contrast light mode can improve accessibility and user preference.~~
 
-### 7. Search Auto-complete with Thumbnails
+~~### 7. Search Auto-complete with Thumbnails~~
 
-Currently, search suggestions are just text. Adding the Wikipedia thumbnail next to the text in the dropdown makes the search feel instantly premium.
+~~Currently, search suggestions are just text. Adding the Wikipedia thumbnail next to the text in the dropdown makes the search feel instantly premium.~~
 
-- **Why it works:** Visual feedback confirms to the user they are selecting the right person/event before they even click.
+~~- **Why it works:** Visual feedback confirms to the user they are selecting the right person/event before they even click.~~

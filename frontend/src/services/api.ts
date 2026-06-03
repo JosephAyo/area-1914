@@ -1,4 +1,9 @@
-import type { TopicData, TrendingArticle, CitationData } from "../types/index";
+import type {
+  TopicData,
+  TrendingArticle,
+  CitationData,
+  SearchSuggestion,
+} from "../types/index";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
@@ -42,7 +47,9 @@ export const fetchCitationSources = async (
   return response.json();
 };
 
-export const fetchSearchResults = async (query: string): Promise<string[]> => {
+export const fetchSearchResults = async (
+  query: string,
+): Promise<SearchSuggestion[]> => {
   const response = await fetch(
     `${API_BASE_URL}/search?q=${encodeURIComponent(query)}`,
   );

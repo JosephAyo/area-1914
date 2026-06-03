@@ -1,10 +1,15 @@
 from fastapi import APIRouter
-from typing import List
+from typing import List, Optional
+from pydantic import BaseModel
 from app.services.wikipedia import wikipedia_service
 
 router = APIRouter()
 
-@router.get("/search", response_model=List[str])
+class SearchSuggestion(BaseModel):
+    title: str
+    thumbnail: Optional[str] = None
+
+@router.get("/search", response_model=List[SearchSuggestion])
 async def search_topics(q: str, limit: int = 5):
     """
     Search Wikipedia for matching articles.

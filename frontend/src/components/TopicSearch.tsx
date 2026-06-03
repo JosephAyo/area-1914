@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearchResults } from "../services/api";
+import type { SearchSuggestion } from "../types/index";
 import styles from "./TopicSearch.module.scss";
 
 interface TopicSearchProps {
@@ -28,7 +29,7 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const { data: suggestions, isLoading } = useQuery<string[]>({
+  const { data: suggestions, isLoading } = useQuery<SearchSuggestion[]>({
     queryKey: ["search", debouncedQuery],
     queryFn: () => fetchSearchResults(debouncedQuery),
     enabled: debouncedQuery.trim().length > 1,
@@ -55,7 +56,9 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
       // or map to the first suggestion. Given user typically hits enter after typing an exact or close name.
       // We take the first suggestion if available to resolve exact slug, otherwise use query.
       const resolvedQuery =
-        suggestions && suggestions.length > 0 ? suggestions[0] : query.trim();
+        suggestions && suggestions.length > 0
+          ? suggestions[0].title
+          : query.trim();
       onSearch(resolvedQuery);
       setIsOpen(false);
     }
@@ -68,9 +71,9 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
     onSearch(null); // Return to home view
   };
 
-  const handleSelect = (suggestion: string) => {
-    setQuery(suggestion);
-    onSearch(suggestion);
+  const handleSelect = (suggestion: SearchSuggestion) => {
+    setQuery(suggestion.title);
+    onSearch(suggestion.title);
     setIsOpen(false);
   };
 
@@ -112,7 +115,16 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
                       onClick={() => handleSelect(suggestion)}
                       className={styles.dropdownItem}
                     >
-                      {suggestion}
+                      {suggestion.thumbnail ? (
+                        <img
+                          src={suggestion.thumbnail}
+                          alt=""
+                          className={styles.dropdownThumbnail}
+                        />
+                      ) : (
+                        <div className={styles.dropdownThumbnailPlaceholder} />
+                      )}
+                      <span>{suggestion.title}</span>
                     </li>
                   ))}
                 </ul>

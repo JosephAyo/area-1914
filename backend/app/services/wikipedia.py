@@ -134,19 +134,30 @@ class WikipediaService:
 
         return None
 
-    async def search_articles(self, query: str, limit: int = 5) -> List[str]:
+    async def search_articles(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """
-        Searches Wikipedia using the Opensearch API and returns matching titles.
+        Searches Wikipedia and returns matching titles with thumbnails.
         """
-        url = f"{self.BASE_URL_ACTION_API}?action=opensearch&search={query}&limit={limit}&format=json"
+        url = (
+            f"{self.BASE_URL_ACTION_API}?action=query&generator=search"
+            f"&gsrsearch={query}&gsrlimit={limit}&prop=pageimages"
+            f"&piprop=thumbnail&pithumbsize=50&format=json"
+        )
 
         data = await self._request(url)
 
-        # Opensearch format: [ "query", ["Result1", "Result2"], ["Summary1", "Summary2"], ["URL1", "URL2"] ]
-        if data and isinstance(data, list) and len(data) >= 2:
-            return data[1]
+        if not data or "query" not in data or "pages" not in data["query"]:
+            return []
 
-        return []
+        pages = data["query"]["pages"].values()
+        results = sorted(pages, key=lambda p: p.get("index", 999))
+        return [
+            {
+                "title": p["title"],
+                "thumbnail": p.get("thumbnail", {}).get("source"),
+            }
+            for p in results
+        ]
 
     async def get_page_categories(self, title: str, limit: int = 50) -> List[str]:
         """
