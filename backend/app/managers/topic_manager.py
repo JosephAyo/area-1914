@@ -21,6 +21,8 @@ class TopicManager:
         Main entry point.
         Checks DB. If missing or stale, fetches from API and updates DB.
         """
+        slug = slug.strip().replace(" ", "_")
+
         # 1. Check DB
         statement = select(WikiTopic).where(WikiTopic.slug == slug)
         topic = self.session.exec(statement).first()

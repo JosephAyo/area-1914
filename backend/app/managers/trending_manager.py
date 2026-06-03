@@ -87,7 +87,13 @@ class TrendingManager:
             )
             results.append(result)
 
-        # Sort by trend_score descending
-        results.sort(key=lambda x: x.trend_score, reverse=True)
+        # Deduplicate by normalized slug (e.g. "Nigerian Civil War" vs "Nigerian_Civil_War")
+        # keeping the entry with the higher trend_score for each article.
+        seen: dict = {}
+        for r in results:
+            key = r.slug.replace(" ", "_")
+            if key not in seen or r.trend_score > seen[key].trend_score:
+                seen[key] = r
 
-        return results[:limit]
+        deduped = sorted(seen.values(), key=lambda x: x.trend_score, reverse=True)
+        return deduped[:limit]
