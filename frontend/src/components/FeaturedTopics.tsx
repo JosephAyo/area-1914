@@ -1,8 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import styles from "./FeaturedTopics.module.scss";
 import { MiniPulseChart } from "./MiniPulseChart";
+import { Skeleton } from "./Skeleton";
 import type { FeaturedCategory } from "../types/index";
 import { fetchFeaturedTopics } from "../services/api";
+
+function FeaturedSkeletonCard() {
+  return (
+    <div className={styles.card} style={{ pointerEvents: "none" }}>
+      <div className={styles.cardHeader}>
+        <Skeleton width="40px" height="40px" borderRadius="50%" />
+        <div className={styles.titleContainer}>
+          <Skeleton height="0.95rem" width="70%" />
+        </div>
+      </div>
+      <div className={styles.chartContainer}>
+        <Skeleton height="40px" />
+      </div>
+    </div>
+  );
+}
 
 interface FeaturedTopicsProps {
   onSelectTopic: (slug: string) => void;
@@ -23,7 +40,22 @@ export function FeaturedTopics({ onSelectTopic }: FeaturedTopicsProps) {
     <div className={styles.container}>
       <h2>✨ Discover History</h2>
       {isLoading && (
-        <div className={styles.loading}>Loading curated topics...</div>
+        <div className={styles.categoriesWrapper}>
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className={styles.categorySection}>
+              <Skeleton
+                height="1.2rem"
+                width="180px"
+                className={styles.categoryTitle}
+              />
+              <div className={styles.grid}>
+                {Array.from({ length: 4 }).map((_, j) => (
+                  <FeaturedSkeletonCard key={j} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
       {isError && (
         <div className={styles.error}>Could not load curated topics.</div>

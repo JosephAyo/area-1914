@@ -1,7 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchTrendingData } from "../services/api";
 import type { TrendingArticle } from "../types/index";
+import { Skeleton } from "./Skeleton";
 import styles from "./TrendingSection.module.scss";
+
+function TrendingSkeletonCard() {
+  return (
+    <div className={styles.card} style={{ pointerEvents: "none" }}>
+      <Skeleton width="2.5rem" height="2.5rem" />
+      <div className={styles.content}>
+        <Skeleton height="1rem" width="60%" />
+        <Skeleton height="0.8rem" width="40%" />
+      </div>
+      <div className={styles.stats}>
+        <Skeleton height="0.95rem" width="60px" />
+        <Skeleton height="0.8rem" width="80px" />
+      </div>
+    </div>
+  );
+}
 
 interface TrendingSectionProps {
   onSelectTopic: (slug: string) => void;
@@ -20,7 +37,12 @@ export function TrendingSection({ onSelectTopic }: TrendingSectionProps) {
   if (isLoading) {
     return (
       <div className={styles.trendingContainer}>
-        <div className={styles.loading}>Loading trends...</div>
+        <h2>🔥 Trending Nigerian Topics</h2>
+        <div className={styles.list}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TrendingSkeletonCard key={i} />
+          ))}
+        </div>
       </div>
     );
   }

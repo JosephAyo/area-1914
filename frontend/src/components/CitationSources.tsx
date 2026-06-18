@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchCitationSources } from "../services/api";
 import type { CitationData } from "../types/index";
+import { Skeleton } from "./Skeleton";
 import styles from "./CitationSources.module.scss";
 
 interface CitationSourcesProps {
@@ -23,7 +24,46 @@ export function CitationSources({ slug }: CitationSourcesProps) {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Analyzing sources...</div>
+        <Skeleton height="1.25rem" width="200px" />
+        <div
+          className={styles.breakdownGrid}
+          style={{ marginTop: "var(--space-lg)" }}
+        >
+          <div className={styles.categories}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-md)",
+                  marginBottom: "var(--space-sm)",
+                }}
+              >
+                <Skeleton width="90px" height="0.9rem" />
+                <Skeleton height="8px" width="auto" style={{ flex: 1 }} />
+                <Skeleton width="20px" height="0.85rem" />
+              </div>
+            ))}
+          </div>
+          <div className={styles.topSources}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-sm)",
+                  padding: "var(--space-sm)",
+                  marginBottom: "var(--space-sm)",
+                }}
+              >
+                <Skeleton width="1rem" height="0.8rem" />
+                <Skeleton height="0.9rem" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

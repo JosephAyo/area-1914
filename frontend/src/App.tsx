@@ -8,9 +8,61 @@ import { TrendingSection } from "./components/TrendingSection";
 import { FeaturedTopics } from "./components/FeaturedTopics";
 import { Methodology } from "./components/Methodology";
 import { CitationSources } from "./components/CitationSources";
+import { Skeleton } from "./components/Skeleton";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
 import styles from "./App.module.scss";
+
+function PulseSkeletonView() {
+  return (
+    <div className={styles.resultsGrid}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-md)",
+        }}
+      >
+        <Skeleton height="200px" borderRadius="var(--radius-md)" />
+        <Skeleton height="1.2rem" width="60%" />
+        <Skeleton height="0.9rem" width="80%" />
+        <Skeleton height="0.9rem" width="70%" />
+        <Skeleton height="0.9rem" width="50%" />
+      </div>
+      <div className={styles.chartSection}>
+        <Skeleton height="1.25rem" width="40%" />
+        <Skeleton
+          height="260px"
+          borderRadius="var(--radius-sm)"
+          style={{ marginTop: "var(--space-lg)" }}
+        />
+        <div
+          style={{
+            display: "flex",
+            gap: "var(--space-sm)",
+            marginTop: "var(--space-md)",
+          }}
+        >
+          <Skeleton
+            width="60px"
+            height="32px"
+            borderRadius="var(--radius-xl)"
+          />
+          <Skeleton
+            width="60px"
+            height="32px"
+            borderRadius="var(--radius-xl)"
+          />
+          <Skeleton
+            width="60px"
+            height="32px"
+            borderRadius="var(--radius-xl)"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
@@ -36,11 +88,7 @@ function App() {
         />
 
         <div className={styles.dashboardArea}>
-          {isLoading && (
-            <div className={styles.loading}>
-              Generating pulse for {activeTopic}...
-            </div>
-          )}
+          {isLoading && <PulseSkeletonView />}
           {isError && (
             <div className={styles.error}>
               Error: {(error as Error).message}
