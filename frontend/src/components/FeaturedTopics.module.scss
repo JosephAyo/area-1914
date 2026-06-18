@@ -143,6 +143,27 @@
   font-style: italic;
 }
 
+.viewAllBtn {
+  width: 100%;
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  background: transparent;
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background: var(--accent-primary);
+    color: var(--bg-color);
+    box-shadow: var(--shadow-md);
+  }
+}
+
 .error {
   color: #ff6b6b;
   padding: var(--space-md);

@@ -6,12 +6,15 @@ import { TopicCard } from "./components/TopicCard";
 import { PulseChart } from "./components/PulseChart";
 import { TrendingSection } from "./components/TrendingSection";
 import { FeaturedTopics } from "./components/FeaturedTopics";
+import { DiscoverPage } from "./components/DiscoverPage";
 import { Methodology } from "./components/Methodology";
 import { CitationSources } from "./components/CitationSources";
 import { Skeleton } from "./components/Skeleton";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
 import styles from "./App.module.scss";
+
+type View = "home" | "discover";
 
 function PulseSkeletonView() {
   return (
@@ -66,6 +69,7 @@ function PulseSkeletonView() {
 
 function App() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [view, setView] = useState<View>("home");
 
   const { data, isLoading, isError, error } = useQuery<TopicData>({
     queryKey: ["topic", activeTopic],
@@ -76,6 +80,11 @@ function App() {
 
   const handleGoHome = () => {
     setActiveTopic(null);
+    setView("home");
+  };
+
+  const handleSelectTopic = (slug: string) => {
+    setActiveTopic(slug);
   };
 
   return (
@@ -110,13 +119,24 @@ function App() {
             </>
           )}
 
-          {!activeTopic && !isLoading && (
+          {!activeTopic && !isLoading && view === "discover" && (
+            <DiscoverPage
+              onSelectTopic={handleSelectTopic}
+              onBack={() => setView("home")}
+            />
+          )}
+
+          {!activeTopic && !isLoading && view === "home" && (
             <div className={styles.homeLayout}>
               <div className={styles.featuredWrapper}>
-                <FeaturedTopics onSelectTopic={setActiveTopic} />
+                <FeaturedTopics
+                  onSelectTopic={handleSelectTopic}
+                  preview
+                  onViewAll={() => setView("discover")}
+                />
               </div>
               <div className={styles.trendingWrapper}>
-                <TrendingSection onSelectTopic={setActiveTopic} />
+                <TrendingSection onSelectTopic={handleSelectTopic} />
               </div>
               <div className={styles.methodologyWrapper}>
                 <Methodology />

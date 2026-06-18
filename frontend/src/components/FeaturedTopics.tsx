@@ -23,9 +23,15 @@ function FeaturedSkeletonCard() {
 
 interface FeaturedTopicsProps {
   onSelectTopic: (slug: string) => void;
+  preview?: boolean;
+  onViewAll?: () => void;
 }
 
-export function FeaturedTopics({ onSelectTopic }: FeaturedTopicsProps) {
+export function FeaturedTopics({
+  onSelectTopic,
+  preview = false,
+  onViewAll,
+}: FeaturedTopicsProps) {
   const {
     data: categories,
     isLoading,
@@ -63,7 +69,7 @@ export function FeaturedTopics({ onSelectTopic }: FeaturedTopicsProps) {
 
       {!isLoading && !isError && categories && (
         <div className={styles.categoriesWrapper}>
-          {categories.map((category) => (
+          {(preview ? categories.slice(0, 2) : categories).map((category) => (
             <div key={category.name} className={styles.categorySection}>
               <h3 className={styles.categoryTitle}>
                 {category.icon} {category.name}
@@ -102,6 +108,11 @@ export function FeaturedTopics({ onSelectTopic }: FeaturedTopicsProps) {
               </div>
             </div>
           ))}
+          {preview && onViewAll && (
+            <button className={styles.viewAllBtn} onClick={onViewAll}>
+              Browse all topics →
+            </button>
+          )}
         </div>
       )}
     </div>

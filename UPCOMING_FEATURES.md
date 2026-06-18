@@ -12,7 +12,10 @@ Here are some compelling, modern feature ideas designed to boost the "viral, cas
 
 ## Refactoring
 
-don't you think that "POST "http://127.0.0.1:8000/api/topics/batch"" should be a GET request and the default searches be handled on the backend?
+~~don't you think that "POST "http://127.0.0.1:8000/api/topics/batch"" should be a GET request and the default searches be handled on the backend?~~
+
+~~- Use skeleton for loading sections~~
+~~- for "Discover History" section, don't show all the topics at the same time. let's use view more button, which will take the user to a dedicated page with all the topics. This will fix the issue of trending topics being shifted to the end of the page on desktop~~
 
 ## 🚀 Virality & Social Sharing
 

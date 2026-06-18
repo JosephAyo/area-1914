@@ -1,0 +1,22 @@
+.container {
+  padding-bottom: var(--space-xxl);
+}
+
+.backBtn {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: transparent;
+    box-shadow: none;
+  }
+}
