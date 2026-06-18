@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearchResults } from "../services/api";
 import type { SearchSuggestion } from "../types/index";
+import { Skeleton } from "./Skeleton";
 import styles from "./TopicSearch.module.scss";
 
 interface TopicSearchProps {
@@ -106,7 +107,25 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
           {isOpen && debouncedQuery.trim().length > 1 && (
             <div className={styles.dropdown}>
               {isLoading ? (
-                <div className={styles.dropdownLoading}>Searching...</div>
+                <ul className={styles.dropdownList}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <li
+                      key={i}
+                      className={styles.dropdownItem}
+                      style={{ pointerEvents: "none" }}
+                    >
+                      <Skeleton
+                        width="36px"
+                        height="36px"
+                        borderRadius="var(--radius-sm)"
+                      />
+                      <Skeleton
+                        height="0.95rem"
+                        width={`${55 + (i % 3) * 15}%`}
+                      />
+                    </li>
+                  ))}
+                </ul>
               ) : suggestions && suggestions.length > 0 ? (
                 <ul className={styles.dropdownList}>
                   {suggestions.map((suggestion, idx) => (
