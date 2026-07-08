@@ -3,13 +3,14 @@ import type { TopicData } from "../types/index";
 
 interface TopicCardProps {
   topic: TopicData;
+  compact?: boolean;
 }
 
-export function TopicCard({ topic }: TopicCardProps) {
+export function TopicCard({ topic, compact = false }: TopicCardProps) {
   if (!topic) return null;
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} ${compact ? styles.compact : ""}`}>
       {topic.thumbnail_url && (
         <div className={styles.imageContainer}>
           <img src={topic.thumbnail_url} alt={topic.title} />

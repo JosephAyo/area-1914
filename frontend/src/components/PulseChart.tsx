@@ -11,51 +11,84 @@ import styles from "./PulseChart.module.scss";
 import { useMemo, useState } from "react";
 import type { PageviewEntry } from "../types/index";
 
-interface ChartDataPoint extends PageviewEntry {
+interface ChartDataPoint {
+  date: string;
   dateFormatted: string;
+  primaryViews: number;
+  comparisonViews?: number;
 }
 
 type Timeframe = "30d" | "1y" | "all";
 
 interface PulseChartProps {
   pageviews?: PageviewEntry[];
+  title?: string;
+  comparisonPageviews?: PageviewEntry[];
+  comparisonTitle?: string;
 }
 
-export function PulseChart({ pageviews = [] }: PulseChartProps) {
+const PRIMARY_COLOR = "var(--accent-primary)";
+const COMPARISON_COLOR = "#f59e0b";
+
+export function PulseChart({
+  pageviews = [],
+  title,
+  comparisonPageviews,
+  comparisonTitle,
+}: PulseChartProps) {
   const [timeframe, setTimeframe] = useState<Timeframe>("30d");
+  const hasComparison = !!comparisonPageviews?.length;
 
   // Format the dates and ensure views is an integer
   const chartData = useMemo<ChartDataPoint[]>(() => {
-    // Sort ascending to ensure chronological order
-    const sorted = [...pageviews].sort(
+    const sortedPrimary = [...pageviews].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
+    const sortedComparison = [...(comparisonPageviews || [])].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+    const allDates = [...sortedPrimary, ...sortedComparison];
 
-    // Apply timeframe filter using actual date logic to prevent spanning extra years
-    let filtered = sorted;
-    if (sorted.length > 0) {
-      const maxDate = new Date(sorted[sorted.length - 1].date);
-
-      if (timeframe === "30d") {
-        const threshold = new Date(maxDate);
-        threshold.setDate(threshold.getDate() - 30);
-        filtered = sorted.filter((d) => new Date(d.date) >= threshold);
-      } else if (timeframe === "1y") {
-        const threshold = new Date(maxDate);
-        threshold.setFullYear(threshold.getFullYear() - 1);
-        filtered = sorted.filter((d) => new Date(d.date) >= threshold);
-      }
+    if (allDates.length === 0) {
+      return [];
     }
-    return filtered.map((d) => ({
-      ...d,
-      dateFormatted: new Date(d.date).toLocaleDateString(undefined, {
+
+    const primaryByDate = new Map(
+      sortedPrimary.map((entry) => [entry.date, Number(entry.views)]),
+    );
+    const comparisonByDate = new Map(
+      sortedComparison.map((entry) => [entry.date, Number(entry.views)]),
+    );
+    const dateKeys = Array.from(
+      new Set(allDates.map((entry) => entry.date)),
+    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    let filteredDates = dateKeys;
+    const maxDate = new Date(dateKeys[dateKeys.length - 1]);
+
+    if (timeframe === "30d") {
+      const threshold = new Date(maxDate);
+      threshold.setDate(threshold.getDate() - 30);
+      filteredDates = dateKeys.filter((date) => new Date(date) >= threshold);
+    } else if (timeframe === "1y") {
+      const threshold = new Date(maxDate);
+      threshold.setFullYear(threshold.getFullYear() - 1);
+      filteredDates = dateKeys.filter((date) => new Date(date) >= threshold);
+    }
+
+    return filteredDates.map((date) => ({
+      date,
+      dateFormatted: new Date(date).toLocaleDateString(undefined, {
         month: "short",
         day: "numeric",
         year: "2-digit",
       }),
-      views: Number(d.views),
+      primaryViews: primaryByDate.get(date) || 0,
+      comparisonViews: hasComparison
+        ? comparisonByDate.get(date) || 0
+        : undefined,
     }));
-  }, [pageviews, timeframe]);
+  }, [comparisonPageviews, hasComparison, pageviews, timeframe]);
 
   if (chartData.length === 0) {
     return <div className={styles.emptyChart}>No pulse data available.</div>;
@@ -65,11 +98,13 @@ export function PulseChart({ pageviews = [] }: PulseChartProps) {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>
-          {timeframe === "30d"
-            ? "30-Day Pulse"
-            : timeframe === "1y"
-              ? "1-Year Pulse"
-              : "Historical Pulse"}
+          {hasComparison
+            ? "Pulse Comparison"
+            : timeframe === "30d"
+              ? "30-Day Pulse"
+              : timeframe === "1y"
+                ? "1-Year Pulse"
+                : "Historical Pulse"}
         </h2>
         <div className={styles.toggles}>
           <button
@@ -92,6 +127,18 @@ export function PulseChart({ pageviews = [] }: PulseChartProps) {
           </button>
         </div>
       </div>
+      <div className={styles.legend}>
+        <span>
+          <i style={{ background: PRIMARY_COLOR }} />
+          {title || "Topic"}
+        </span>
+        {hasComparison && (
+          <span>
+            <i style={{ background: COMPARISON_COLOR }} />
+            {comparisonTitle || "Comparison"}
+          </span>
+        )}
+      </div>
       <div className={styles.chartWrapper}>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart
@@ -110,6 +157,16 @@ export function PulseChart({ pageviews = [] }: PulseChartProps) {
                   stopColor="var(--accent-primary)"
                   stopOpacity={0}
                 />
+              </linearGradient>
+              <linearGradient
+                id="colorComparisonViews"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.45} />
+                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -145,12 +202,25 @@ export function PulseChart({ pageviews = [] }: PulseChartProps) {
             />
             <Area
               type="monotone"
-              dataKey="views"
-              stroke="var(--accent-primary)"
+              dataKey="primaryViews"
+              name={title || "Topic"}
+              stroke={PRIMARY_COLOR}
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorViews)"
             />
+            {hasComparison && (
+              <Area
+                type="monotone"
+                dataKey="comparisonViews"
+                name={comparisonTitle || "Comparison"}
+                stroke={COMPARISON_COLOR}
+                strokeDasharray="6 4"
+                strokeWidth={3}
+                fillOpacity={1}
+                fill="url(#colorComparisonViews)"
+              />
+            )}
           </AreaChart>
         </ResponsiveContainer>
       </div>

@@ -69,6 +69,8 @@ function PulseSkeletonView() {
 
 function App() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [comparisonTopic, setComparisonTopic] = useState<string | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
   const [view, setView] = useState<View>("home");
 
   const { data, isLoading, isError, error } = useQuery<TopicData>({
@@ -78,13 +80,45 @@ function App() {
     retry: false,
   });
 
+  const {
+    data: comparisonData,
+    isLoading: isComparisonLoading,
+    isError: isComparisonError,
+    error: comparisonError,
+  } = useQuery<TopicData>({
+    queryKey: ["topic", comparisonTopic],
+    queryFn: () => fetchTopicData(comparisonTopic!),
+    enabled: isComparing && !!comparisonTopic,
+    retry: false,
+  });
+
   const handleGoHome = () => {
     setActiveTopic(null);
+    setComparisonTopic(null);
+    setIsComparing(false);
     setView("home");
   };
 
   const handleSelectTopic = (slug: string) => {
     setActiveTopic(slug);
+    setView("home");
+  };
+
+  const handlePrimarySearch = (topic: string | null) => {
+    setActiveTopic(topic);
+    if (!topic) {
+      setComparisonTopic(null);
+      setIsComparing(false);
+    }
+  };
+
+  const handleCompareToggle = () => {
+    setIsComparing((current) => {
+      if (current) {
+        setComparisonTopic(null);
+      }
+      return !current;
+    });
   };
 
   return (
@@ -93,7 +127,9 @@ function App() {
       <main className={styles.mainContent}>
         <TopicSearch
           activeTopic={activeTopic}
-          onSearch={(topic: string | null) => setActiveTopic(topic)}
+          onSearch={handlePrimarySearch}
+          label="Primary topic"
+          placeholder="Search primary topic (e.g. Lagos, Fela Kuti)..."
         />
 
         <div className={styles.dashboardArea}>
@@ -104,18 +140,60 @@ function App() {
             </div>
           )}
 
+          {activeTopic && !isLoading && !isError && (
+            <div className={styles.compareBar}>
+              <button
+                type="button"
+                className={isComparing ? styles.compareActive : ""}
+                onClick={handleCompareToggle}
+                aria-pressed={isComparing}
+              >
+                {isComparing ? "Exit comparison" : "Compare"}
+              </button>
+              {isComparing && (
+                <TopicSearch
+                  activeTopic={comparisonTopic}
+                  onSearch={(topic: string | null) => setComparisonTopic(topic)}
+                  label="Compare with topic"
+                  placeholder="Compare with another topic..."
+                />
+              )}
+            </div>
+          )}
+
+          {isComparisonError && (
+            <div className={styles.error}>
+              Error: {(comparisonError as Error).message}
+            </div>
+          )}
+
           {data && (
             <>
               <button className={styles.mobileCloseBtn} onClick={handleGoHome}>
                 ✕ Close Pulse
               </button>
               <div className={styles.resultsGrid}>
-                <TopicCard topic={data} />
+                <div className={styles.topicCards}>
+                  <TopicCard topic={data} compact={isComparing} />
+                  {isComparing && isComparisonLoading && (
+                    <Skeleton height="120px" borderRadius="var(--radius-md)" />
+                  )}
+                  {isComparing && comparisonData && (
+                    <TopicCard topic={comparisonData} compact />
+                  )}
+                </div>
                 <div className={styles.chartSection}>
-                  <PulseChart pageviews={data.pageviews} />
+                  <PulseChart
+                    pageviews={data.pageviews}
+                    title={data.title}
+                    comparisonPageviews={
+                      isComparing ? comparisonData?.pageviews : undefined
+                    }
+                    comparisonTitle={comparisonData?.title}
+                  />
                 </div>
               </div>
-              <CitationSources slug={activeTopic!} />
+              {!isComparing && <CitationSources slug={activeTopic!} />}
             </>
           )}
 

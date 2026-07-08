@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearchResults } from "../services/api";
 import type { SearchSuggestion } from "../types/index";
@@ -8,13 +8,21 @@ import styles from "./TopicSearch.module.scss";
 interface TopicSearchProps {
   onSearch: (topic: string | null) => void;
   activeTopic: string | null;
+  label?: string;
+  placeholder?: string;
 }
 
-export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
+export function TopicSearch({
+  onSearch,
+  activeTopic,
+  label = "Search for a Nigerian topic",
+  placeholder = "Search for a Nigerian topic (e.g. Lagos, Fela Kuti)...",
+}: TopicSearchProps) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputId = useId();
 
   // Update local state during render when the activeTopic prop changes
   const [prevTopic, setPrevTopic] = useState(activeTopic);
@@ -87,12 +95,17 @@ export function TopicSearch({ onSearch, activeTopic }: TopicSearchProps) {
     <div className={styles.searchContainer} ref={dropdownRef}>
       <form onSubmit={handleSubmit} className={styles.searchForm}>
         <div className={styles.inputWrapper}>
+          <label className={styles.visuallyHidden} htmlFor={inputId}>
+            {label}
+          </label>
           <input
+            id={inputId}
             type="text"
             value={query}
             onChange={handleChange}
             onFocus={() => setIsOpen(true)}
-            placeholder="Search for a Nigerian topic (e.g. Lagos, Fela Kuti)..."
+            placeholder={placeholder}
+            aria-label={label}
           />
           {query && (
             <button

@@ -16,6 +16,55 @@
   margin-top: var(--space-lg);
 }
 
+.compareBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+
+  > button {
+    min-width: 136px;
+    height: 44px;
+    padding: 0 var(--space-lg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-weight: 700;
+    transition:
+      background var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+
+    &:hover {
+      border-color: var(--accent-primary);
+      background: var(--glass-bg-solid);
+    }
+  }
+
+  > :not(button) {
+    margin: 0;
+    max-width: 520px;
+  }
+
+  @media (max-width: 767px) {
+    align-items: stretch;
+    flex-direction: column;
+
+    > button {
+      width: 100%;
+    }
+  }
+}
+
+.compareActive {
+  background: var(--text-primary) !important;
+  color: var(--bg-color) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 2px rgba(15, 168, 158, 0.35);
+}
+
 .loading {
   text-align: center;
   color: var(--accent-primary);
@@ -40,6 +89,12 @@
   @media (min-width: 768px) {
     grid-template-columns: 350px 1fr;
   }
+}
+
+.topicCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 .chartSection {

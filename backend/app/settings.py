@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "The Nigerian History Pulse"
@@ -12,6 +13,7 @@ class Settings(BaseSettings):
     # Override in production with your Vercel domain, e.g.:
     # ALLOWED_ORIGINS="https://your-app.vercel.app,https://yourdomain.com"
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    ALLOWED_ORIGIN_REGEX: Optional[str] = r"http://(localhost|127\.0\.0\.1):517[3-9]"
 
     model_config = SettingsConfigDict(env_file=".env")
 

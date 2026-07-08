@@ -76,3 +76,37 @@
     }
   }
 }
+
+.compact {
+  @media (max-width: 767px) {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    min-height: 112px;
+
+    .imageContainer {
+      height: 100%;
+      min-height: 112px;
+    }
+
+    .content {
+      padding: var(--space-md);
+
+      h3 {
+        font-size: 1.05rem;
+        line-height: 1.2;
+        margin-bottom: var(--space-xs);
+      }
+
+      p {
+        font-size: 0.9rem;
+        line-height: 1.35;
+        margin-bottom: var(--space-sm);
+      }
+
+      .badge {
+        font-size: 0.78rem;
+        padding: 3px var(--space-sm);
+      }
+    }
+  }
+}

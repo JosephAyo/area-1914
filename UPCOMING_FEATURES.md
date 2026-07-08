@@ -19,12 +19,12 @@ Here are some compelling, modern feature ideas designed to boost the "viral, cas
 
 ## 🚀 Virality & Social Sharing
 
-### 1. Comparison Mode ("VS" Mode)
+~~### 1. Comparison Mode ("VS" Mode)~~
 
-Allow users to search for two topics simultaneously and overlay their pulse charts.
+~~Allow users to search for two topics simultaneously and overlay their pulse charts.~~
 
-- **Why it works:** People love comparisons. Showing the historical pageview battles between "Wizkid vs Davido", "APC vs PDP", or historical figures is highly engaging.
-- **Implementation:** Update the `PulseChart` to accept multiple datasets and draw multiple area lines with different colors.
+~~- **Why it works:** People love comparisons. Showing the historical pageview battles between "Wizkid vs Davido", "APC vs PDP", or historical figures is highly engaging.~~
+~~- **Implementation:** Update the `PulseChart` to accept multiple datasets and draw multiple area lines with different colors.~~
 
 ### 2. "Share this Pulse" (Image Export)
 
