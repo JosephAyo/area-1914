@@ -12,9 +12,12 @@ export function TopicCard({ topic, compact = false }: TopicCardProps) {
   return (
     <div className={`${styles.card} ${compact ? styles.compact : ""}`}>
       {topic.thumbnail_url && (
-        <div className={styles.imageContainer}>
-          <img src={topic.thumbnail_url} alt={topic.title} />
-        </div>
+        <div
+          className={styles.imageContainer}
+          role="img"
+          aria-label={topic.title}
+          style={{ backgroundImage: `url(${topic.thumbnail_url})` }}
+        />
       )}
       <div className={styles.content}>
         <h3>{topic.title}</h3>

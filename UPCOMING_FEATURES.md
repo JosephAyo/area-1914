@@ -26,12 +26,12 @@ Here are some compelling, modern feature ideas designed to boost the "viral, cas
 ~~- **Why it works:** People love comparisons. Showing the historical pageview battles between "Wizkid vs Davido", "APC vs PDP", or historical figures is highly engaging.~~
 ~~- **Implementation:** Update the `PulseChart` to accept multiple datasets and draw multiple area lines with different colors.~~
 
-### 2. "Share this Pulse" (Image Export)
+~~### 2. "Share this Pulse" (Image Export)~~
 
-A button that generates a clean, aesthetic image (PNG) containing the Topic Card, the current chart view, and a small "Nigerian History Pulse" watermark.
+~~A button that generates a clean, aesthetic image (PNG) containing the Topic Card, the current chart view, and a small "Nigerian History Pulse" watermark.~~
 
-- **Why it works:** Users can instantly share interesting data spikes directly to Twitter, Instagram, or WhatsApp without sending a link that might get ignored.
-- **Implementation:** Use a library like `html2canvas` to take a snapshot of the chart/card container.
+~~- **Why it works:** Users can instantly share interesting data spikes directly to Twitter, Instagram, or WhatsApp without sending a link that might get ignored.~~
+~~- **Implementation:** Use a library like `html2canvas` to take a snapshot of the chart/card container.~~
 
 ---
 

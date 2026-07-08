@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "./components/Header";
 import { TopicSearch } from "./components/TopicSearch";
@@ -73,7 +73,9 @@ function App() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [comparisonTopic, setComparisonTopic] = useState<string | null>(null);
   const [isComparing, setIsComparing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [view, setView] = useState<View>("home");
+  const pulseExportRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, isError, error } = useQuery<TopicData>({
     queryKey: ["topic", activeTopic],
@@ -121,6 +123,33 @@ function App() {
       }
       return !current;
     });
+  };
+
+  const handleDownloadPulse = async () => {
+    if (!pulseExportRef.current || !data) {
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      const { default: html2canvas } = await import("html2canvas");
+      const canvas = await html2canvas(pulseExportRef.current, {
+        backgroundColor: "#0b0c10",
+        scale: 2,
+        useCORS: true,
+        ignoreElements: (element) =>
+          element instanceof HTMLElement &&
+          element.dataset.exportIgnore === "true",
+      });
+      const imageUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imageUrl;
+      link.download = `${data.slug.replace(/[^a-z0-9_-]/gi, "_")}-pulse.png`;
+      link.click();
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -174,25 +203,48 @@ function App() {
               <button className={styles.mobileCloseBtn} onClick={handleGoHome}>
                 ✕ Close Pulse
               </button>
-              <div className={styles.resultsGrid}>
-                <div className={styles.topicCards}>
-                  <TopicCard topic={data} compact={isComparing} />
-                  {isComparing && isComparisonLoading && (
-                    <Skeleton height="120px" borderRadius="var(--radius-md)" />
-                  )}
-                  {isComparing && comparisonData && (
-                    <TopicCard topic={comparisonData} compact />
-                  )}
+              {!isComparing && (
+                <div className={styles.exportActions}>
+                  <button
+                    type="button"
+                    onClick={handleDownloadPulse}
+                    disabled={isExporting}
+                  >
+                    {isExporting ? "Preparing..." : "Download Pulse"}
+                  </button>
                 </div>
-                <div className={styles.chartSection}>
-                  <PulseChart
-                    pageviews={data.pageviews}
-                    title={data.title}
-                    comparisonPageviews={
-                      isComparing ? comparisonData?.pageviews : undefined
-                    }
-                    comparisonTitle={comparisonData?.title}
-                  />
+              )}
+              <div
+                ref={pulseExportRef}
+                className={`${styles.exportSurface} ${isExporting ? styles.exporting : ""}`}
+              >
+                <div className={styles.exportHeader}>
+                  <span>The Nigerian History Pulse</span>
+                  <span>area1914</span>
+                </div>
+                <div className={styles.resultsGrid}>
+                  <div className={styles.topicCards}>
+                    <TopicCard topic={data} compact={isComparing} />
+                    {isComparing && isComparisonLoading && (
+                      <Skeleton
+                        height="120px"
+                        borderRadius="var(--radius-md)"
+                      />
+                    )}
+                    {isComparing && comparisonData && (
+                      <TopicCard topic={comparisonData} compact />
+                    )}
+                  </div>
+                  <div className={styles.chartSection}>
+                    <PulseChart
+                      pageviews={data.pageviews}
+                      title={data.title}
+                      comparisonPageviews={
+                        isComparing ? comparisonData?.pageviews : undefined
+                      }
+                      comparisonTitle={comparisonData?.title}
+                    />
+                  </div>
                 </div>
               </div>
               {!isComparing && (
