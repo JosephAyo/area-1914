@@ -22,6 +22,20 @@ def mock_wiki_api(slug: str):
     respx.get(url__startswith=wikipedia_service.BASE_URL_PAGEVIEWS).mock(
         return_value=Response(200, json={"items": []})
     )
+    # Relevance check
+    respx.get(url__startswith=wikipedia_service.BASE_URL_ACTION_API).mock(
+        return_value=Response(200, json={
+            "query": {
+                "pages": {
+                    "123": {
+                        "categories": [
+                            {"title": "Category:Nigerian history"}
+                        ]
+                    }
+                }
+            }
+        })
+    )
 
 @respx.mock
 @pytest.mark.asyncio
@@ -37,6 +51,36 @@ async def test_create_new_topic(session: Session):
     assert topic.id is not None
     # Should be freshly fetched
     assert topic.last_fetched_at is not None
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_create_new_topic_rejects_non_nigerian_topic(session: Session):
+    slug = "Unrelated_Topic"
+    respx.get(f"{wikipedia_service.BASE_URL_SUMMARY}/{slug}").mock(
+        return_value=Response(200, json={
+            "title": "Unrelated Topic",
+            "description": "A topic with no matching relevance keywords",
+            "extract": "This page does not mention the tracked domain.",
+        })
+    )
+    respx.get(url__startswith=wikipedia_service.BASE_URL_ACTION_API).mock(
+        return_value=Response(200, json={
+            "query": {
+                "pages": {
+                    "123": {
+                        "categories": [
+                            {"title": "Category:Unrelated articles"}
+                        ]
+                    }
+                }
+            }
+        })
+    )
+
+    manager = TopicManager(session)
+
+    with pytest.raises(ValueError, match="Only Nigerian topics can be tracked"):
+        await manager.get_topic_with_history(slug)
 
 @respx.mock
 @pytest.mark.asyncio

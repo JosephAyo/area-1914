@@ -14,6 +14,19 @@ async def test_api_get_topic_creates_new(client: AsyncClient):
             "description": "API Desc"
         })
     )
+    respx.get(url__startswith=wikipedia_service.BASE_URL_ACTION_API).mock(
+        return_value=Response(200, json={
+            "query": {
+                "pages": {
+                    "123": {
+                        "categories": [
+                            {"title": "Category:Nigerian history"}
+                        ]
+                    }
+                }
+            }
+        })
+    )
     respx.get(url__startswith=wikipedia_service.BASE_URL_PAGEVIEWS).mock(
         return_value=Response(200, json={"items": []})
     )
@@ -24,6 +37,36 @@ async def test_api_get_topic_creates_new(client: AsyncClient):
     data = response.json()
     assert data["slug"] == slug
     assert data["title"] == "API Title"
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_api_get_topic_rejects_non_nigerian_topic(client: AsyncClient):
+    slug = "API_Unrelated_Slug"
+    respx.get(f"{wikipedia_service.BASE_URL_SUMMARY}/{slug}").mock(
+        return_value=Response(200, json={
+            "title": "API Unrelated Title",
+            "description": "API Desc",
+            "extract": "No tracked relevance keywords here.",
+        })
+    )
+    respx.get(url__startswith=wikipedia_service.BASE_URL_ACTION_API).mock(
+        return_value=Response(200, json={
+            "query": {
+                "pages": {
+                    "123": {
+                        "categories": [
+                            {"title": "Category:Unrelated articles"}
+                        ]
+                    }
+                }
+            }
+        })
+    )
+
+    response = await client.get(f"/api/topics/{slug}")
+
+    assert response.status_code == 422
+    assert "Only Nigerian topics can be tracked" in response.json()["detail"]
 
 @respx.mock
 @pytest.mark.asyncio
