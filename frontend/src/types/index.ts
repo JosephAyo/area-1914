@@ -50,3 +50,15 @@ export interface RelatedTopic {
   thumbnail_url?: string;
   connection: string;
 }
+
+export interface OnThisDayTopic {
+  slug: string;
+  title: string;
+  description?: string;
+  thumbnail_url?: string;
+  date: string;
+  years_ago: number;
+  views: number;
+  baseline_views: number;
+  lift_score: number;
+}

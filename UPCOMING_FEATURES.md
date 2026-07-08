@@ -44,12 +44,12 @@ When there is a massive, sudden spike in the chart (e.g., 500% increase in one d
 - **Why it works:** Spikes are interesting, but context is engaging.
 - **Implementation:** This could be done by manually hardcoding major events, or by integrating an LLM (like Gemini or OpenAI) in the backend to automatically search the news/web for that specific date and topic to generate a one-sentence summary.
 
-### 4. "On This Day" / Anniversary Widget
+~~### 4. "On This Day" / Anniversary Widget~~
 
-A daily rotating section on the home page highlighting historical Nigerian topics that had significant activity exactly 1, 5, or 10 years ago today.
+~~A daily rotating section on the home page highlighting historical Nigerian topics that had significant activity exactly 1, 5, or 10 years ago today.~~
 
-- **Why it works:** Gives users a reason to return to the app daily.
-- **Implementation:** A backend cron task that queries the database for large pageview counts on today's month/day in previous years.
+~~- **Why it works:** Gives users a reason to return to the app daily.~~
+~~- **Implementation:** A backend cron task that queries the database for large pageview counts on today's month/day in previous years.~~
 
 ~~### 5. Related/Connected Topics~~
 

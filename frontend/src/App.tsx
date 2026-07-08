@@ -10,6 +10,7 @@ import { DiscoverPage } from "./components/DiscoverPage";
 import { Methodology } from "./components/Methodology";
 import { CitationSources } from "./components/CitationSources";
 import { RelatedTopics } from "./components/RelatedTopics";
+import { OnThisDay } from "./components/OnThisDay";
 import { Skeleton } from "./components/Skeleton";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
@@ -224,6 +225,9 @@ function App() {
               </div>
               <div className={styles.trendingWrapper}>
                 <TrendingSection onSelectTopic={handleSelectTopic} />
+              </div>
+              <div className={styles.anniversaryWrapper}>
+                <OnThisDay onSelectTopic={handleSelectTopic} />
               </div>
               <div className={styles.methodologyWrapper}>
                 <Methodology />

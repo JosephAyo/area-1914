@@ -5,6 +5,7 @@ import type {
   SearchSuggestion,
   FeaturedCategory,
   RelatedTopic,
+  OnThisDayTopic,
 } from "../types/index";
 
 const API_BASE_URL =
@@ -77,6 +78,14 @@ export const fetchRelatedTopics = async (
   );
   if (!response.ok) {
     throw new Error("Failed to fetch related topics.");
+  }
+  return response.json();
+};
+
+export const fetchOnThisDayTopics = async (): Promise<OnThisDayTopic[]> => {
+  const response = await fetch(`${API_BASE_URL}/on-this-day`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch On This Day topics.");
   }
   return response.json();
 };

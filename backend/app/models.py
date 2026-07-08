@@ -69,3 +69,15 @@ class RelatedTopic(SQLModel):
     description: Optional[str] = None
     thumbnail_url: Optional[str] = None
     connection: str
+
+class OnThisDayTopic(SQLModel):
+    """A topic that saw notable Wikipedia activity on this day in a prior year."""
+    slug: str
+    title: str
+    description: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    date: dt_date
+    years_ago: int
+    views: int
+    baseline_views: float
+    lift_score: float
