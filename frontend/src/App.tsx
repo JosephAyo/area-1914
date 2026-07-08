@@ -9,6 +9,7 @@ import { FeaturedTopics } from "./components/FeaturedTopics";
 import { DiscoverPage } from "./components/DiscoverPage";
 import { Methodology } from "./components/Methodology";
 import { CitationSources } from "./components/CitationSources";
+import { RelatedTopics } from "./components/RelatedTopics";
 import { Skeleton } from "./components/Skeleton";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
@@ -193,7 +194,15 @@ function App() {
                   />
                 </div>
               </div>
-              {!isComparing && <CitationSources slug={activeTopic!} />}
+              {!isComparing && (
+                <>
+                  <RelatedTopics
+                    slug={activeTopic!}
+                    onSelectTopic={handleSelectTopic}
+                  />
+                  <CitationSources slug={activeTopic!} />
+                </>
+              )}
             </>
           )}
 

@@ -51,12 +51,12 @@ A daily rotating section on the home page highlighting historical Nigerian topic
 - **Why it works:** Gives users a reason to return to the app daily.
 - **Implementation:** A backend cron task that queries the database for large pageview counts on today's month/day in previous years.
 
-### 5. Related/Connected Topics
+~~### 5. Related/Connected Topics~~
 
-When viewing a topic (e.g., "Olusegun Obasanjo"), show a list of tightly linked topics (e.g., "Murtala Muhammed", "Nigerian Civil War").
+~~When viewing a topic (e.g., "Olusegun Obasanjo"), show a list of tightly linked topics (e.g., "Murtala Muhammed", "Nigerian Civil War").~~
 
-- **Why it works:** Creates a "Wikipedia rabbit hole" effect directly within your app, keeping users engaged longer.
-- **Implementation:** Use Wikipedia's "links" API or cross-reference the citations/categories to find other topics already in your database.
+~~- **Why it works:** Creates a "Wikipedia rabbit hole" effect directly within your app, keeping users engaged longer.~~
+~~- **Implementation:** Use Wikipedia's "links" API or cross-reference the citations/categories to find other topics already in your database.~~
 
 ---
 

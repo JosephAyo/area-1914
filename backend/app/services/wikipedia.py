@@ -2,6 +2,7 @@ import httpx
 import asyncio
 from datetime import date, datetime
 from typing import Optional, Dict, Any, List
+from urllib.parse import urlencode
 from app.settings import settings
 import logging
 
@@ -186,6 +187,81 @@ class WikipediaService:
                 categories.append(cat_title)
 
         return categories
+
+    async def get_article_links(self, title: str, limit: int = 50) -> List[str]:
+        """
+        Fetches article titles linked from a Wikipedia article.
+        """
+        params = {
+            "action": "query",
+            "prop": "links",
+            "titles": title,
+            "plnamespace": 0,
+            "pllimit": limit,
+            "format": "json",
+            "redirects": 1,
+        }
+        data = await self._request(f"{self.BASE_URL_ACTION_API}?{urlencode(params)}")
+
+        if not data or "query" not in data or "pages" not in data["query"]:
+            return []
+
+        links: List[str] = []
+        for page_data in data["query"]["pages"].values():
+            for link in page_data.get("links", []):
+                title = link.get("title")
+                if title:
+                    links.append(title)
+
+        return links
+
+    async def get_backlinks(self, title: str, limit: int = 50) -> List[str]:
+        """
+        Fetches article titles that link to a Wikipedia article.
+        """
+        params = {
+            "action": "query",
+            "list": "backlinks",
+            "bltitle": title,
+            "blnamespace": 0,
+            "bllimit": limit,
+            "blfilterredir": "nonredirects",
+            "format": "json",
+        }
+        data = await self._request(f"{self.BASE_URL_ACTION_API}?{urlencode(params)}")
+
+        if not data or "query" not in data or "backlinks" not in data["query"]:
+            return []
+
+        return [
+            backlink["title"]
+            for backlink in data["query"]["backlinks"]
+            if backlink.get("title")
+        ]
+
+    async def get_category_members(self, category: str, limit: int = 25) -> List[str]:
+        """
+        Fetches article titles that belong to a Wikipedia category.
+        """
+        category_title = category if category.startswith("Category:") else f"Category:{category}"
+        params = {
+            "action": "query",
+            "list": "categorymembers",
+            "cmtitle": category_title,
+            "cmnamespace": 0,
+            "cmlimit": limit,
+            "format": "json",
+        }
+        data = await self._request(f"{self.BASE_URL_ACTION_API}?{urlencode(params)}")
+
+        if not data or "query" not in data or "categorymembers" not in data["query"]:
+            return []
+
+        return [
+            member["title"]
+            for member in data["query"]["categorymembers"]
+            if member.get("title")
+        ]
 
 # Singleton instance
 wikipedia_service = WikipediaService()

@@ -4,6 +4,7 @@ import type {
   CitationData,
   SearchSuggestion,
   FeaturedCategory,
+  RelatedTopic,
 } from "../types/index";
 
 const API_BASE_URL =
@@ -64,6 +65,18 @@ export const fetchSearchResults = async (
   );
   if (!response.ok) {
     throw new Error("Failed to fetch search results.");
+  }
+  return response.json();
+};
+
+export const fetchRelatedTopics = async (
+  slug: string,
+): Promise<RelatedTopic[]> => {
+  const response = await fetch(
+    `${API_BASE_URL}/topics/${encodeURIComponent(slug)}/related`,
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch related topics.");
   }
   return response.json();
 };

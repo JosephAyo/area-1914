@@ -61,3 +61,11 @@ class CitationSummary(SQLModel):
     category_breakdown: dict  # e.g. {"newspaper": 12, "journal": 5}
     top_sources: list         # list of strings: Top N source names by frequency
     sources: list[CitationSource] # Full list of CitationSource
+
+class RelatedTopic(SQLModel):
+    """A lightweight connected topic suggestion."""
+    slug: str
+    title: str
+    description: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    connection: str

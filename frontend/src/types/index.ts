@@ -42,3 +42,11 @@ export interface FeaturedCategory {
   icon: string;
   topics: TopicData[];
 }
+
+export interface RelatedTopic {
+  slug: string;
+  title: string;
+  description?: string;
+  thumbnail_url?: string;
+  connection: string;
+}
