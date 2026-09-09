@@ -9,9 +9,16 @@ interface DiscoverPageProps {
 export function DiscoverPage({ onSelectTopic, onBack }: DiscoverPageProps) {
   return (
     <div className={styles.container}>
-      <button className={styles.backBtn} onClick={onBack}>
+      <a
+        href="/"
+        className={styles.backBtn}
+        onClick={(event) => {
+          event.preventDefault();
+          onBack();
+        }}
+      >
         ← Back
-      </button>
+      </a>
       <FeaturedTopics onSelectTopic={onSelectTopic} />
     </div>
   );

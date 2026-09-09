@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "./components/Header";
 import { TopicSearch } from "./components/TopicSearch";
@@ -14,6 +14,13 @@ import { OnThisDay } from "./components/OnThisDay";
 import { Skeleton } from "./components/Skeleton";
 import { fetchTopicData } from "./services/api";
 import type { TopicData } from "./types/index";
+import {
+  normalizeTopicSlug,
+  pushAppRoute,
+  readAppRoute,
+  topicPath,
+} from "./utils/navigation";
+import { defaultMetadata, updatePageMetadata } from "./utils/seo";
 import styles from "./App.module.scss";
 
 type View = "home" | "discover";
@@ -70,12 +77,27 @@ function PulseSkeletonView() {
 }
 
 function App() {
-  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [initialRoute] = useState(readAppRoute);
+  const [activeTopic, setActiveTopic] = useState<string | null>(
+    initialRoute.topic,
+  );
   const [comparisonTopic, setComparisonTopic] = useState<string | null>(null);
   const [isComparing, setIsComparing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [view, setView] = useState<View>("home");
+  const [view, setView] = useState<View>(initialRoute.view);
   const pulseExportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = readAppRoute();
+      setActiveTopic(route.topic);
+      setComparisonTopic(null);
+      setIsComparing(false);
+      setView(route.view);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const { data, isLoading, isError, error } = useQuery<TopicData>({
     queryKey: ["topic", activeTopic],
@@ -83,6 +105,26 @@ function App() {
     enabled: !!activeTopic,
     retry: false,
   });
+
+  useEffect(() => {
+    if (data) {
+      updatePageMetadata({
+        title: `${data.title} Interest & Pageview History | Nigerian History Pulse`,
+        description: `Explore five years of Wikipedia interest in ${data.title}${data.description ? `, ${data.description.toLowerCase()}` : ""}, with interactive daily pageview trends.`,
+        path: topicPath(data.slug),
+        image: data.thumbnail_url,
+      });
+    } else if (view === "discover") {
+      updatePageMetadata({
+        title: "Discover Nigerian History Topics | Nigerian History Pulse",
+        description:
+          "Browse Nigerian leaders, major events, kingdoms, culture, politics, conflicts, and society through interactive Wikipedia interest data.",
+        path: "/discover",
+      });
+    } else {
+      updatePageMetadata(defaultMetadata);
+    }
+  }, [data, view]);
 
   const {
     data: comparisonData,
@@ -101,19 +143,31 @@ function App() {
     setComparisonTopic(null);
     setIsComparing(false);
     setView("home");
+    pushAppRoute("/");
   };
 
-  const handleSelectTopic = (slug: string) => {
+  const handleSelectTopic = (topic: string) => {
+    const slug = normalizeTopicSlug(topic);
     setActiveTopic(slug);
     setView("home");
+    pushAppRoute(topicPath(slug));
   };
 
   const handlePrimarySearch = (topic: string | null) => {
-    setActiveTopic(topic);
+    const slug = topic ? normalizeTopicSlug(topic) : null;
+    setActiveTopic(slug);
     if (!topic) {
       setComparisonTopic(null);
       setIsComparing(false);
+      pushAppRoute("/");
+    } else {
+      pushAppRoute(topicPath(slug!));
     }
+  };
+
+  const handleOpenDiscover = () => {
+    setView("discover");
+    pushAppRoute("/discover");
   };
 
   const handleCompareToggle = () => {
@@ -156,6 +210,16 @@ function App() {
     <div className={styles.appContainer}>
       <Header onHomeClick={handleGoHome} />
       <main className={styles.mainContent}>
+        {!activeTopic && view === "home" && (
+          <section className={styles.hero}>
+            <h1>Explore the pulse of Nigerian history</h1>
+            <p>
+              Discover how interest in Nigeria&apos;s people, culture, politics,
+              and defining events has changed through five years of Wikipedia
+              data.
+            </p>
+          </section>
+        )}
         <TopicSearch
           activeTopic={activeTopic}
           onSearch={handlePrimarySearch}
@@ -262,7 +326,7 @@ function App() {
           {!activeTopic && !isLoading && view === "discover" && (
             <DiscoverPage
               onSelectTopic={handleSelectTopic}
-              onBack={() => setView("home")}
+              onBack={handleGoHome}
             />
           )}
 
@@ -272,7 +336,7 @@ function App() {
                 <FeaturedTopics
                   onSelectTopic={handleSelectTopic}
                   preview
-                  onViewAll={() => setView("discover")}
+                  onViewAll={handleOpenDiscover}
                 />
               </div>
               <div className={styles.trendingWrapper}>

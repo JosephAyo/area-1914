@@ -10,15 +10,25 @@ export function Header({ onHomeClick }: HeaderProps) {
 
   return (
     <header className={styles.header}>
-      <div
+      <a
+        href="/"
         className={styles.logo}
-        onClick={onHomeClick}
-        role="button"
-        tabIndex={0}
+        onClick={(event) => {
+          if (
+            event.button === 0 &&
+            !event.metaKey &&
+            !event.ctrlKey &&
+            !event.shiftKey &&
+            !event.altKey
+          ) {
+            event.preventDefault();
+            onHomeClick();
+          }
+        }}
       >
         The Nigerian History
         <span className={styles.pulseIcon}>Pulse</span>
-      </div>
+      </a>
       <button
         className={styles.themeToggle}
         onClick={toggleTheme}

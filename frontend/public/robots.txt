@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://area1914.ayojoseph.dev/sitemap.xml

@@ -3,6 +3,7 @@ import { fetchOnThisDayTopics } from "../services/api";
 import type { OnThisDayTopic } from "../types/index";
 import { Skeleton } from "./Skeleton";
 import styles from "./OnThisDay.module.scss";
+import { TopicLink } from "./TopicLink";
 
 interface OnThisDayProps {
   onSelectTopic: (slug: string) => void;
@@ -53,11 +54,11 @@ export function OnThisDay({ onSelectTopic }: OnThisDayProps) {
       </div>
       <div className={styles.list}>
         {data.map((topic) => (
-          <button
+          <TopicLink
             key={`${topic.slug}-${topic.date}`}
-            type="button"
+            slug={topic.slug}
+            onSelectTopic={onSelectTopic}
             className={styles.card}
-            onClick={() => onSelectTopic(topic.slug)}
           >
             <div className={styles.thumbnail}>
               {topic.thumbnail_url ? (
@@ -79,7 +80,7 @@ export function OnThisDay({ onSelectTopic }: OnThisDayProps) {
                 {topic.description ? ` · ${topic.description}` : ""}
               </span>
             </span>
-          </button>
+          </TopicLink>
         ))}
       </div>
     </section>

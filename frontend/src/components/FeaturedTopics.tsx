@@ -4,6 +4,7 @@ import { MiniPulseChart } from "./MiniPulseChart";
 import { Skeleton } from "./Skeleton";
 import type { FeaturedCategory } from "../types/index";
 import { fetchFeaturedTopics } from "../services/api";
+import { TopicLink } from "./TopicLink";
 
 function FeaturedSkeletonCard() {
   return (
@@ -76,12 +77,11 @@ export function FeaturedTopics({
               </h3>
               <div className={styles.grid}>
                 {category.topics.map((topic) => (
-                  <div
+                  <TopicLink
                     key={topic.slug}
+                    slug={topic.slug}
+                    onSelectTopic={onSelectTopic}
                     className={styles.card}
-                    onClick={() => onSelectTopic(topic.slug)}
-                    role="button"
-                    tabIndex={0}
                   >
                     <div className={styles.cardHeader}>
                       <div className={styles.iconContainer}>
@@ -103,15 +103,22 @@ export function FeaturedTopics({
                     <div className={styles.chartContainer}>
                       <MiniPulseChart pageviews={topic.pageviews} />
                     </div>
-                  </div>
+                  </TopicLink>
                 ))}
               </div>
             </div>
           ))}
           {preview && onViewAll && (
-            <button className={styles.viewAllBtn} onClick={onViewAll}>
+            <a
+              href="/discover"
+              className={styles.viewAllBtn}
+              onClick={(event) => {
+                event.preventDefault();
+                onViewAll();
+              }}
+            >
               Browse all topics →
-            </button>
+            </a>
           )}
         </div>
       )}

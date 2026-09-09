@@ -3,6 +3,7 @@ import { fetchTrendingData } from "../services/api";
 import type { TrendingArticle } from "../types/index";
 import { Skeleton } from "./Skeleton";
 import styles from "./TrendingSection.module.scss";
+import { TopicLink } from "./TopicLink";
 
 function TrendingSkeletonCard() {
   return (
@@ -56,12 +57,11 @@ export function TrendingSection({ onSelectTopic }: TrendingSectionProps) {
       <h2>🔥 Trending Nigerian Topics</h2>
       <div className={styles.list}>
         {trendingArticles.map((article, index) => (
-          <div
+          <TopicLink
             key={article.slug}
+            slug={article.slug}
+            onSelectTopic={onSelectTopic}
             className={styles.card}
-            onClick={() => onSelectTopic(article.slug)}
-            role="button"
-            tabIndex={0}
           >
             <div className={styles.rank}>#{index + 1}</div>
             <div className={styles.content}>
@@ -81,7 +81,7 @@ export function TrendingSection({ onSelectTopic }: TrendingSectionProps) {
                 {article.current_views.toLocaleString()} views
               </div>
             </div>
-          </div>
+          </TopicLink>
         ))}
       </div>
     </div>

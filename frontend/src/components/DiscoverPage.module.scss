@@ -12,6 +12,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-block;
+  text-decoration: none;
 
   &:hover {
     border-color: var(--accent-primary);

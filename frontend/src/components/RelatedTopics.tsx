@@ -3,6 +3,7 @@ import { fetchRelatedTopics } from "../services/api";
 import type { RelatedTopic } from "../types/index";
 import { Skeleton } from "./Skeleton";
 import styles from "./RelatedTopics.module.scss";
+import { TopicLink } from "./TopicLink";
 
 interface RelatedTopicsProps {
   slug: string;
@@ -45,11 +46,11 @@ export function RelatedTopics({ slug, onSelectTopic }: RelatedTopicsProps) {
       <h2 id="related-topics">Connected Topics</h2>
       <div className={styles.grid}>
         {data.map((topic) => (
-          <button
+          <TopicLink
             key={`${topic.connection}-${topic.slug}`}
-            type="button"
+            slug={topic.slug}
+            onSelectTopic={onSelectTopic}
             className={styles.card}
-            onClick={() => onSelectTopic(topic.slug)}
           >
             <div className={styles.thumbnail}>
               {topic.thumbnail_url ? (
@@ -65,7 +66,7 @@ export function RelatedTopics({ slug, onSelectTopic }: RelatedTopicsProps) {
               </span>
               <span className={styles.connection}>{topic.connection}</span>
             </span>
-          </button>
+          </TopicLink>
         ))}
       </div>
     </section>

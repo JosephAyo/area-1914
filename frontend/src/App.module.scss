@@ -12,6 +12,27 @@
   width: 100%;
 }
 
+.hero {
+  max-width: 780px;
+  margin: var(--space-xl) auto var(--space-lg);
+  text-align: center;
+
+  h1 {
+    margin: 0 0 var(--space-sm);
+    color: var(--text-primary);
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+}
+
 .dashboardArea {
   margin-top: var(--space-lg);
 }
