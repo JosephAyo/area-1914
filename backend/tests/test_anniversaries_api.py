@@ -1,4 +1,5 @@
 from datetime import date
+from typing import cast
 
 import pytest
 from httpx import AsyncClient
@@ -27,26 +28,33 @@ def seed_anniversary_data(session: Session):
     session.add_all([topic_1, topic_2, topic_3, topic_4, topic_5, topic_6])
     session.commit()
 
+    topic_1_id = cast(int, topic_1.id)
+    topic_2_id = cast(int, topic_2.id)
+    topic_3_id = cast(int, topic_3.id)
+    topic_4_id = cast(int, topic_4.id)
+    topic_5_id = cast(int, topic_5.id)
+    topic_6_id = cast(int, topic_6.id)
+
     target_2025 = date(2025, 7, 8)
     target_2021 = date(2021, 7, 8)
 
     session.add_all(
         [
-            WikiPageview(topic_id=topic_1.id, date=target_2025, views=100),
-            WikiPageview(topic_id=topic_2.id, date=target_2021, views=250),
-            WikiPageview(topic_id=topic_3.id, date=date(2025, 7, 9), views=500),
-            WikiPageview(topic_id=topic_4.id, date=target_2025, views=1000),
-            WikiPageview(topic_id=topic_5.id, date=target_2025, views=80),
-            WikiPageview(topic_id=topic_5.id, date=target_2021, views=120),
-            WikiPageview(topic_id=topic_6.id, date=target_2025, views=70),
+            WikiPageview(topic_id=topic_1_id, date=target_2025, views=100),
+            WikiPageview(topic_id=topic_2_id, date=target_2021, views=250),
+            WikiPageview(topic_id=topic_3_id, date=date(2025, 7, 9), views=500),
+            WikiPageview(topic_id=topic_4_id, date=target_2025, views=1000),
+            WikiPageview(topic_id=topic_5_id, date=target_2025, views=80),
+            WikiPageview(topic_id=topic_5_id, date=target_2021, views=120),
+            WikiPageview(topic_id=topic_6_id, date=target_2025, views=70),
         ]
     )
-    add_baseline(session, topic_1.id, target_2025, views=10)
-    add_baseline(session, topic_2.id, target_2021, views=100)
-    add_baseline(session, topic_4.id, target_2025, views=950)
-    add_baseline(session, topic_5.id, target_2025, views=20)
-    add_baseline(session, topic_5.id, target_2021, views=20)
-    add_baseline(session, topic_6.id, target_2025, views=20)
+    add_baseline(session, topic_1_id, target_2025, views=10)
+    add_baseline(session, topic_2_id, target_2021, views=100)
+    add_baseline(session, topic_4_id, target_2025, views=950)
+    add_baseline(session, topic_5_id, target_2025, views=20)
+    add_baseline(session, topic_5_id, target_2021, views=20)
+    add_baseline(session, topic_6_id, target_2025, views=20)
     session.commit()
 
 

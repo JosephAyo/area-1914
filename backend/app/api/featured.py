@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from app.database import get_session
 from app.managers import TopicManager
-from app.models import WikiTopicPublic
+from app.models import WikiPageviewBase, WikiTopicPublic
 from app.config.curated_topics import CURATED_CATEGORIES
 
 import logging
@@ -35,10 +35,14 @@ async def get_featured_topics(session: Session = Depends(get_session)):
     for slug in all_slugs:
         try:
             topic = await manager.get_topic_with_history(slug)
-            if not topic:
+            if not topic or topic.id is None:
                 continue
             recent_views = sorted(
-                [pv for pv in topic.pageviews if pv.date >= start_date],
+                [
+                    WikiPageviewBase(date=pv.date, views=pv.views)
+                    for pv in topic.pageviews
+                    if pv.date >= start_date
+                ],
                 key=lambda x: x.date,
             )
             topics_by_slug[slug] = WikiTopicPublic(

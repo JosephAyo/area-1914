@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 from typing import List
 
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from app.models import OnThisDayTopic, WikiPageview, WikiTopic
 
@@ -39,8 +39,8 @@ class AnniversaryManager:
 
         anniversary_pageviews_statement = (
             select(WikiPageview, WikiTopic)
-            .join(WikiTopic, WikiPageview.topic_id == WikiTopic.id)
-            .where(WikiPageview.date.in_(anniversary_dates.keys()))
+            .join(WikiTopic, col(WikiPageview.topic_id) == col(WikiTopic.id))
+            .where(col(WikiPageview.date).in_(anniversary_dates.keys()))
         )
 
         best_by_topic: dict[str, OnThisDayTopic] = {}
