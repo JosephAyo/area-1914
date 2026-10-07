@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 from typing import Optional
 from sqlmodel import Session, select
 from app.models import WikiTopic, WikiPageview
@@ -27,7 +27,7 @@ class TopicManager:
         statement = select(WikiTopic).where(WikiTopic.slug == slug)
         topic = self.session.exec(statement).first()
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         if topic:
             # 2. Check if stale
@@ -67,7 +67,7 @@ class TopicManager:
             title=summary.get("title", slug),
             description=summary.get("description"),
             thumbnail_url=summary.get("thumbnail_url"),
-            last_fetched_at=datetime.utcnow()
+            last_fetched_at=datetime.now(timezone.utc)
         )
         self.session.add(topic)
         self.session.commit()
@@ -105,7 +105,7 @@ class TopicManager:
         if start_date < end_date:
             await self._fetch_and_store_pageviews(topic, start_date, end_date)
 
-        topic.last_fetched_at = datetime.utcnow()
+        topic.last_fetched_at = datetime.now(timezone.utc)
         self.session.add(topic)
         self.session.commit()
 

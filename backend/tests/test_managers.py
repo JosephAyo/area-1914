@@ -1,8 +1,8 @@
 import pytest
 import respx
 from httpx import Response
-from datetime import date, datetime, timedelta
-from sqlmodel import Session, select
+from datetime import date, datetime, timedelta, timezone
+from sqlmodel import Session, select, text
 from app.managers.topic_manager import TopicManager
 from app.models import WikiTopic, WikiPageview
 from app.services.wikipedia import wikipedia_service
@@ -91,7 +91,7 @@ async def test_get_existing_fresh_topic(session: Session):
     topic = WikiTopic(
         slug=slug,
         title="Title",
-        last_fetched_at=datetime.utcnow()
+        last_fetched_at=datetime.now(timezone.utc)
     )
     session.add(topic)
     session.commit()
@@ -112,12 +112,33 @@ async def test_get_existing_fresh_topic(session: Session):
 
 @respx.mock
 @pytest.mark.asyncio
+async def test_get_fresh_topic_with_legacy_naive_timestamp(session: Session):
+    slug = "Legacy_Topic"
+
+    # Rows written before the timezone-aware change store UTC without an offset.
+    naive_utc = datetime.now(timezone.utc).replace(tzinfo=None)
+    session.connection().execute(
+        text("INSERT INTO wikitopic (slug, title, last_fetched_at) VALUES (:slug, :title, :ts)"),
+        {"slug": slug, "title": "Title", "ts": naive_utc.strftime("%Y-%m-%d %H:%M:%S.%f")},
+    )
+    session.commit()
+
+    # The topic is fresh, so the API must not be called.
+    respx.get(f"{wikipedia_service.BASE_URL_SUMMARY}/{slug}").mock(return_value=Response(500))
+
+    result = await TopicManager(session).get_topic_with_history(slug)
+    assert result is not None
+    assert result.last_fetched_at is not None
+    assert result.last_fetched_at.tzinfo is not None
+
+@respx.mock
+@pytest.mark.asyncio
 async def test_update_stale_topic(session: Session):
     slug = "Stale_Topic"
     mock_wiki_api(slug)
 
     # Create stale topic (2 days ago)
-    stale_date = datetime.utcnow() - timedelta(days=2)
+    stale_date = datetime.now(timezone.utc) - timedelta(days=2)
     topic = WikiTopic(
         slug=slug,
         title="Old Title",

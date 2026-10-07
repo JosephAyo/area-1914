@@ -1,7 +1,7 @@
 import pytest
 import respx
 from httpx import AsyncClient, Response
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from sqlmodel import Session
 from app.models import WikiTopic, WikiPageview
 from app.services.wikipedia import wikipedia_service
@@ -9,8 +9,8 @@ from app.services.wikipedia import wikipedia_service
 @pytest.fixture
 def seed_trending_data(session: Session):
     # Seed 2 topics
-    topic1 = WikiTopic(slug="Trend_Up", title="Trend Up", last_fetched_at=datetime.utcnow())
-    topic2 = WikiTopic(slug="Trend_Down", title="Trend Down", last_fetched_at=datetime.utcnow())
+    topic1 = WikiTopic(slug="Trend_Up", title="Trend Up", last_fetched_at=datetime.now(timezone.utc))
+    topic2 = WikiTopic(slug="Trend_Down", title="Trend Down", last_fetched_at=datetime.now(timezone.utc))
     session.add_all([topic1, topic2])
     session.commit()
 
