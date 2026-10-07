@@ -96,7 +96,6 @@ CURATED_CATEGORIES: List[CuratedCategory] = [
         slugs=[
             "British_colonial_rule_in_Nigeria",
             "Royal_Niger_Company",
-            "Indirect_rule",
             "Lugard_Amalgamation_1914",
             "Nationalist_movements_in_Nigeria",
         ],
@@ -110,7 +109,6 @@ CURATED_CATEGORIES: List[CuratedCategory] = [
             "Wole_Soyinka",
             "Nollywood",
             "Afrobeat",
-            "Highlife_music",
             "Yoruba_people",
             "Igbo_people",
             "Hausa_people",
