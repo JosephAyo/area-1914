@@ -1,0 +1,114 @@
+{
+  "recorded_at": "2026-11-11T07:10:26.567367+00:00",
+  "checkpoint": "718d468",
+  "scope": "Real HTTP requests against isolated SQLite/FastAPI and the production Vite preview; separate-process maintainer CLI.",
+  "exclusions": [
+    "No browser rendering or interactions",
+    "No downloaded PNG or screenshot inspection",
+    "No runtime performance measurements",
+    "No upstream Wikipedia availability check"
+  ],
+  "real_queue_modified": false,
+  "checks": [
+    {
+      "check": "Isolated API health",
+      "passed": true
+    },
+    {
+      "check": "Report submission CORS preflight",
+      "passed": true
+    },
+    {
+      "check": "HTTP report submission returns private pending receipt",
+      "passed": true
+    },
+    {
+      "check": "Duplicate report returns same reference",
+      "passed": true
+    },
+    {
+      "check": "Pending report does not exclude cached subject",
+      "passed": true
+    },
+    {
+      "check": "Maintainer queue sees report from separate process",
+      "passed": true
+    },
+    {
+      "check": "Approved exclusion returns relevance rejection",
+      "passed": true
+    },
+    {
+      "check": "Pending reversal does not change approved exclusion",
+      "passed": true
+    },
+    {
+      "check": "Approved reversal restores cached subject",
+      "passed": true
+    },
+    {
+      "check": "Dismissal leaves relevance unchanged",
+      "passed": true
+    },
+    {
+      "check": "Reports cannot be listed publicly",
+      "passed": true
+    },
+    {
+      "check": "Invalid report is rejected over HTTP",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /discover",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /topics/Fela_Kuti",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /stories",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /stories/afrobeat",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /stories/reading-the-pulse",
+      "passed": true
+    },
+    {
+      "check": "Production SPA entry /stories/subjects/Fela_Kuti",
+      "passed": true
+    },
+    {
+      "check": "Production bundle index-CFUK7a5y.js",
+      "passed": true
+    },
+    {
+      "check": "Production bundle chunk-DECur_0Z.js",
+      "passed": true
+    },
+    {
+      "check": "Production bundle index-CRMQPRgv.css",
+      "passed": true
+    },
+    {
+      "check": "Production Noto Sans 400",
+      "passed": true
+    },
+    {
+      "check": "Production Noto Sans 500",
+      "passed": true
+    },
+    {
+      "check": "Production Noto Sans 600",
+      "passed": true
+    }
+  ]
+}

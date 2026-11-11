@@ -17,6 +17,12 @@ Application integration: 11 November 2026. The user-approved prototype is integr
 
 Server-rendered tests use seeded query data and do not render browser pixels or simulate browser interactions. Backend tests use fixtures and mocked external requests; they do not establish current Wikimedia availability.
 
+## Release smoke evidence
+
+After checkpoint `718d468`, all 25 real-HTTP and separate-process CLI checks passed against a temporary SQLite/FastAPI instance and the production Vite preview. These cover report CORS, receipt privacy, pending deduplication, approval/reversal/dismissal, queue access, validation, SPA entry paths, production bundles and font retrieval. See [recorded results](release-smoke.json).
+
+Repeat from the repository root after `cd frontend && npm run build`, returning to the root before running `python3 scripts/release_smoke.py`. The script uses the existing backend virtual environment and frontend dependencies, writes fresh evidence and cleans up its temporary servers/database. It does not submit to the real queue. Browser interaction and image checks below remain outstanding.
+
 ## Delivered behavior
 
 - Grid-first Explore with icon controls, grid on the left, no diagonal arrows on subject cards, and a two-column mobile grid.

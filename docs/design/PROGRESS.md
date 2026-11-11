@@ -44,6 +44,16 @@
 
 ## 11 November 2026
 
+### Checkpoint commit and release smoke checks
+
+- User authorized a checkpoint commit and continuation. Committed the completed revamp, prototypes, design records and classification reporting as `718d468` (`Revamp history explorer and add classification reporting`). Left separately installed `.agents/` skills and `skills-lock.json` outside the application commit.
+- Re-ran all 35 frontend tests, 39 backend tests, lint, typecheck and production build successfully before committing.
+- Continued release verification with actual HTTP requests against an isolated FastAPI/SQLite instance and the production Vite preview, plus maintainer CLI commands in separate processes. All 25 smoke checks pass; evidence is in [release-smoke.json](release-smoke.json).
+- Checked report CORS, pending receipts, deduplication, queue visibility, approval, reversal, dismissal, private queue access and invalid submission handling. Confirmed pending reports never change relevance. Checked production SPA entry routes, bundle retrieval and all three font files.
+- The first smoke run used an overly strict empty-root HTML assertion; corrected it to accept the existing static fallback content and reran successfully. No product change was required.
+- Retained a repeatable check script at `scripts/release_smoke.py`. Run `python3 scripts/release_smoke.py` from the repository root after building the frontend. It needs the existing backend virtual environment and frontend dependencies, binds temporary localhost ports, writes the evidence JSON and stops its temporary servers. The real database, queue and classifications are untouched.
+- Browser-control tools remain unavailable after rediscovery. Mobile rendering, pointer/keyboard journeys, history/scroll, theme persistence, report-form interaction and downloaded PNG inspection are still open. These smoke checks establish HTTP and CLI behavior, not browser acceptance; D22 remains in progress.
+
 ### Classification reporting and reviewed relevance
 
 - User requested reporting of false inclusions and exclusions. Added an expandable Report classification form beneath topic charts and on relevance rejections, including rejected comparison lookups. Readers select the proposed classification, explain the correction, and optionally cite a source. Pending, success/reference, validation and submission-error states use the approved palette and mobile input sizing.
