@@ -30,7 +30,10 @@ async def get_featured_topics(session: Session = Depends(get_session)):
     topics_by_slug: dict[str, WikiTopicPublic] = {}
 
     end_date = date.today()
-    start_date = end_date - timedelta(days=30)
+    # The explorer compares two complete 30-day windows. Keep both periods
+    # in this lightweight response instead of making a full-history request
+    # for every visible subject.
+    start_date = end_date - timedelta(days=60)
 
     for slug in all_slugs:
         try:
@@ -41,7 +44,7 @@ async def get_featured_topics(session: Session = Depends(get_session)):
                 [
                     WikiPageviewBase(date=pv.date, views=pv.views)
                     for pv in topic.pageviews
-                    if pv.date >= start_date
+                    if start_date <= pv.date <= end_date
                 ],
                 key=lambda x: x.date,
             )

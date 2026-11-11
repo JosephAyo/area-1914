@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, date, timezone
 from typing import Optional
 from sqlmodel import Session, select
-from app.models import WikiTopic, WikiPageview
+from sqlalchemy.orm.attributes import set_committed_value
+from app.models import WikiTopic, WikiPageview, RelevanceOverride
+from app.services.classification import classification_key
 from app.services.wikipedia import wikipedia_service
 from app.services.relevance import is_nigerian_topic
 import logging
@@ -23,6 +25,15 @@ class TopicManager:
         """
         slug = slug.strip().replace(" ", "_")
 
+        override = self.session.exec(select(RelevanceOverride).where(
+            RelevanceOverride.topic_key == classification_key(slug)
+        )).first()
+        if override and not override.relevant:
+            raise ValueError(
+                f"'{slug.replace('_', ' ')}' has been reviewed as unrelated to Nigeria. "
+                "You can report this classification if you disagree."
+            )
+
         # 1. Check DB
         statement = select(WikiTopic).where(WikiTopic.slug == slug)
         topic = self.session.exec(statement).first()
@@ -31,7 +42,12 @@ class TopicManager:
 
         if topic:
             # 2. Check if stale
-            if not topic.last_fetched_at or (now - topic.last_fetched_at > self.STALE_THRESHOLD):
+            last_fetched_at = topic.last_fetched_at
+            # SQLite drops timezone offsets from DATETIME values. Existing
+            # rows were written in UTC, so restore that timezone before math.
+            if last_fetched_at and last_fetched_at.tzinfo is None:
+                last_fetched_at = last_fetched_at.replace(tzinfo=timezone.utc)
+            if not last_fetched_at or (now - last_fetched_at > self.STALE_THRESHOLD):
                 logger.info(f"Topic '{slug}' is stale. Updating...")
                 await self._update_topic_data(topic)
             else:
@@ -39,15 +55,23 @@ class TopicManager:
         else:
             # 3. New Topic
             logger.info(f"Topic '{slug}' not found. Creating...")
-            topic = await self._create_new_topic(slug)
+            topic = await self._create_new_topic(slug, relevance_approved=bool(override and override.relevant))
 
         # Refresh local object to ensure relationships are loaded if needed
         if topic:
             self.session.refresh(topic)
+            if topic.last_fetched_at and topic.last_fetched_at.tzinfo is None:
+                # Restore UTC for callers without dirtying a cached read. A normal
+                # assignment autoflushes an UPDATE when pageviews are serialized,
+                # holding a SQLite write lock until the request session closes.
+                set_committed_value(
+                    topic, "last_fetched_at",
+                    topic.last_fetched_at.replace(tzinfo=timezone.utc),
+                )
 
         return topic
 
-    async def _create_new_topic(self, slug: str) -> Optional[WikiTopic]:
+    async def _create_new_topic(self, slug: str, relevance_approved: bool = False) -> Optional[WikiTopic]:
         # Fetch Metadata
         summary = await wikipedia_service.get_page_summary(slug)
         if not summary:
@@ -55,7 +79,7 @@ class TopicManager:
             return None
 
         # Check Nigerian relevance before archiving
-        if not await is_nigerian_topic(slug):
+        if not relevance_approved and not await is_nigerian_topic(slug):
             title = summary.get("title", slug)
             raise ValueError(
                 f"'{title}' does not appear to be related to Nigeria. "

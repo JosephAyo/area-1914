@@ -1,86 +1,65 @@
+import type { MouseEvent } from "react";
 import { useTheme } from "../context/useTheme";
-import styles from "./Header.module.scss";
-
+import ui from "./Header.module.scss";
 interface HeaderProps {
   onHomeClick: () => void;
+  onStoriesClick: () => void;
+  view: "home" | "discover" | "topic" | "stories";
 }
-
-export function Header({ onHomeClick }: HeaderProps) {
+export function Header({ onHomeClick, onStoriesClick, view }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
-
+  const navigate = (
+    event: MouseEvent<HTMLAnchorElement>,
+    action: () => void,
+  ) => {
+    if (
+      event.button ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    event.preventDefault();
+    action();
+  };
   return (
-    <header className={styles.header}>
+    <header className={ui.header}>
       <a
         href="/"
-        className={styles.logo}
-        onClick={(event) => {
-          if (
-            event.button === 0 &&
-            !event.metaKey &&
-            !event.ctrlKey &&
-            !event.shiftKey &&
-            !event.altKey
-          ) {
-            event.preventDefault();
-            onHomeClick();
-          }
-        }}
+        className={ui.logo}
+        onClick={(event) => navigate(event, onHomeClick)}
       >
-        The Nigerian History
-        <span className={styles.pulseIcon}>Pulse</span>
-      </a>
-      <button
-        className={styles.themeToggle}
-        onClick={toggleTheme}
-        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-        title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      >
-        <span
-          className={`${styles.iconWrapper} ${theme === "light" ? styles.rotated : ""}`}
-        >
-          {theme === "dark" ? (
-            /* Sun icon */
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          ) : (
-            /* Moon icon */
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path
-                d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-                transform="rotate(120 12 12)"
-              />
-            </svg>
-          )}
+        <img src="/favicon.svg" alt="" width="36" height="36" />
+        <span>
+          The Nigerian
+          <br />
+          <strong>History Pulse</strong>
         </span>
+      </a>
+      <nav className={ui.nav} aria-label="Main navigation">
+        <a
+          href="/"
+          aria-current={view !== "stories" ? "page" : undefined}
+          onClick={(event) => navigate(event, onHomeClick)}
+        >
+          Explore
+        </a>
+        <a
+          href="/stories"
+          aria-current={view === "stories" ? "page" : undefined}
+          onClick={(event) => navigate(event, onStoriesClick)}
+        >
+          Stories
+        </a>
+      </nav>
+      <button
+        type="button"
+        className={ui.themeToggle}
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === "dark" ? "paper" : "night"} mode`}
+      >
+        {theme === "dark" ? "Paper" : "Night"}
       </button>
     </header>
   );

@@ -3,6 +3,7 @@ import respx
 from httpx import Response
 from datetime import date, datetime, timedelta, timezone
 from sqlmodel import Session, select, text
+from sqlalchemy import event
 from app.managers.topic_manager import TopicManager
 from app.models import WikiTopic, WikiPageview
 from app.services.wikipedia import wikipedia_service
@@ -130,6 +131,34 @@ async def test_get_fresh_topic_with_legacy_naive_timestamp(session: Session):
     assert result is not None
     assert result.last_fetched_at is not None
     assert result.last_fetched_at.tzinfo is not None
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_cached_topic_serialization_does_not_write(session: Session):
+    topic = WikiTopic(
+        slug="Cached_Read", title="Cached read",
+        last_fetched_at=datetime.now(timezone.utc),
+        pageviews=[WikiPageview(date=date.today(), views=42)],
+    )
+    session.add(topic)
+    session.commit()
+    statements = []
+
+    def record_statement(connection, cursor, statement, parameters, context, executemany):
+        statements.append(statement.strip().split()[0].upper())
+
+    engine = session.get_bind()
+    event.listen(engine, "before_cursor_execute", record_statement)
+    try:
+        result = await TopicManager(session).get_topic_with_history("Cached_Read")
+        assert result.last_fetched_at.tzinfo is timezone.utc
+        # Access the lazy relationship as FastAPI response serialization does.
+        assert [record.views for record in result.pageviews] == [42]
+        assert not session.dirty
+        assert statements and set(statements) == {"SELECT"}
+    finally:
+        event.remove(engine, "before_cursor_execute", record_statement)
+
 
 @respx.mock
 @pytest.mark.asyncio

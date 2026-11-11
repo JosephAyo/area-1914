@@ -10,7 +10,16 @@ export function topicPath(topic: string): string {
 
 export type AppRoute =
   | { view: "home"; topic: string | null }
-  | { view: "discover"; topic: null };
+  | { view: "discover"; topic: null }
+  | { view: "stories"; topic: null; story: string | null; subject?: string };
+
+export function storyPath(story: string | null = null): string {
+  return story ? `/stories/${encodeURIComponent(story)}` : "/stories";
+}
+
+export function subjectStoryPath(subject: string): string {
+  return `/stories/subjects/${encodeURIComponent(normalizeTopicSlug(subject))}`;
+}
 
 export function readAppRoute(pathname = window.location.pathname): AppRoute {
   const topicMatch = pathname.match(/^\/topics\/([^/]+)\/?$/);
@@ -27,6 +36,26 @@ export function readAppRoute(pathname = window.location.pathname): AppRoute {
 
   if (/^\/discover\/?$/.test(pathname)) {
     return { view: "discover", topic: null };
+  }
+
+  const subjectMatch = pathname.match(/^\/stories\/subjects\/([^/]+)\/?$/);
+  const storyMatch = pathname.match(/^\/stories(?:\/([^/]+))?\/?$/);
+  try {
+    if (subjectMatch)
+      return {
+        view: "stories",
+        topic: null,
+        story: "subject",
+        subject: normalizeTopicSlug(decodeURIComponent(subjectMatch[1])),
+      };
+    if (storyMatch)
+      return {
+        view: "stories",
+        topic: null,
+        story: storyMatch[1] ? decodeURIComponent(storyMatch[1]) : null,
+      };
+  } catch {
+    return { view: "home", topic: null };
   }
 
   return { view: "home", topic: null };

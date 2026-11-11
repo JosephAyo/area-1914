@@ -69,14 +69,30 @@ export function CitationSources({ slug }: CitationSourcesProps) {
   }
 
   if (isError || !data || data.total_citations === 0) {
-    return null;
+    return (
+      <p className="empty-note">
+        {isError
+          ? "The citation breakdown is unavailable right now."
+          : "No citation breakdown is available for this article."}{" "}
+        <a
+          href={`https://en.wikipedia.org/wiki/${encodeURIComponent(slug)}#References`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Read the article’s references
+        </a>
+      </p>
+    );
   }
 
   const { category_breakdown, top_sources, total_citations } = data;
 
   return (
     <div className={styles.container}>
-      <h2>📚 Known Sources ({total_citations})</h2>
+      <div className="section-heading">
+        <h2>Behind the article</h2>
+        <p>{total_citations.toLocaleString()} citations found in Wikipedia</p>
+      </div>
 
       <div className={styles.breakdownGrid}>
         <div className={styles.categories}>

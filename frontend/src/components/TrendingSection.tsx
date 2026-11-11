@@ -1,89 +1,87 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchTrendingData } from "../services/api";
-import type { TrendingArticle } from "../types/index";
 import { Skeleton } from "./Skeleton";
-import styles from "./TrendingSection.module.scss";
 import { TopicLink } from "./TopicLink";
-
-function TrendingSkeletonCard() {
-  return (
-    <div className={styles.card} style={{ pointerEvents: "none" }}>
-      <Skeleton width="2.5rem" height="2.5rem" />
-      <div className={styles.content}>
-        <Skeleton height="1rem" width="60%" />
-        <Skeleton height="0.8rem" width="40%" />
-      </div>
-      <div className={styles.stats}>
-        <Skeleton height="0.95rem" width="60px" />
-        <Skeleton height="0.8rem" width="80px" />
-      </div>
-    </div>
-  );
-}
-
-interface TrendingSectionProps {
+import styles from "./TrendingSection.module.scss";
+export function TrendingSection({
+  onSelectTopic,
+}: {
   onSelectTopic: (slug: string) => void;
-}
-
-export function TrendingSection({ onSelectTopic }: TrendingSectionProps) {
-  const {
-    data: trendingArticles,
-    isLoading,
-    isError,
-  } = useQuery<TrendingArticle[]>({
+}) {
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["trending"],
     queryFn: fetchTrendingData,
   });
-
-  if (isLoading) {
-    return (
-      <div className={styles.trendingContainer}>
-        <h2>🔥 Trending Nigerian Topics</h2>
-        <div className={styles.list}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <TrendingSkeletonCard key={i} />
+  return (
+    <aside
+      className={styles.trendingContainer}
+      aria-labelledby="attention-title"
+    >
+      <p className="eyebrow">The attention index</p>
+      <h2 id="attention-title">
+        Getting
+        <br />
+        <em>attention.</em>
+      </h2>
+      <p className={styles.note}>
+        Recent reading activity across tracked Wikipedia subjects.
+      </p>
+      {isLoading && (
+        <div aria-busy="true" aria-label="Loading attention index">
+          {Array.from({ length: 4 }, (_, i) => (
+            <Skeleton key={i} height="54px" style={{ marginBottom: "16px" }} />
           ))}
         </div>
-      </div>
-    );
-  }
-
-  if (isError || !trendingArticles || trendingArticles.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className={styles.trendingContainer}>
-      <h2>🔥 Trending Nigerian Topics</h2>
-      <div className={styles.list}>
-        {trendingArticles.map((article, index) => (
-          <TopicLink
-            key={article.slug}
-            slug={article.slug}
-            onSelectTopic={onSelectTopic}
-            className={styles.card}
-          >
-            <div className={styles.rank}>#{index + 1}</div>
-            <div className={styles.content}>
-              <h3 className={styles.title}>{article.title}</h3>
-              <p className={styles.description}>
-                {article.description || "No description available"}
-              </p>
-            </div>
-            <div className={styles.stats}>
-              <div
-                className={`${styles.trend} ${article.trend_score >= 0 ? styles.positive : styles.negative}`}
+      )}
+      {isError && (
+        <div className="empty-note">
+          The index is unavailable.
+          <br />
+          <button type="button" onClick={() => void refetch()}>
+            Try again
+          </button>
+        </div>
+      )}
+      {!isLoading && !isError && !data?.length && (
+        <p className="empty-note">
+          No reading trends to show yet. Start with a subject in the archive.
+        </p>
+      )}
+      {data && !isError && (
+        <ol className={styles.list}>
+          {data.slice(0, 5).map((article, index) => (
+            <li key={article.slug}>
+              <TopicLink
+                slug={article.slug}
+                onSelectTopic={onSelectTopic}
+                className={styles.card}
               >
-                {article.trend_score >= 0 ? "↑" : "↓"}{" "}
-                {Math.abs(article.trend_score).toFixed(1)}%
-              </div>
-              <div className={styles.views}>
-                {article.current_views.toLocaleString()} views
-              </div>
-            </div>
-          </TopicLink>
-        ))}
-      </div>
-    </div>
+                <span className={styles.rank}>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className={styles.content}>
+                  <span className={styles.title}>{article.title}</span>
+                  <small>
+                    {article.current_views.toLocaleString()} views · recent 30
+                    days
+                  </small>
+                </span>
+                <span className={styles.stats}>
+                  <span>
+                    {article.trend_score >= 0 ? "↑" : "↓"}{" "}
+                    {Math.abs(article.trend_score).toFixed(0)}
+                  </span>
+                  <small>growth score</small>
+                </span>
+              </TopicLink>
+            </li>
+          ))}
+        </ol>
+      )}
+      <p className={styles.note}>
+        Two 30-day windows. A baseline floor tempers small jumps; the growth
+        score is not always a literal percentage change.
+      </p>
+    </aside>
   );
 }

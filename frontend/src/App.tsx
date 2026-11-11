@@ -1,359 +1,479 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "./components/Header";
 import { TopicSearch } from "./components/TopicSearch";
 import { TopicCard } from "./components/TopicCard";
+import { ClassificationReport } from "./components/ClassificationReport";
 import { PulseChart } from "./components/PulseChart";
-import { TrendingSection } from "./components/TrendingSection";
-import { FeaturedTopics } from "./components/FeaturedTopics";
-import { DiscoverPage } from "./components/DiscoverPage";
-import { Methodology } from "./components/Methodology";
-import { CitationSources } from "./components/CitationSources";
+import { ExplorePage } from "./components/ExplorePage";
+import { StoriesPage } from "./components/StoriesPage";
 import { RelatedTopics } from "./components/RelatedTopics";
-import { OnThisDay } from "./components/OnThisDay";
 import { Skeleton } from "./components/Skeleton";
-import { fetchTopicData } from "./services/api";
-import type { TopicData } from "./types/index";
+import { fetchTopicData, TopicRelevanceError } from "./services/api";
+import { initialBrowseState } from "./utils/explore";
+import type { BrowseState } from "./utils/explore";
+import { isInAfrobeatThread } from "./content/editorial";
 import {
-  normalizeTopicSlug,
   pushAppRoute,
   readAppRoute,
   topicPath,
+  storyPath,
+  subjectStoryPath,
 } from "./utils/navigation";
 import { defaultMetadata, updatePageMetadata } from "./utils/seo";
-import styles from "./App.module.scss";
-
-type View = "home" | "discover";
-
-function PulseSkeletonView() {
-  return (
-    <div className={styles.resultsGrid}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--space-md)",
-        }}
-      >
-        <Skeleton height="200px" borderRadius="var(--radius-md)" />
-        <Skeleton height="1.2rem" width="60%" />
-        <Skeleton height="0.9rem" width="80%" />
-        <Skeleton height="0.9rem" width="70%" />
-        <Skeleton height="0.9rem" width="50%" />
-      </div>
-      <div className={styles.chartSection}>
-        <Skeleton height="1.25rem" width="40%" />
-        <Skeleton
-          height="260px"
-          borderRadius="var(--radius-sm)"
-          style={{ marginTop: "var(--space-lg)" }}
-        />
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--space-sm)",
-            marginTop: "var(--space-md)",
-          }}
-        >
-          <Skeleton
-            width="60px"
-            height="32px"
-            borderRadius="var(--radius-xl)"
-          />
-          <Skeleton
-            width="60px"
-            height="32px"
-            borderRadius="var(--radius-xl)"
-          />
-          <Skeleton
-            width="60px"
-            height="32px"
-            borderRadius="var(--radius-xl)"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
+import ui from "./App.module.scss";
 
 function App() {
-  const [initialRoute] = useState(readAppRoute);
-  const [activeTopic, setActiveTopic] = useState<string | null>(
-    initialRoute.topic,
-  );
+  const [route, setRoute] = useState(readAppRoute);
+  const [browse, setBrowse] = useState<BrowseState>({ ...initialBrowseState });
   const [comparisonTopic, setComparisonTopic] = useState<string | null>(null);
   const [isComparing, setIsComparing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [view, setView] = useState<View>(initialRoute.view);
+  const [exportError, setExportError] = useState("");
   const pulseExportRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const browseScrollRef = useRef(0);
+  const activeTopic = route.topic;
+  const isBrowsing = !activeTopic && route.view !== "stories";
+  const restoreBrowseScroll = useCallback(() => {
+    window.scrollTo({ top: browseScrollRef.current, behavior: "instant" });
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
-      const route = readAppRoute();
-      setActiveTopic(route.topic);
+      if (isBrowsing) browseScrollRef.current = window.scrollY;
+      setRoute(readAppRoute());
       setComparisonTopic(null);
       setIsComparing(false);
-      setView(route.view);
+      setExportError("");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
+  }, [isBrowsing]);
+  useEffect(() => {
+    const previous = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    return () => {
+      window.history.scrollRestoration = previous;
+    };
   }, []);
+  useEffect(() => {
+    mainRef.current?.focus({ preventScroll: true });
+    if (isBrowsing) restoreBrowseScroll();
+    else window.scrollTo({ top: 0, behavior: "instant" });
+  }, [route, isBrowsing, restoreBrowseScroll]);
 
-  const { data, isLoading, isError, error } = useQuery<TopicData>({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["topic", activeTopic],
     queryFn: () => fetchTopicData(activeTopic!),
     enabled: !!activeTopic,
     retry: false,
   });
-
-  useEffect(() => {
-    if (data) {
-      updatePageMetadata({
-        title: `${data.title} Interest & Pageview History | Nigerian History Pulse`,
-        description: `Explore five years of Wikipedia interest in ${data.title}${data.description ? `, ${data.description.toLowerCase()}` : ""}, with interactive daily pageview trends.`,
-        path: topicPath(data.slug),
-        image: data.thumbnail_url,
-      });
-    } else if (view === "discover") {
-      updatePageMetadata({
-        title: "Discover Nigerian History Topics | Nigerian History Pulse",
-        description:
-          "Browse Nigerian leaders, major events, kingdoms, culture, politics, conflicts, and society through interactive Wikipedia interest data.",
-        path: "/discover",
-      });
-    } else {
-      updatePageMetadata(defaultMetadata);
-    }
-  }, [data, view]);
-
   const {
     data: comparisonData,
     isLoading: isComparisonLoading,
     isError: isComparisonError,
     error: comparisonError,
-  } = useQuery<TopicData>({
+    refetch: refetchComparison,
+  } = useQuery({
     queryKey: ["topic", comparisonTopic],
     queryFn: () => fetchTopicData(comparisonTopic!),
     enabled: isComparing && !!comparisonTopic,
     retry: false,
   });
 
-  const handleGoHome = () => {
-    setActiveTopic(null);
+  useEffect(() => {
+    if (data && activeTopic) {
+      updatePageMetadata({
+        title: `${data.title} Reading History | Nigerian History Pulse`,
+        description: `Explore Wikipedia reading interest in ${data.title}, with daily pageviews and connected subjects.`,
+        path: topicPath(data.slug),
+        image: data.thumbnail_url,
+      });
+    } else if (route.view === "stories") {
+      const title = route.subject
+        ? `${route.subject.replace(/_/g, " ")} Article Background`
+        : route.story === "afrobeat"
+          ? "The People Behind Afrobeat"
+          : route.story === "reading-the-pulse"
+            ? "Reading the Pulse"
+            : "Stories";
+      updatePageMetadata({
+        title: `${title} | Nigerian History Pulse`,
+        description:
+          "Historical context, connected subjects, and guides to Wikipedia reading data.",
+        path: route.subject
+          ? subjectStoryPath(route.subject)
+          : storyPath(route.story),
+      });
+    } else if (route.view === "discover") {
+      updatePageMetadata({ ...defaultMetadata, path: "/discover" });
+    } else updatePageMetadata(defaultMetadata);
+  }, [data, activeTopic, route]);
+
+  const navigate = (path: string) => {
+    if (isBrowsing) browseScrollRef.current = window.scrollY;
+    pushAppRoute(path);
+    setRoute(readAppRoute(path));
     setComparisonTopic(null);
     setIsComparing(false);
-    setView("home");
-    pushAppRoute("/");
+    setExportError("");
   };
-
-  const handleSelectTopic = (topic: string) => {
-    const slug = normalizeTopicSlug(topic);
-    setActiveTopic(slug);
-    setView("home");
-    pushAppRoute(topicPath(slug));
-  };
-
-  const handlePrimarySearch = (topic: string | null) => {
-    const slug = topic ? normalizeTopicSlug(topic) : null;
-    setActiveTopic(slug);
-    if (!topic) {
-      setComparisonTopic(null);
-      setIsComparing(false);
-      pushAppRoute("/");
-    } else {
-      pushAppRoute(topicPath(slug!));
-    }
-  };
-
-  const handleOpenDiscover = () => {
-    setView("discover");
-    pushAppRoute("/discover");
-  };
-
-  const handleCompareToggle = () => {
-    setIsComparing((current) => {
-      if (current) {
-        setComparisonTopic(null);
-      }
-      return !current;
-    });
-  };
-
+  const handleGoHome = () => navigate("/");
+  const handleSelectTopic = (topic: string) => navigate(topicPath(topic));
+  const handleOpenStories = (story: string | null = null, subject?: string) =>
+    navigate(subject ? subjectStoryPath(subject) : storyPath(story));
   const handleDownloadPulse = async () => {
-    if (!pulseExportRef.current || !data) {
-      return;
-    }
-
+    const exportSurface = pulseExportRef.current;
+    if (!exportSurface || !data || isExporting) return;
+    setExportError("");
     setIsExporting(true);
     try {
-      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await document.fonts.ready;
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
       const { default: html2canvas } = await import("html2canvas");
-      const canvas = await html2canvas(pulseExportRef.current, {
-        backgroundColor: "#0b0c10",
+      // Navigation can unmount the subject while fonts or the library load.
+      if (!exportSurface.isConnected) return;
+      const canvas = await html2canvas(exportSurface, {
+        backgroundColor: getComputedStyle(document.body).backgroundColor,
         scale: 2,
         useCORS: true,
+        onclone: (clonedDocument) => {
+          // Decorate only the capture. Keep the live chart and viewport still.
+          const surface = clonedDocument.querySelector<HTMLElement>(
+            "[data-pulse-export]",
+          );
+          if (surface) {
+            // Border-box padding must not shrink the already-rendered SVG.
+            surface.style.width = `${surface.getBoundingClientRect().width + 48}px`;
+            surface.style.padding = "24px";
+          }
+          const header = surface?.querySelector<HTMLElement>(
+            "[data-export-header]",
+          );
+          if (header) header.style.display = "flex";
+        },
         ignoreElements: (element) =>
           element instanceof HTMLElement &&
           element.dataset.exportIgnore === "true",
       });
-      const imageUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
-      link.href = imageUrl;
+      link.href = canvas.toDataURL("image/png");
       link.download = `${data.slug.replace(/[^a-z0-9_-]/gi, "_")}-pulse.png`;
       link.click();
+    } catch {
+      setExportError("The image could not be prepared. Please try again.");
     } finally {
       setIsExporting(false);
     }
   };
 
   return (
-    <div className={styles.appContainer}>
-      <Header onHomeClick={handleGoHome} />
-      <main className={styles.mainContent}>
-        {!activeTopic && view === "home" && (
-          <section className={styles.hero}>
-            <h1>Explore the pulse of Nigerian history</h1>
-            <p>
-              Discover how interest in Nigeria&apos;s people, culture, politics,
-              and defining events has changed through five years of Wikipedia
-              data.
-            </p>
+    <div className={ui.appContainer}>
+      <a className={ui.skipLink} href="#main-content">
+        Skip to content
+      </a>
+      <Header
+        onHomeClick={handleGoHome}
+        onStoriesClick={() => handleOpenStories()}
+        view={activeTopic ? "topic" : route.view}
+      />
+      <main
+        id="main-content"
+        tabIndex={-1}
+        ref={mainRef}
+        className={ui.mainContent}
+      >
+        {activeTopic && (
+          <>
+            <div className={ui.searchRow}>
+              <TopicSearch
+                activeTopic={activeTopic}
+                onSearch={(topic) =>
+                  topic ? handleSelectTopic(topic) : handleGoHome()
+                }
+                label="Search people, places and events"
+                placeholder="Search another subject…"
+              />
+            </div>
+            <div className={ui.recordNav}>
+              <a
+                href="/"
+                onClick={(event) => {
+                  if (
+                    event.button ||
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey
+                  )
+                    return;
+                  event.preventDefault();
+                  handleGoHome();
+                }}
+              >
+                ← Explore
+              </a>
+              <span>/</span>
+              <span>{activeTopic.replace(/_/g, " ")}</span>
+            </div>
+          </>
+        )}
+        {isLoading && (
+          <section
+            aria-busy="true"
+            aria-label="Loading topic"
+            className={ui.loading}
+          >
+            <h1>Opening the subject…</h1>
+            <Skeleton height="140px" />
+            <Skeleton height="320px" />
           </section>
         )}
-        <TopicSearch
-          activeTopic={activeTopic}
-          onSearch={handlePrimarySearch}
-          label="Primary topic"
-          placeholder="Search primary topic (e.g. Lagos, Fela Kuti)..."
-        />
-
-        <div className={styles.dashboardArea}>
-          {isLoading && <PulseSkeletonView />}
-          {isError && (
-            <div className={styles.error}>
-              Error: {(error as Error).message}
-            </div>
-          )}
-
-          {activeTopic && !isLoading && !isError && (
-            <div className={styles.compareBar}>
-              <button
-                type="button"
-                className={isComparing ? styles.compareActive : ""}
-                onClick={handleCompareToggle}
-                aria-pressed={isComparing}
-              >
-                {isComparing ? "Exit comparison" : "Compare"}
-              </button>
-              {isComparing && (
+        {isError && (
+          <section className={ui.error} role="alert">
+            <h1>This subject couldn’t be opened.</h1>
+            <p>{(error as Error).message}</p>
+            {activeTopic && error instanceof TopicRelevanceError && (
+              <ClassificationReport
+                key={activeTopic}
+                slug={activeTopic}
+                accepted={false}
+              />
+            )}
+            <button type="button" onClick={() => void refetch()}>
+              Try again
+            </button>
+            <button type="button" onClick={handleGoHome}>
+              Back to Explore
+            </button>
+          </section>
+        )}
+        {activeTopic && data && !isError && (
+          <>
+            {isComparing && (
+              <h1 className={ui.comparisonTitle}>Compare reading interest</h1>
+            )}
+            {isComparing && (
+              <div className={ui.compareSearch}>
                 <TopicSearch
+                  autoFocus
                   activeTopic={comparisonTopic}
-                  onSearch={(topic: string | null) => setComparisonTopic(topic)}
-                  label="Compare with topic"
-                  placeholder="Compare with another topic..."
+                  onSearch={setComparisonTopic}
+                  label="Compare with another subject"
+                  placeholder="Choose a second subject…"
                 />
-              )}
-            </div>
-          )}
-
-          {isComparisonError && (
-            <div className={styles.error}>
-              Error: {(comparisonError as Error).message}
-            </div>
-          )}
-
-          {data && (
-            <>
-              <button className={styles.mobileCloseBtn} onClick={handleGoHome}>
-                ✕ Close Pulse
-              </button>
-              {!isComparing && (
-                <div className={styles.exportActions}>
+                <p className={ui.compareHint} role="status">
+                  {isComparisonLoading
+                    ? "Loading the second subject…"
+                    : !comparisonTopic
+                      ? "Choose a subject to compare daily views on the same scale."
+                      : comparisonData && !isComparisonError
+                        ? `Comparing ${data.title} with ${comparisonData.title}.`
+                        : ""}
+                </p>
+              </div>
+            )}
+            {isComparisonError && (
+              <div role="alert" className={ui.error}>
+                <p>{(comparisonError as Error).message}</p>
+                {comparisonTopic &&
+                  comparisonError instanceof TopicRelevanceError && (
+                    <ClassificationReport
+                      key={comparisonTopic}
+                      slug={comparisonTopic}
+                      accepted={false}
+                    />
+                  )}
+                <button type="button" onClick={() => void refetchComparison()}>
+                  Try comparison again
+                </button>
+              </div>
+            )}
+            {exportError && (
+              <p role="alert" className={ui.error}>
+                {exportError}
+              </p>
+            )}
+            <div
+              key={data.slug}
+              ref={pulseExportRef}
+              className={ui.exportSurface}
+              data-pulse-export
+            >
+              <div className={ui.exportHeader} data-export-header>
+                <span>The Nigerian History Pulse</span>
+                <span>Wikipedia reading history</span>
+              </div>
+              <div
+                className={`${ui.topicHeader} ${isComparing ? ui.comparingHeader : ""}`}
+              >
+                <div
+                  className={`${ui.topicCards} ${isComparing ? ui.comparison : ""}`}
+                >
+                  <TopicCard
+                    key={`primary-${data.slug}`}
+                    topic={data}
+                    compact={isComparing}
+                  />
+                  {isComparing && isComparisonLoading && (
+                    <Skeleton height="140px" />
+                  )}
+                  {isComparing && comparisonData && (
+                    <TopicCard
+                      key={`comparison-${comparisonData.slug}`}
+                      topic={comparisonData}
+                      compact
+                    />
+                  )}
+                </div>
+                <div className={ui.actions} data-export-ignore="true">
+                  <button
+                    type="button"
+                    aria-pressed={isComparing}
+                    disabled={isExporting}
+                    onClick={() => {
+                      if (isComparing) setComparisonTopic(null);
+                      setIsComparing(!isComparing);
+                    }}
+                  >
+                    {isComparing ? "Remove comparison" : "Compare"}
+                  </button>
                   <button
                     type="button"
                     onClick={handleDownloadPulse}
-                    disabled={isExporting}
+                    disabled={
+                      isExporting ||
+                      (isComparing &&
+                        (isComparisonLoading || isComparisonError))
+                    }
                   >
-                    {isExporting ? "Preparing..." : "Download Pulse"}
+                    {isExporting ? "Preparing image…" : "Download PNG"}
                   </button>
                 </div>
-              )}
-              <div
-                ref={pulseExportRef}
-                className={`${styles.exportSurface} ${isExporting ? styles.exporting : ""}`}
-              >
-                <div className={styles.exportHeader}>
-                  <span>The Nigerian History Pulse</span>
-                  <span>area1914</span>
-                </div>
-                <div className={styles.resultsGrid}>
-                  <div className={styles.topicCards}>
-                    <TopicCard topic={data} compact={isComparing} />
-                    {isComparing && isComparisonLoading && (
-                      <Skeleton
-                        height="120px"
-                        borderRadius="var(--radius-md)"
-                      />
-                    )}
-                    {isComparing && comparisonData && (
-                      <TopicCard topic={comparisonData} compact />
-                    )}
-                  </div>
-                  <div className={styles.chartSection}>
-                    <PulseChart
-                      pageviews={data.pageviews}
-                      title={data.title}
-                      comparisonPageviews={
-                        isComparing ? comparisonData?.pageviews : undefined
-                      }
-                      comparisonTitle={comparisonData?.title}
-                    />
-                  </div>
-                </div>
               </div>
-              {!isComparing && (
-                <>
-                  <RelatedTopics
-                    slug={activeTopic!}
-                    onSelectTopic={handleSelectTopic}
-                  />
-                  <CitationSources slug={activeTopic!} />
-                </>
-              )}
-            </>
-          )}
-
-          {!activeTopic && !isLoading && view === "discover" && (
-            <DiscoverPage
+              <section
+                className={ui.chartSection}
+                aria-label="Wikipedia reading history"
+              >
+                <PulseChart
+                  key={data.slug}
+                  pageviews={data.pageviews}
+                  title={data.title}
+                  comparisonPageviews={
+                    isComparing ? comparisonData?.pageviews : undefined
+                  }
+                  comparisonTitle={comparisonData?.title}
+                />
+              </section>
+            </div>
+            {!isComparing && (
+              <>
+                <ClassificationReport
+                  key={data.slug}
+                  slug={data.slug}
+                  accepted
+                />
+                <RelatedTopics
+                  slug={activeTopic}
+                  onSelectTopic={handleSelectTopic}
+                />
+                {isInAfrobeatThread(data.slug) && (
+                  <a
+                    className={ui.readingLink}
+                    href="/stories/afrobeat"
+                    onClick={(event) => {
+                      if (
+                        event.button ||
+                        event.metaKey ||
+                        event.ctrlKey ||
+                        event.shiftKey ||
+                        event.altKey
+                      )
+                        return;
+                      event.preventDefault();
+                      handleOpenStories("afrobeat");
+                    }}
+                  >
+                    <div>
+                      <h2>The people behind Afrobeat</h2>
+                      <p>Go deeper in Stories, separate from the explorer.</p>
+                    </div>
+                  </a>
+                )}
+                <a
+                  className={ui.readingLink}
+                  href={subjectStoryPath(data.slug)}
+                  onClick={(event) => {
+                    if (
+                      event.button ||
+                      event.metaKey ||
+                      event.ctrlKey ||
+                      event.shiftKey ||
+                      event.altKey
+                    )
+                      return;
+                    event.preventDefault();
+                    handleOpenStories("subject", data.slug);
+                  }}
+                >
+                  <div>
+                    <h2>Behind the Wikipedia article</h2>
+                    <p>Read the source breakdown in Stories.</p>
+                  </div>
+                </a>
+              </>
+            )}
+          </>
+        )}
+        {!activeTopic &&
+          (route.view === "home" || route.view === "discover") && (
+            <ExplorePage
+              browse={browse}
+              onBrowseChange={setBrowse}
               onSelectTopic={handleSelectTopic}
-              onBack={handleGoHome}
+              onDataGuide={() => handleOpenStories("reading-the-pulse")}
+              onReady={restoreBrowseScroll}
             />
           )}
-
-          {!activeTopic && !isLoading && view === "home" && (
-            <div className={styles.homeLayout}>
-              <div className={styles.featuredWrapper}>
-                <FeaturedTopics
-                  onSelectTopic={handleSelectTopic}
-                  preview
-                  onViewAll={handleOpenDiscover}
-                />
-              </div>
-              <div className={styles.trendingWrapper}>
-                <TrendingSection onSelectTopic={handleSelectTopic} />
-              </div>
-              <div className={styles.anniversaryWrapper}>
-                <OnThisDay onSelectTopic={handleSelectTopic} />
-              </div>
-              <div className={styles.methodologyWrapper}>
-                <Methodology />
-              </div>
-            </div>
-          )}
-        </div>
+        {route.view === "stories" && (
+          <StoriesPage
+            story={route.story}
+            subject={route.subject}
+            onOpen={handleOpenStories}
+            onSelectTopic={handleSelectTopic}
+          />
+        )}
       </main>
+      <footer className={ui.footer}>
+        <div>
+          <p>Wikipedia reading history · dates and coverage vary by subject</p>
+          <p>
+            Descriptions come from Wikipedia and may contain errors or outdated
+            information. Verify details using the article’s cited sources.
+          </p>
+        </div>
+        <a
+          href="/stories/reading-the-pulse"
+          onClick={(event) => {
+            if (
+              event.button ||
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            )
+              return;
+            event.preventDefault();
+            handleOpenStories("reading-the-pulse");
+          }}
+        >
+          About the data
+        </a>
+      </footer>
     </div>
   );
 }
-
 export default App;

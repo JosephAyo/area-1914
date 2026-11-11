@@ -4,7 +4,7 @@ from app.database import create_db_and_tables
 from app.settings import settings
 # Import models to ensure they are registered with SQLModel.metadata
 from app.models import WikiTopic, WikiPageview
-from app.api import topics, trending, citations, search, featured, anniversaries
+from app.api import topics, trending, citations, search, featured, anniversaries, reports
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,6 +38,7 @@ app.include_router(trending.router, prefix="/api")
 app.include_router(citations.router, prefix="/api")
 app.include_router(search.router, prefix="/api")
 app.include_router(anniversaries.router, prefix="/api")
+app.include_router(reports.router, prefix="/api")
 
 @app.get("/")
 def read_root():

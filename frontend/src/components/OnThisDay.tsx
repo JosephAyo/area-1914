@@ -1,87 +1,75 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchOnThisDayTopics } from "../services/api";
-import type { OnThisDayTopic } from "../types/index";
 import { Skeleton } from "./Skeleton";
-import styles from "./OnThisDay.module.scss";
 import { TopicLink } from "./TopicLink";
-
-interface OnThisDayProps {
+import { formatChartDate } from "../utils/chartData";
+import styles from "./OnThisDay.module.scss";
+export function OnThisDay({
+  onSelectTopic,
+}: {
   onSelectTopic: (slug: string) => void;
-}
-
-const formatAnniversaryDate = (date: string) =>
-  new Date(date).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-export function OnThisDay({ onSelectTopic }: OnThisDayProps) {
-  const { data, isLoading, isError } = useQuery<OnThisDayTopic[]>({
+}) {
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["onThisDay"],
     queryFn: fetchOnThisDayTopics,
     staleTime: 1000 * 60 * 60,
   });
-
-  if (isLoading) {
-    return (
-      <section className={styles.container}>
-        <Skeleton height="1.25rem" width="180px" />
-        <div className={styles.list}>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className={styles.card}>
-              <Skeleton width="44px" height="44px" borderRadius="50%" />
-              <div className={styles.content}>
-                <Skeleton height="1rem" width="60%" />
-                <Skeleton height="0.85rem" width="80%" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (isError || !data || data.length === 0) {
-    return null;
-  }
-
   return (
-    <section className={styles.container} aria-labelledby="on-this-day-title">
-      <div className={styles.header}>
-        <h2 id="on-this-day-title">On This Day</h2>
-        <span>Unusual 1, 5, and 10 year echoes</span>
+    <section
+      className={styles.container}
+      aria-labelledby="attention-archive-title"
+    >
+      <div className="section-heading">
+        <h2 id="attention-archive-title">From the attention archive</h2>
+        <p>Reading activity on this date in previous years</p>
       </div>
+      <p className={styles.note}>
+        Past moments of unusual Wikipedia interest. These dates describe reading
+        activity, not historical event anniversaries.
+      </p>
+      {isLoading && (
+        <div aria-busy="true" aria-label="Loading attention archive">
+          <Skeleton height="100px" />
+        </div>
+      )}
+      {isError && (
+        <p className="empty-note">
+          The attention archive couldn’t be loaded.{" "}
+          <button type="button" onClick={() => void refetch()}>
+            Try again
+          </button>
+        </p>
+      )}
+      {!isLoading && !isError && !data?.length && (
+        <p className="empty-note">
+          No unusual reading activity was found for this date in the available
+          records.
+        </p>
+      )}
       <div className={styles.list}>
-        {data.map((topic) => (
-          <TopicLink
-            key={`${topic.slug}-${topic.date}`}
-            slug={topic.slug}
-            onSelectTopic={onSelectTopic}
-            className={styles.card}
-          >
-            <div className={styles.thumbnail}>
-              {topic.thumbnail_url ? (
-                <img src={topic.thumbnail_url} alt="" />
-              ) : (
-                <span>{topic.years_ago}y</span>
-              )}
-            </div>
-            <span className={styles.content}>
-              <span className={styles.title}>{topic.title}</span>
-              <span className={styles.meta}>
-                {topic.lift_score.toFixed(1)}x usual activity on{" "}
-                {formatAnniversaryDate(topic.date)}
+        {!isError &&
+          data?.slice(0, 3).map((topic) => (
+            <TopicLink
+              key={`${topic.slug}-${topic.date}`}
+              slug={topic.slug}
+              onSelectTopic={onSelectTopic}
+              className={styles.card}
+            >
+              <span className={styles.date}>
+                {formatChartDate(topic.date)}
+                <small>
+                  {topic.years_ago} {topic.years_ago === 1 ? "year" : "years"}{" "}
+                  ago
+                </small>
               </span>
-              <span className={styles.description}>
-                {topic.views.toLocaleString()} views, normally around{" "}
-                {Math.round(topic.baseline_views).toLocaleString()} ·{" "}
-                {topic.years_ago} years ago
-                {topic.description ? ` · ${topic.description}` : ""}
-              </span>
-            </span>
-          </TopicLink>
-        ))}
+              <h3>{topic.title}</h3>
+              <p>
+                {topic.views.toLocaleString()} views ·{" "}
+                {topic.lift_score.toFixed(1)}× the surrounding-day average
+              </p>
+              <span className={styles.link}>Open the record</span>
+            </TopicLink>
+          ))}
       </div>
     </section>
   );

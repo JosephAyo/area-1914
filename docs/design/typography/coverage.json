@@ -1,0 +1,137 @@
+{
+  "probe": "Ẹ ẹ Ọ ọ Ṣ ṣ Ụ ụ Ị ị Ń ń Ɓ ɓ Ɗ ɗ Ƙ ƙ Ƴ ƴ ̣̀́̄",
+  "method": "Full upstream upright variable TTF cmap and hmtx inspection; not browser fallback or shaping validation. Widths measured at 400 weight and default width via Pillow, at 2x scale.",
+  "fonts": [
+    {
+      "family": "Noto Sans",
+      "version": "Version 2.015",
+      "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+      "source": "https://github.com/google/fonts/tree/main/ofl/notosans",
+      "raw_ttf_bytes": 2049096,
+      "missing_probe_codepoints": [],
+      "has_tabular_feature": true,
+      "default_digits_equal_advance": true,
+      "long_title_width_at_16px": 260.5
+    },
+    {
+      "family": "Source Sans 3",
+      "version": "Version 3.052;hotconv 1.1.0;makeotfexe 2.6.0",
+      "sha256": "042fe2cc0b933e328410d7acbd0aa6a1873dca5aef81875f4bc214b08825c7b9",
+      "source": "https://github.com/google/fonts/tree/main/ofl/sourcesans3",
+      "raw_ttf_bytes": 646340,
+      "missing_probe_codepoints": [
+        "Ƙ U+0198",
+        "ƙ U+0199",
+        "Ƴ U+01B3",
+        "ƴ U+01B4"
+      ],
+      "has_tabular_feature": false,
+      "default_digits_equal_advance": true,
+      "long_title_width_at_16px": 233.0
+    },
+    {
+      "family": "Public Sans",
+      "version": "Version 2.001",
+      "sha256": "d75a7dc1a27eb9e336d5b33f55489d2ecb5621bf694d5c43b2415bce2ca830a8",
+      "source": "https://github.com/google/fonts/tree/main/ofl/publicsans",
+      "raw_ttf_bytes": 103316,
+      "missing_probe_codepoints": [
+        "Ɓ U+0181",
+        "Ɗ U+018A",
+        "Ƙ U+0198",
+        "ƙ U+0199",
+        "Ƴ U+01B3",
+        "ƴ U+01B4",
+        "ɓ U+0253",
+        "ɗ U+0257"
+      ],
+      "has_tabular_feature": true,
+      "default_digits_equal_advance": false,
+      "long_title_width_at_16px": 262.5
+    },
+    {
+      "family": "IBM Plex Sans",
+      "version": "Version 3.201",
+      "sha256": "3b031aa4216174205bd8471f88a49b91f093169e9e87bd5262242bc5967fe2e3",
+      "source": "https://github.com/google/fonts/tree/main/ofl/ibmplexsans",
+      "raw_ttf_bytes": 537244,
+      "missing_probe_codepoints": [
+        "Ɓ U+0181",
+        "Ɗ U+018A",
+        "Ƙ U+0198",
+        "ƙ U+0199",
+        "Ƴ U+01B3",
+        "ƴ U+01B4",
+        "ɓ U+0253",
+        "ɗ U+0257",
+        "Ṣ U+1E62",
+        "ṣ U+1E63"
+      ],
+      "has_tabular_feature": false,
+      "default_digits_equal_advance": true,
+      "long_title_width_at_16px": 255.0
+    },
+    {
+      "family": "Atkinson Hyperlegible Next",
+      "version": "Version 2.001",
+      "sha256": "5a455d1cfa099b601ab70751bb9673e8fe1854dc4500c80e1a220d0d75e31745",
+      "source": "https://github.com/google/fonts/tree/main/ofl/atkinsonhyperlegiblenext",
+      "raw_ttf_bytes": 114552,
+      "missing_probe_codepoints": [
+        "Ɓ U+0181",
+        "Ɗ U+018A",
+        "Ƙ U+0198",
+        "ƙ U+0199",
+        "Ƴ U+01B3",
+        "ƴ U+01B4",
+        "ɓ U+0253",
+        "ɗ U+0257",
+        "̣ U+0323",
+        "Ṣ U+1E62",
+        "ṣ U+1E63",
+        "Ẹ U+1EB8",
+        "ẹ U+1EB9",
+        "Ị U+1ECA",
+        "ị U+1ECB",
+        "Ọ U+1ECC",
+        "ọ U+1ECD",
+        "Ụ U+1EE4",
+        "ụ U+1EE5"
+      ],
+      "has_tabular_feature": true,
+      "default_digits_equal_advance": false,
+      "long_title_width_at_16px": 249.0
+    },
+    {
+      "family": "Outfit",
+      "version": "Version 1.100;gftools[0.9.27]",
+      "sha256": "fc7287273e66929776e2ba54f144fe699080bec29f61bf649d70d871468aeade",
+      "source": "https://github.com/google/fonts/tree/main/ofl/outfit",
+      "raw_ttf_bytes": 110884,
+      "missing_probe_codepoints": [
+        "Ɓ U+0181",
+        "Ɗ U+018A",
+        "Ƙ U+0198",
+        "ƙ U+0199",
+        "Ƴ U+01B3",
+        "ƴ U+01B4",
+        "ɓ U+0253",
+        "ɗ U+0257",
+        "̣ U+0323",
+        "Ṣ U+1E62",
+        "ṣ U+1E63",
+        "Ẹ U+1EB8",
+        "ẹ U+1EB9",
+        "Ị U+1ECA",
+        "ị U+1ECB",
+        "Ọ U+1ECC",
+        "ọ U+1ECD",
+        "Ụ U+1EE4",
+        "ụ U+1EE5"
+      ],
+      "has_tabular_feature": true,
+      "default_digits_equal_advance": false,
+      "long_title_width_at_16px": 248.5
+    }
+  ]
+}

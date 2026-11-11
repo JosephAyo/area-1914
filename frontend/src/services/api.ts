@@ -11,6 +11,24 @@ import type {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
+export class TopicRelevanceError extends Error {}
+
+export async function reportClassification(payload: {
+  slug: string;
+  requested_relevance: boolean;
+  reason: string;
+  source_url: string | null;
+}): Promise<{ id: number; status: "pending" }> {
+  const response = await fetch(`${API_BASE_URL}/classification-reports`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok)
+    throw new Error("Your report couldn’t be saved. Please try again.");
+  return response.json();
+}
+
 export const fetchTopicData = async (slug: string): Promise<TopicData> => {
   const response = await fetch(
     `${API_BASE_URL}/topics/${encodeURIComponent(slug)}`,
@@ -21,7 +39,7 @@ export const fetchTopicData = async (slug: string): Promise<TopicData> => {
     }
     if (response.status === 422) {
       const data = await response.json();
-      throw new Error(
+      throw new TopicRelevanceError(
         data.detail || "This topic doesn't appear to be related to Nigeria.",
       );
     }

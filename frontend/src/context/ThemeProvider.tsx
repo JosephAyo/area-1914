@@ -12,17 +12,15 @@ function getInitialTheme(): Theme {
     return stored;
   }
 
-  // 2. Check OS preference
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) {
-    return "light";
-  }
-
-  // 3. Default to dark
-  return "dark";
+  // Paper is the initial edition; preserve an explicitly saved preference.
+  return "light";
 }
 
 function applyTheme(theme: Theme) {
   document.documentElement.setAttribute("data-theme", theme);
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", theme === "dark" ? "#18231d" : "#f8faf7");
 }
 
 interface ThemeProviderProps {

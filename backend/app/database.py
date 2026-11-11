@@ -4,7 +4,8 @@ from app.settings import settings
 # check_same_thread=False is needed for SQLite to work with FastAPI's multithreading
 # Only apply it when using SQLite; other databases don't support this argument
 connect_args = {"check_same_thread": False} if settings.DATABASE_URL.startswith("sqlite") else {}
-engine = create_engine(settings.DATABASE_URL, echo=True, connect_args=connect_args)
+# Report explanations are user input; do not log SQL parameter values.
+engine = create_engine(settings.DATABASE_URL, echo=False, connect_args=connect_args)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)

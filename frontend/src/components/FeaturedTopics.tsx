@@ -37,6 +37,7 @@ export function FeaturedTopics({
     data: categories,
     isLoading,
     isError,
+    refetch,
   } = useQuery<FeaturedCategory[]>({
     queryKey: ["featuredTopics"],
     queryFn: fetchFeaturedTopics,
@@ -45,7 +46,10 @@ export function FeaturedTopics({
 
   return (
     <div className={styles.container}>
-      <h2>✨ Discover History</h2>
+      <div className="section-heading">
+        <h2>Browse by subject</h2>
+        <p>Curated starting points from Wikipedia</p>
+      </div>
       {isLoading && (
         <div className={styles.categoriesWrapper}>
           {Array.from({ length: 2 }).map((_, i) => (
@@ -65,16 +69,25 @@ export function FeaturedTopics({
         </div>
       )}
       {isError && (
-        <div className={styles.error}>Could not load curated topics.</div>
+        <div className={styles.error}>
+          The collection couldn’t be loaded.{" "}
+          <button type="button" onClick={() => void refetch()}>
+            Try again
+          </button>
+        </div>
       )}
 
+      {!isLoading && !isError && !categories?.length && (
+        <p className="empty-note">
+          No curated subjects are available yet. Search for a subject above to
+          begin.
+        </p>
+      )}
       {!isLoading && !isError && categories && (
         <div className={styles.categoriesWrapper}>
           {(preview ? categories.slice(0, 2) : categories).map((category) => (
             <div key={category.name} className={styles.categorySection}>
-              <h3 className={styles.categoryTitle}>
-                {category.icon} {category.name}
-              </h3>
+              <h3 className={styles.categoryTitle}>{category.name}</h3>
               <div className={styles.grid}>
                 {category.topics.map((topic) => (
                   <TopicLink
@@ -92,7 +105,12 @@ export function FeaturedTopics({
                             className={styles.thumbnail}
                           />
                         ) : (
-                          <span className={styles.fallbackIcon}>📚</span>
+                          <span
+                            className={styles.fallbackIcon}
+                            aria-hidden="true"
+                          >
+                            {topic.title[0]}
+                          </span>
                         )}
                       </div>
                       <div className={styles.titleContainer}>

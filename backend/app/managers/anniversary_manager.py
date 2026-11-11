@@ -3,7 +3,8 @@ from typing import List
 
 from sqlmodel import Session, col, select
 
-from app.models import OnThisDayTopic, WikiPageview, WikiTopic
+from app.models import OnThisDayTopic, WikiPageview, WikiTopic, RelevanceOverride
+from app.services.classification import classification_key
 
 
 class AnniversaryManager:
@@ -44,8 +45,15 @@ class AnniversaryManager:
         )
 
         best_by_topic: dict[str, OnThisDayTopic] = {}
+        excluded = {
+            override.topic_key for override in self.session.exec(
+                select(RelevanceOverride).where(RelevanceOverride.relevant == False)
+            ).all()
+        }
 
         for pageview, topic in self.session.exec(anniversary_pageviews_statement).all():
+            if classification_key(topic.slug) in excluded:
+                continue
             if pageview.views < self.MIN_VIEWS:
                 continue
 

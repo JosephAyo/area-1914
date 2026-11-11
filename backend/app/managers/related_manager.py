@@ -6,6 +6,7 @@ from app.config.curated_topics import CURATED_CATEGORIES
 from app.models import RelatedTopic
 from app.services.relevance import _text_matches_keywords
 from app.services.wikipedia import wikipedia_service
+from app.services.classification import classification_key
 
 
 def _normalize_slug(slug: str) -> str:
@@ -36,7 +37,10 @@ def _is_useful_category(category: str) -> bool:
 
 
 class RelatedTopicManager:
-    async def get_related_topics(self, slug: str, limit: int = 6) -> List[RelatedTopic]:
+    async def get_related_topics(self, slug: str, limit: int = 6, relevance_overrides: dict[str, bool] | None = None) -> List[RelatedTopic]:
+        relevance_overrides = relevance_overrides or {}
+        if relevance_overrides.get(classification_key(slug)) is False:
+            return []
         normalized_slug = _normalize_slug(slug)
         candidate_scores: defaultdict[str, int] = defaultdict(int)
         candidate_connections: dict[str, str] = {}
@@ -47,6 +51,8 @@ class RelatedTopicManager:
             candidate_slug = _title_to_slug(title_or_slug)
             normalized_candidate = _normalize_slug(candidate_slug)
             if not candidate_slug or normalized_candidate == normalized_slug:
+                return
+            if relevance_overrides.get(classification_key(candidate_slug)) is False:
                 return
 
             candidate_scores[normalized_candidate] += score
@@ -109,7 +115,7 @@ class RelatedTopicManager:
                     connection,
                 ]
             )
-            if not _text_matches_keywords(summary_text):
+            if relevance_overrides.get(classification_key(related_slug)) is not True and not _text_matches_keywords(summary_text):
                 continue
 
             related_topics.append(

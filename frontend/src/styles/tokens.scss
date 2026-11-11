@@ -1,95 +1,81 @@
+@font-face {
+  font-family: "Noto Sans";
+  src: url("/fonts/noto-sans-400.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans";
+  src: url("/fonts/noto-sans-500.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans";
+  src: url("/fonts/noto-sans-600.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
-  /* ── Dark Mode (default) ── */
-  --bg-color: #0b0c10;
-  --bg-gradient: linear-gradient(135deg, #0b0c10 0%, #1f2833 100%);
-  --text-primary: #f0f0f0;
-  --text-secondary: #c5c6c7;
-  // --accent-primary: #66fcf1;
-  // --accent-secondary: #45a29e;
-  --accent-primary: #0fa89e;
-  --accent-secondary: #0d8a82;
-
-  /* Glassmorphism / Panels */
-  --glass-bg: rgba(31, 40, 51, 0.45);
-  --glass-border: rgba(102, 252, 241, 0.15);
-
-  /* Theme-aware utility colors (used in component SCSS) */
-  --glass-bg-solid: rgba(20, 20, 32, 0.92);
-  --dropdown-bg: rgba(25, 25, 35, 0.95);
-  --glass-border-subtle: rgba(255, 255, 255, 0.05);
-  --hover-bg: rgba(255, 255, 255, 0.1);
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --card-bg-hover: rgba(255, 255, 255, 0.08);
-  --icon-bg: rgba(255, 255, 255, 0.05);
-  --hover-border: rgba(255, 255, 255, 0.2);
-
-  /* Typography */
-  --font-family:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
-
-  /* Spacing */
+  color-scheme: light;
+  --bg-color: #f8faf7;
+  --bg-gradient: #f8faf7;
+  --surface: #ffffff;
+  --text-primary: #1e2c24;
+  --text-secondary: #627068;
+  --accent-primary: #246343;
+  --accent-secondary: #246343;
+  --comparison-color: #526c85;
+  --glass-bg: transparent;
+  --glass-bg-solid: #ffffff;
+  --dropdown-bg: #ffffff;
+  --glass-border: #dce3db;
+  --glass-border-subtle: #dce3db;
+  --hover-bg: #f0f5ef;
+  --card-bg: transparent;
+  --card-bg-hover: #f0f5ef;
+  --icon-bg: #e8f0e8;
+  --hover-border: #246343;
+  --button-text: #ffffff;
+  --font-family: "Noto Sans", sans-serif;
+  --font-display: "Noto Sans", sans-serif;
+  --font-mono: "Noto Sans", sans-serif;
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
   --space-xxl: 48px;
-
-  /* Borders & Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 30px;
-
-  /* Transitions */
-  --transition-fast: 0.15s ease-in-out;
-  --transition-normal: 0.3s ease-in-out;
-  --transition-slow: 0.5s ease-in-out;
-
-  /* Shadows */
-  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 15px rgba(102, 252, 241, 0.3);
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --transition-fast: 0.12s ease;
+  --transition-normal: 0.2s ease;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-glow: none;
 }
-
-/* ── Light Mode Overrides ── */
-[data-theme="light"] {
-  --bg-color: #f5f7fa;
-  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-  --text-primary: #1a1a2e;
-  --text-secondary: #5a5d6e;
-  --accent-primary: #0fa89e;
-  --accent-secondary: #0d8a82;
-
-  /* Glassmorphism / Panels – light variants */
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(15, 168, 158, 0.2);
-
-  /* Theme-aware utility colors – light variants */
-  --glass-bg-solid: rgba(255, 255, 255, 0.95);
-  --dropdown-bg: rgba(255, 255, 255, 0.97);
-  --glass-border-subtle: rgba(0, 0, 0, 0.06);
-  --hover-bg: rgba(0, 0, 0, 0.05);
-  --card-bg: rgba(0, 0, 0, 0.02);
-  --card-bg-hover: rgba(0, 0, 0, 0.05);
-  --icon-bg: rgba(0, 0, 0, 0.04);
-  --hover-border: rgba(0, 0, 0, 0.12);
-
-  /* Shadows – softer for light mode */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 12px rgba(15, 168, 158, 0.2);
-}
-
-body {
-  background: var(--bg-gradient);
-  background-attachment: fixed;
-  color: var(--text-primary);
-  font-family: var(--font-family);
-  margin: 0;
-  min-height: 100vh;
-  transition:
-    background 0.4s ease,
-    color 0.3s ease;
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-color: #18231d;
+  --bg-gradient: #18231d;
+  --surface: #1e2b23;
+  --text-primary: #e8eee7;
+  --text-secondary: #afbdaf;
+  --accent-primary: #9dceb0;
+  --accent-secondary: #9dceb0;
+  --comparison-color: #a4bed4;
+  --glass-bg-solid: #1e2b23;
+  --dropdown-bg: #1e2b23;
+  --glass-border: #3b4a3e;
+  --glass-border-subtle: #3b4a3e;
+  --hover-bg: #273a2c;
+  --card-bg-hover: #273a2c;
+  --icon-bg: #2d4233;
+  --hover-border: #9dceb0;
+  --button-text: #18231d;
 }

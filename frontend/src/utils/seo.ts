@@ -62,6 +62,6 @@ export function updatePageMetadata({
 export const defaultMetadata: PageMetadata = {
   title: `${SITE_NAME} | Explore Nigerian History`,
   description:
-    "Explore five years of Wikipedia interest in Nigerian history, people, culture, politics, and major events through interactive pageview charts.",
+    "Explore Nigerian people, places and turning points through a living archive of stories, connections and Wikipedia reading history.",
   path: "/",
 };

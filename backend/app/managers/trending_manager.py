@@ -35,6 +35,9 @@ class TrendingManager:
             # This ensures pageviews are up to date.
             try:
                 await self.topic_manager.get_topic_with_history(topic.slug)
+            except ValueError:
+                # A reviewed exclusion must not fall back to cached rankings.
+                continue
             except Exception as e:
                 logger.error(f"Error refreshing topic {topic.slug}: {e}")
                 pass # Still try to compute trend with whatever data we have

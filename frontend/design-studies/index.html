@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Living Archive — Design studies</title>
+    <link rel="stylesheet" href="./studies.css" />
+    <script type="module" src="./studies.js"></script>
+  </head>
+  <body data-study="edition" data-screen="home">
+    <a class="skip" href="#content">Skip to content</a>
+    <aside class="review" aria-label="Design review controls">
+      <div class="review-title">
+        <strong>THE LIVING ARCHIVE</strong><span>Design studies · 01</span>
+      </div>
+      <fieldset>
+        <legend>Direction</legend>
+        <button type="button" data-direction="edition" aria-pressed="true">
+          A · Editorial edition
+        </button>
+        <button type="button" data-direction="collection" aria-pressed="false">
+          B · Collection plate
+        </button>
+      </fieldset>
+      <fieldset>
+        <legend>Screen</legend>
+        <button type="button" data-view="home" aria-pressed="true">Home</button>
+        <button type="button" data-view="topic" aria-pressed="false">
+          Topic
+        </button>
+      </fieldset>
+      <label class="image-toggle"
+        ><input type="checkbox" id="hide-image" /> Hide image</label
+      >
+    </aside>
+
+    <div class="study-caption">
+      <span id="direction-name">A / Editorial edition</span
+      ><span>Composition study · sample content and illustrative metrics</span>
+    </div>
+    <header class="masthead">
+      <a
+        class="wordmark"
+        href="#home"
+        data-view="home"
+        aria-label="The Nigerian History Pulse home"
+        >The Nigerian<br />History <em>Pulse.</em></a
+      >
+      <p class="masthead-note">
+        People. Places. Turning points.<br />An archive of history and
+        attention.
+      </p>
+      <nav aria-label="Study navigation">
+        <a href="#home" data-view="home">The edition</a
+        ><a href="#thread" data-view="home">Explore a thread ↗</a
+        ><a href="/discover">Browse the app ↗</a>
+      </nav>
+    </header>
+
+    <main id="content" tabindex="-1">
+      <section id="home" class="home-view" aria-label="Homepage study">
+        <div class="section-rule">
+          <span>01 / In focus</span><span>Arts &amp; culture</span
+          ><span>Nigeria, in perspective</span>
+        </div>
+        <div class="lead-grid">
+          <div class="lead-copy">
+            <p class="eyebrow">A life in the archive</p>
+            <h1>The sound.<br />The voice.<br /><em>Fela.</em></h1>
+            <p class="standfirst">
+              Musician, bandleader, activist. Start with Fela Kuti, then follow
+              the people and sounds connected to his story.
+            </p>
+            <a class="primary-link" href="#topic" data-view="topic"
+              >Open the Fela Kuti record <span aria-hidden="true">↗</span></a
+            >
+            <p class="small-note">
+              A starting point for exploration. Not a trending claim.
+            </p>
+          </div>
+          <figure class="portrait">
+            <div class="plate-number" aria-hidden="true">FK / 01</div>
+            <img
+              src="./assets/fela-kuti.jpg"
+              alt="Fela Kuti holding a saxophone"
+              width="192"
+              height="369"
+            />
+            <div class="image-fallback">
+              <span>FK</span>
+              <p>Fela Kuti<br />The record continues without a photograph.</p>
+            </div>
+            <figcaption>
+              Fela Kuti · archival portrait<br /><a href="#image-credit"
+                >Image credit and license ↓</a
+              >
+            </figcaption>
+          </figure>
+          <aside class="attention">
+            <p class="eyebrow">The attention index</p>
+            <h2>Getting<br /><em>attention.</em></h2>
+            <p class="attention-note">
+              Illustrative ranking.<br />Not current Wikipedia activity.
+            </p>
+            <ol>
+              <li>
+                <a href="/topics/Fela_Kuti"
+                  ><span class="rank">01</span
+                  ><span>Fela Kuti<small>Arts &amp; culture</small></span
+                  ><span class="metric">+42%<small>sample</small></span></a
+                >
+              </li>
+              <li>
+                <a href="/topics/Lagos"
+                  ><span class="rank">02</span
+                  ><span>Lagos<small>Places &amp; society</small></span
+                  ><span class="metric">+28%<small>sample</small></span></a
+                >
+              </li>
+              <li>
+                <a href="/topics/Nigerian_Civil_War"
+                  ><span class="rank">03</span
+                  ><span
+                    >Nigerian Civil War<small>Events &amp; memory</small></span
+                  ><span class="metric">+19%<small>sample</small></span></a
+                >
+              </li>
+            </ol>
+            <p class="small-note">
+              The production index will explain its comparison window and
+              baseline adjustments.
+            </p>
+          </aside>
+        </div>
+        <section class="thread-section" id="thread">
+          <div class="section-rule">
+            <span>02 / Follow the thread</span
+            ><span>A curated route through the archive</span>
+          </div>
+          <div class="thread-intro">
+            <h2>A sound is never<br /><em>one person.</em></h2>
+            <p>
+              Begin with a musician. Meet a collaborator. Explore the genre they
+              helped develop.
+            </p>
+          </div>
+          <div class="thread-grid">
+            <a href="#topic" data-view="topic"
+              ><span class="eyebrow">01 / The musician</span>
+              <h3>Fela Kuti</h3>
+              <p>Meet the musician at the beginning of this thread.</p>
+              <span class="text-link">Open study record ↗</span></a
+            ><a href="/topics/Tony_Allen_(musician)"
+              ><span class="eyebrow">02 / The collaborator</span>
+              <h3>Tony Allen</h3>
+              <p>Drummer and musical director in Fela’s Africa ’70.</p>
+              <span class="text-link">Explore in the app ↗</span></a
+            ><a href="/topics/Afrobeat"
+              ><span class="eyebrow">03 / The genre</span>
+              <h3>Afrobeat</h3>
+              <p>A genre that Fela Kuti and Tony Allen helped develop.</p>
+              <span class="text-link">Explore in the app ↗</span></a
+            >
+          </div>
+          <p class="small-note">
+            Draft editorial thread ·
+            <a href="#content-sources">sources below</a>
+          </p>
+        </section>
+        <section class="archive-note">
+          <span class="eyebrow">03 / From the attention archive</span>
+          <h2>History has dates.<br /><em>So does curiosity.</em></h2>
+          <p>
+            This section will surface unusual Wikipedia reading activity on this
+            date in previous years. It does not establish that a historical
+            event happened today.
+          </p>
+        </section>
+      </section>
+
+      <article id="topic" class="topic-view" aria-labelledby="topic-title" hidden>
+        <a class="back-link" href="#home" data-view="home"
+          >← Back to the edition</a
+        >
+        <div class="section-rule">
+          <span>Record / Fela Kuti</span><span>Arts &amp; culture</span
+          ><span>Study 01</span>
+        </div>
+        <div class="record-header">
+          <div>
+            <p class="eyebrow">Musician · Bandleader · Activist</p>
+            <h1 id="topic-title">Fela<br /><em>Kuti.</em></h1>
+            <p class="standfirst">
+              A Nigerian musician and political activist, and a principal
+              innovator of Afrobeat.
+            </p>
+            <p class="record-context">
+              Explore his Wikipedia reading history, then continue through a
+              collaborator and the music they helped shape.
+            </p>
+            <a class="text-link" href="https://en.wikipedia.org/wiki/Fela_Kuti"
+              >Read the Wikipedia article ↗</a
+            >
+          </div>
+          <figure class="portrait">
+            <div class="plate-number" aria-hidden="true">FK / 01</div>
+            <img
+              src="./assets/fela-kuti.jpg"
+              alt="Fela Kuti holding a saxophone"
+              width="192"
+              height="369"
+            />
+            <div class="image-fallback">
+              <span>FK</span>
+              <p>Fela Kuti<br />The record continues without a photograph.</p>
+            </div>
+            <figcaption>
+              Archival portrait ·
+              <a href="#image-credit">credit and license ↓</a>
+            </figcaption>
+          </figure>
+          <aside class="record-index">
+            <p class="eyebrow">In this record</p>
+            <a href="#reading-history">01 / Reading history</a
+            ><a href="#record-thread">02 / Follow the thread</a
+            ><a href="#content-sources">03 / Sources</a>
+            <p class="small-note">
+              Composition study. Comparison and export will be retained in the
+              application redesign.
+            </p>
+          </aside>
+        </div>
+        <section class="history" id="reading-history">
+          <div class="section-rule">
+            <span>01 / Reading history</span
+            ><span>Illustrative data · not live</span>
+          </div>
+          <div class="chart-heading">
+            <div>
+              <h2>When did people<br /><em>look closer?</em></h2>
+              <p>Daily Wikipedia pageviews · sample dates, 1–30 June 2026</p>
+            </div>
+            <span class="data-label">Chart composition study</span>
+          </div>
+          <figure class="chart">
+            <svg
+              viewBox="0 0 1000 260"
+              role="img"
+              aria-labelledby="chart-title chart-description"
+            >
+              <title id="chart-title">Illustrative daily pageviews</title>
+              <desc id="chart-description">
+                A sample line chart with values between zero and 2,000 views and
+                a peak near the middle of the period. These are invented values
+                for layout review.
+              </desc>
+              <g class="grid">
+                <path d="M64 30H975 M64 120H975 M64 210H975" />
+              </g>
+              <g class="axis-labels">
+                <text x="0" y="35">2,000</text>
+                <text x="0" y="125">1,000</text>
+                <text x="34" y="215">0</text>
+                <text x="64" y="250">1 Jun</text>
+                <text x="480" y="250">15 Jun</text>
+                <text x="920" y="250">30 Jun</text>
+              </g>
+              <path
+                class="plot"
+                d="M64 188L96 184L128 190L160 175L192 181L224 169L256 172L288 185L320 180L352 156L384 167L416 138L448 158L480 64L512 36L544 120L576 150L608 164L640 159L672 174L704 169L736 185L768 178L800 184L832 167L864 175L896 180L928 173L960 181"
+              />
+            </svg>
+            <figcaption>
+              Illustrative values for design review. Reading activity measures
+              attention, not historical importance. A peak alone does not
+              establish its cause.
+            </figcaption>
+          </figure>
+        </section>
+        <section id="record-thread" class="topic-thread">
+          <div class="section-rule">
+            <span>02 / Follow the thread</span><span>3 connected subjects</span>
+          </div>
+          <h2>From a musician<br /><em>to a movement in sound.</em></h2>
+          <ol class="record-steps">
+            <li>
+              <span class="eyebrow">You are here</span>
+              <h3>Fela Kuti</h3>
+              <p>Musician and bandleader.</p>
+            </li>
+            <li>
+              <a href="/topics/Tony_Allen_(musician)"
+                ><span class="eyebrow">Next / collaborator</span>
+                <h3>Tony Allen ↗</h3>
+                <p>
+                  Allen was the drummer and musical director in Fela’s Africa
+                  ’70.
+                </p></a
+              >
+            </li>
+            <li>
+              <a href="/topics/Afrobeat"
+                ><span class="eyebrow">Then / the genre</span>
+                <h3>Afrobeat ↗</h3>
+                <p>Kuti and Allen helped develop the genre.</p></a
+              >
+            </li>
+          </ol>
+        </section>
+      </article>
+
+      <section class="study-search">
+        <label for="subject-search" class="eyebrow"
+          >Have a subject in mind?</label
+        >
+        <form id="search-form">
+          <input
+            id="subject-search"
+            name="subject"
+            type="search"
+            placeholder="Try Lagos, Fela Kuti, an event…"
+            required
+          /><button type="submit">Open in the app ↗</button>
+        </form>
+        <p class="small-note">
+          This study opens the existing app’s topic route. The production search
+          retains autocomplete and relevance checks.
+        </p>
+      </section>
+      <section class="study-states">
+        <details>
+          <summary>Review long titles and missing imagery</summary>
+          <div class="stress-record">
+            <span class="eyebrow">Long-title specimen / no image</span>
+            <h2>2023 Nigerian presidential election</h2>
+            <p>
+              The same reading hierarchy must hold when a record has a long
+              title and no photograph. Use “Hide image” above to review the lead
+              and topic fallback.
+            </p>
+          </div>
+        </details>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-brand">
+        The Nigerian History Pulse
+        <span>History, with room to keep looking.</span>
+      </div>
+      <div id="content-sources">
+        <p class="eyebrow">Content sources</p>
+        <p>
+          Draft context and connections:
+          <a href="https://en.wikipedia.org/wiki/Fela_Kuti">Fela Kuti</a>,
+          <a href="https://en.wikipedia.org/wiki/Tony_Allen_(musician)"
+            >Tony Allen</a
+          >, <a href="https://en.wikipedia.org/wiki/Afrobeat">Afrobeat</a>.
+          Editorial wording requires review before production.
+        </p>
+      </div>
+      <div id="image-credit">
+        <p class="eyebrow">Image credit</p>
+        <p>
+          <a href="https://commons.wikimedia.org/wiki/File:Fela_Kuti.jpg"
+            >Fela Kuti.jpg</a
+          >
+          · original: MOI MEME; derivative crop and color correction: Klausness
+          ·
+          <a href="https://creativecommons.org/licenses/by-sa/3.0/"
+            >CC BY-SA 3.0</a
+          >. Display resized and cropped to fit the study plate. Low-resolution
+          study asset.
+        </p>
+      </div>
+      <p class="small-note">
+        Local design studies · all metrics illustrative · not a published
+        edition
+      </p>
+    </footer>
+  </body>
+</html>

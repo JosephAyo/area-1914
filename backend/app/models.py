@@ -1,6 +1,27 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from datetime import datetime, date as dt_date
+from datetime import datetime, timezone, date as dt_date
+
+
+class ClassificationReport(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    slug: str = Field(index=True)
+    topic_key: str = Field(index=True)
+    requested_relevance: bool
+    reason: str
+    source_url: Optional[str] = None
+    status: str = Field(default="pending", index=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    reviewed_at: Optional[datetime] = None
+    review_note: Optional[str] = None
+
+
+class RelevanceOverride(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    topic_key: str = Field(unique=True, index=True)
+    relevant: bool
+    report_id: int = Field(foreign_key="classificationreport.id")
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 # --- Base Models (Shared Fields) ---
 

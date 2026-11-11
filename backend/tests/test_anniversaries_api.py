@@ -6,6 +6,7 @@ from httpx import AsyncClient
 from sqlmodel import Session
 
 from app.models import WikiPageview, WikiTopic
+from app.review_reports import review_report
 
 
 def add_baseline(session: Session, topic_id: int, target: date, views: int):
@@ -56,6 +57,19 @@ def seed_anniversary_data(session: Session):
     add_baseline(session, topic_5_id, target_2021, views=20)
     add_baseline(session, topic_6_id, target_2025, views=20)
     session.commit()
+
+
+@pytest.mark.asyncio
+async def test_attention_archive_omits_reviewed_exclusions(client, session, seed_anniversary_data):
+    receipt = (await client.post("/api/classification-reports", json={
+        "slug": "Spike_Topic", "requested_relevance": False,
+        "reason": "The reference does not establish a Nigerian connection.",
+    })).json()
+    review_report(session, receipt["id"], "approve", "Confirmed exclusion.")
+    response = await client.get("/api/on-this-day?month=7&day=8")
+    assert response.status_code == 200
+    assert "Spike_Topic" not in [item["slug"] for item in response.json()]
+    assert len(response.json()) == 2
 
 
 @pytest.mark.asyncio

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Explore · The Nigerian History Pulse</title>
+    <meta name="theme-color" content="#f8faf7" />
+    <link rel="icon" href="./assets/pulse.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="./assets/noto-sans-400.woff"
+      as="font"
+      type="font/woff"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./prototype.css" />
+    <link rel="stylesheet" href="./stories.css" />
+    <link rel="stylesheet" href="./responsive.css" />
+    <script defer src="./snapshot.js"></script>
+    <script defer src="./model.js"></script>
+    <script defer src="./prototype.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="app-header">
+      <a class="brand" href="#/explore"
+        ><img src="./assets/pulse.svg" alt="" width="36" height="36" /><span
+          >The Nigerian<br /><strong>History Pulse</strong></span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#/explore" data-nav="explore">Explore</a
+        ><a href="#/stories" data-nav="stories">Stories</a>
+      </nav>
+      <button
+        id="theme-button"
+        class="quiet-button"
+        type="button"
+        aria-label="Switch to night mode"
+      >
+        Night
+      </button>
+    </header>
+    <main id="main" tabindex="-1">
+      <p class="loading-note" role="status">Opening the explorer…</p>
+    </main>
+    <footer class="app-footer">
+      <span>Review prototype · cached Wikipedia data, not live activity</span
+      ><a href="#/stories/reading-the-pulse">About the data</a>
+    </footer>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <button
+      type="button"
+      id="tweaks-button"
+      class="tweaks-button"
+      aria-expanded="false"
+      aria-controls="tweaks-panel"
+    >
+      Tweaks
+    </button>
+    <aside
+      id="tweaks-panel"
+      class="tweaks-panel"
+      aria-label="Prototype review settings"
+      hidden
+    >
+      <div class="tweaks-heading">
+        <h2>Tweaks</h2>
+        <button
+          type="button"
+          id="close-tweaks"
+          class="quiet-button"
+          aria-label="Close review settings"
+        >
+          ×
+        </button>
+      </div>
+      <p>Compare browsing layouts within the same design system.</p>
+      <label for="layout-setting">Browse layout</label
+      ><select id="layout-setting">
+        <option value="grid" selected>Subject grid</option>
+        <option value="list">Compact list</option>
+        <option value="split">Browse + quick preview</option>
+      </select>
+      <label for="density-setting">Spacing</label
+      ><select id="density-setting">
+        <option value="comfortable">Comfortable</option>
+        <option value="compact">Compact</option>
+      </select>
+      <label for="state-setting">Explore data state</label
+      ><select id="state-setting">
+        <option value="ready">Cached records</option>
+        <option value="loading">Loading</option>
+        <option value="error">Unavailable</option>
+        <option value="empty">Empty collection</option>
+      </select>
+      <p class="small-text">
+        Review controls only. Nsibidi is recorded on the roadmap for a later
+        pass.
+      </p>
+    </aside>
+    <noscript
+      >This prototype needs JavaScript for search, filtering, and
+      navigation.</noscript
+    >
+  </body>
+</html>

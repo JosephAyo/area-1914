@@ -16,6 +16,21 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://area1914.ayojoseph.dev/stories</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://area1914.ayojoseph.dev/stories/afrobeat</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://area1914.ayojoseph.dev/stories/reading-the-pulse</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://area1914.ayojoseph.dev/topics/Fela_Kuti</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

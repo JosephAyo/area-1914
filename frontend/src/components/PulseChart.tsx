@@ -1,233 +1,265 @@
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import styles from "./PulseChart.module.scss";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useId } from "react";
 import type { PageviewEntry } from "../types/index";
-
-interface ChartDataPoint {
-  date: string;
-  dateFormatted: string;
-  primaryViews: number;
-  comparisonViews?: number;
-}
-
-type Timeframe = "30d" | "1y" | "all";
-
+import {
+  buildChartData,
+  formatChartDate,
+  summarizeSeries,
+} from "../utils/chartData";
+import type { Timeframe } from "../utils/chartData";
+import styles from "./PulseChart.module.scss";
 interface PulseChartProps {
   pageviews?: PageviewEntry[];
   title?: string;
   comparisonPageviews?: PageviewEntry[];
   comparisonTitle?: string;
 }
-
-const PRIMARY_COLOR = "var(--accent-primary)";
-const COMPARISON_COLOR = "#f59e0b";
-
 export function PulseChart({
   pageviews = [],
-  title,
+  title = "Subject",
   comparisonPageviews,
-  comparisonTitle,
+  comparisonTitle = "Comparison",
 }: PulseChartProps) {
   const [timeframe, setTimeframe] = useState<Timeframe>("30d");
-  const hasComparison = !!comparisonPageviews?.length;
-
-  // Format the dates and ensure views is an integer
-  const chartData = useMemo<ChartDataPoint[]>(() => {
-    const sortedPrimary = [...pageviews].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
-    const sortedComparison = [...(comparisonPageviews || [])].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
-    const allDates = [...sortedPrimary, ...sortedComparison];
-
-    if (allDates.length === 0) {
-      return [];
-    }
-
-    const primaryByDate = new Map(
-      sortedPrimary.map((entry) => [entry.date, Number(entry.views)]),
-    );
-    const comparisonByDate = new Map(
-      sortedComparison.map((entry) => [entry.date, Number(entry.views)]),
-    );
-    const dateKeys = Array.from(
-      new Set(allDates.map((entry) => entry.date)),
-    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    let filteredDates = dateKeys;
-    const maxDate = new Date(dateKeys[dateKeys.length - 1]);
-
-    if (timeframe === "30d") {
-      const threshold = new Date(maxDate);
-      threshold.setDate(threshold.getDate() - 30);
-      filteredDates = dateKeys.filter((date) => new Date(date) >= threshold);
-    } else if (timeframe === "1y") {
-      const threshold = new Date(maxDate);
-      threshold.setFullYear(threshold.getFullYear() - 1);
-      filteredDates = dateKeys.filter((date) => new Date(date) >= threshold);
-    }
-
-    return filteredDates.map((date) => ({
-      date,
-      dateFormatted: new Date(date).toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "2-digit",
-      }),
-      primaryViews: primaryByDate.get(date) || 0,
-      comparisonViews: hasComparison
-        ? comparisonByDate.get(date) || 0
-        : undefined,
-    }));
-  }, [comparisonPageviews, hasComparison, pageviews, timeframe]);
-
-  if (chartData.length === 0) {
-    return <div className={styles.emptyChart}>No pulse data available.</div>;
-  }
-
+  const [showTable, setShowTable] = useState(false);
+  const id = useId();
+  const hasComparison = comparisonPageviews !== undefined;
+  const points = useMemo(
+    () => buildChartData(pageviews, comparisonPageviews, timeframe),
+    [pageviews, comparisonPageviews, timeframe],
+  );
+  const summary = summarizeSeries(points, "primaryViews");
+  const secondSummary = summarizeSeries(points, "comparisonViews");
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>
-          {hasComparison
-            ? "Pulse Comparison"
-            : timeframe === "30d"
-              ? "30-Day Pulse"
-              : timeframe === "1y"
-                ? "1-Year Pulse"
-                : "Historical Pulse"}
-        </h2>
-        <div className={styles.toggles}>
-          <button
-            className={timeframe === "30d" ? styles.active : ""}
-            onClick={() => setTimeframe("30d")}
-          >
-            30 Days
-          </button>
-          <button
-            className={timeframe === "1y" ? styles.active : ""}
-            onClick={() => setTimeframe("1y")}
-          >
-            1 Year
-          </button>
-          <button
-            className={timeframe === "all" ? styles.active : ""}
-            onClick={() => setTimeframe("all")}
-          >
-            Max
-          </button>
+        <div>
+          <p className={styles.label}>Wikipedia pageviews</p>
+          <h2>
+            {hasComparison
+              ? "Reading interest, side by side."
+              : "Reading interest"}
+          </h2>
+        </div>
+        <div
+          className={styles.toggles}
+          role="group"
+          aria-label="Chart period"
+          data-export-ignore="true"
+        >
+          {(
+            [
+              ["30d", "30 days"],
+              ["90d", "90 days"],
+              ["1y", "1 year"],
+              ["all", "All available"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              type="button"
+              key={value}
+              aria-pressed={timeframe === value}
+              className={timeframe === value ? styles.active : ""}
+              onClick={() => setTimeframe(value)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
-      <div className={styles.legend}>
-        <span>
-          <i style={{ background: PRIMARY_COLOR }} />
-          {title || "Topic"}
-        </span>
-        {hasComparison && (
-          <span>
-            <i style={{ background: COMPARISON_COLOR }} />
-            {comparisonTitle || "Comparison"}
-          </span>
-        )}
-      </div>
-      <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart
-            data={chartData}
-            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--accent-primary)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--accent-primary)"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-              <linearGradient
-                id="colorComparisonViews"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.45} />
-                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="var(--glass-border)"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="dateFormatted"
-              stroke="var(--text-secondary)"
-              tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
-              tickMargin={10}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              stroke="var(--text-secondary)"
-              tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(val: number) =>
-                val >= 1000 ? `${(val / 1000).toFixed(1)}k` : String(val)
-              }
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "var(--bg-color)",
-                borderColor: "var(--glass-border)",
-                borderRadius: "var(--radius-sm)",
-                color: "var(--text-primary)",
-              }}
-              itemStyle={{ color: "var(--accent-primary)" }}
-            />
-            <Area
-              type="monotone"
-              dataKey="primaryViews"
-              name={title || "Topic"}
-              stroke={PRIMARY_COLOR}
-              strokeWidth={3}
-              fillOpacity={1}
-              fill="url(#colorViews)"
-            />
+      {!points.length ? (
+        <p className="empty-note">
+          No reading records are available for this subject yet. You can still
+          explore its article and connections.
+        </p>
+      ) : (
+        <>
+          <p className={styles.coverage} id={`${id}-coverage`}>
+            Daily pageviews · {formatChartDate(points[0].date)} –{" "}
+            {formatChartDate(points[points.length - 1].date)}
+          </p>
+          <div className={styles.legend}>
+            <span>
+              <i />
+              {title}
+            </span>
             {hasComparison && (
-              <Area
-                type="monotone"
-                dataKey="comparisonViews"
-                name={comparisonTitle || "Comparison"}
-                stroke={COMPARISON_COLOR}
-                strokeDasharray="6 4"
-                strokeWidth={3}
-                fillOpacity={1}
-                fill="url(#colorComparisonViews)"
-              />
+              <span className={styles.comparison}>
+                <i />
+                {comparisonTitle}
+              </span>
             )}
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      <p className={styles.disclaimer}>
-        * Based on Wikipedia pageviews. Data may contain inaccuracies or missing
-        periods.
-      </p>
+          </div>
+          <div
+            className={styles.chartWrapper}
+            role="group"
+            aria-label="Daily Wikipedia pageviews"
+            aria-describedby={`${id}-coverage ${id}-summary`}
+          >
+            <ResponsiveContainer width="100%" height={320}>
+              <LineChart
+                data={points}
+                margin={{ top: 20, right: 15, left: 0, bottom: 15 }}
+                accessibilityLayer
+              >
+                <CartesianGrid
+                  stroke="var(--glass-border)"
+                  vertical={false}
+                  strokeDasharray="3 5"
+                />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(value: string) =>
+                    formatChartDate(value).replace(/ \d{4}$/, "")
+                  }
+                  tick={{ fill: "var(--text-secondary)", fontSize: 11 }}
+                  tickMargin={12}
+                  axisLine={false}
+                  tickLine={false}
+                  minTickGap={45}
+                />
+                <YAxis
+                  width={50}
+                  tick={{ fill: "var(--text-secondary)", fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value: number) =>
+                    Intl.NumberFormat("en", { notation: "compact" }).format(
+                      value,
+                    )
+                  }
+                />
+                <Tooltip
+                  labelFormatter={(value) => formatChartDate(String(value))}
+                  formatter={(value, name) => [
+                    `${Number(value).toLocaleString()} views`,
+                    name,
+                  ]}
+                  contentStyle={{
+                    background: "var(--dropdown-bg)",
+                    border: "1px solid var(--glass-border)",
+                    color: "var(--text-primary)",
+                    fontSize: 12,
+                  }}
+                />
+                <Line
+                  type="linear"
+                  dataKey="primaryViews"
+                  name={title}
+                  stroke="var(--accent-primary)"
+                  strokeWidth={2.5}
+                  dot={{ r: 2, strokeWidth: 0 }}
+                  activeDot={{ r: 4 }}
+                  connectNulls={false}
+                  isAnimationActive={false}
+                />
+                {hasComparison && (
+                  <Line
+                    type="linear"
+                    dataKey="comparisonViews"
+                    name={comparisonTitle}
+                    stroke="var(--comparison-color)"
+                    strokeWidth={2.5}
+                    strokeDasharray="6 4"
+                    dot={{ r: 2, strokeWidth: 0 }}
+                    connectNulls={false}
+                    isAnimationActive={false}
+                  />
+                )}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className={styles.summary} id={`${id}-summary`}>
+            <dl className={styles.totals}>
+              <div>
+                <dt>{title}</dt>
+                <dd>
+                  <strong>{summary.total.toLocaleString()}</strong> recorded
+                  views
+                  <span>
+                    Records across {summary.recordedDays} of {points.length}{" "}
+                    days
+                  </span>
+                </dd>
+              </div>
+              {hasComparison && (
+                <div>
+                  <dt>{comparisonTitle}</dt>
+                  <dd>
+                    <strong>{secondSummary.total.toLocaleString()}</strong>{" "}
+                    recorded views
+                    <span>
+                      Records across {secondSummary.recordedDays} of{" "}
+                      {points.length} days
+                    </span>
+                  </dd>
+                </div>
+              )}
+            </dl>
+            <p className={styles.dataNote}>
+              {hasComparison && "Both subjects use the same dates and scale. "}
+              Gaps mean no record is available; they are not zero views. Reading
+              activity measures attention, not historical importance.
+            </p>
+          </div>
+          <div data-export-ignore="true">
+            <button
+              type="button"
+              className={styles.tableToggle}
+              aria-expanded={showTable}
+              aria-controls={`${id}-table`}
+              onClick={() => setShowTable(!showTable)}
+            >
+              {showTable ? "Hide" : "Read"} the daily figures{" "}
+              {showTable ? "−" : "+"}
+            </button>
+            <div
+              id={`${id}-table`}
+              hidden={!showTable}
+              className={styles.tableScroll}
+              tabIndex={showTable ? 0 : undefined}
+              role="region"
+              aria-label="Daily reading figures"
+            >
+              {showTable && (
+                <table>
+                  <caption>
+                    Daily Wikipedia pageviews. A dash means no record.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">{title}</th>
+                      {hasComparison && <th scope="col">{comparisonTitle}</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {points.map((point) => (
+                      <tr key={point.date}>
+                        <th scope="row">{formatChartDate(point.date)}</th>
+                        <td>{point.primaryViews?.toLocaleString() ?? "—"}</td>
+                        {hasComparison && (
+                          <td>
+                            {point.comparisonViews?.toLocaleString() ?? "—"}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

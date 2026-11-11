@@ -38,12 +38,21 @@ export function RelatedTopics({ slug, onSelectTopic }: RelatedTopicsProps) {
   }
 
   if (isError || !data || data.length === 0) {
-    return null;
+    return (
+      <p className="empty-note">
+        {isError
+          ? "Article connections are unavailable right now."
+          : "No further article connections are available for this subject yet."}
+      </p>
+    );
   }
 
   return (
     <section className={styles.container} aria-labelledby="related-topics">
-      <h2 id="related-topics">Connected Topics</h2>
+      <div className="section-heading">
+        <h2 id="related-topics">Keep looking</h2>
+        <p>Connections from Wikipedia links and shared categories</p>
+      </div>
       <div className={styles.grid}>
         {data.map((topic) => (
           <TopicLink
