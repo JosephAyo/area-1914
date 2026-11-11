@@ -44,6 +44,16 @@
 
 ## 11 November 2026
 
+### Completed scoped browser and PNG review
+
+- Found an existing standalone Playwright installation and cached Chromium executable after the in-app browser controls remained unavailable. Used isolated headless contexts with fresh profiles; no personal browser data or new project dependencies were needed.
+- Ran the saved `scripts/browser_review.mjs` against the production preview at `http://127.0.0.1:5174`. All 47 checks pass across 360/390/768/1440px widths, paper/night themes, grid/list/category/sort/load-more, back navigation and scroll retention, live keyboard autocomplete, comparison, chart periods, daily-table focus, saved theme and emulated touch controls. No uncaught browser page errors or checked-layout horizontal overflow.
+- Exercised report failure/retry and both correction directions with intercepted browser responses; the real queue was untouched. Existing real HTTP/CLI smoke checks separately establish persistence and review behavior. Long-title, sparse/zero and empty-history subjects are explicitly labeled browser fixtures.
+- Inspected representative mobile/tablet/desktop captures and actual downloaded single/comparison PNGs in both themes. Saved 30 screenshots/exports plus machine-readable results in `docs/design/qa/`. This is visual acceptance of the current design, not regression against a pixel baseline.
+- Repaired two issues revealed by PNG inspection: point markers now match their series color rather than breaking up the solid line with white dots; the comparison legend uses a dashed border because its repeating-gradient marker disappeared in capture.
+- Production browser testing caught an ignored `.env.production` containing `http://YOUR_EC2_PUBLIC_IP/api`. Left that local file untouched; added a build-time guard and rebuilt the QA bundle using an explicit local API URL. Verified the placeholder build fails clearly and the configured build succeeds. Deployment still requires the actual API URL.
+- Verification after fixes: 35 frontend tests, lint, typecheck and configured production build pass; backend code is unchanged from the 39 passing tests. Existing chunk-size warning remains. D21/D22/D23 are complete within the recorded scope; physical-device/cross-browser checks, native zoom, assistive-technology review, runtime performance and participant review remain separate release work.
+
 ### Checkpoint commit and release smoke checks
 
 - User authorized a checkpoint commit and continuation. Committed the completed revamp, prototypes, design records and classification reporting as `718d468` (`Revamp history explorer and add classification reporting`). Left separately installed `.agents/` skills and `skills-lock.json` outside the application commit.

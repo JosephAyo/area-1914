@@ -41,6 +41,15 @@ Check [backend health](http://127.0.0.1:8000/health). `ERR_CONNECTION_REFUSED` f
 
 ## Available Scripts
 
+For a local production-build review, explicitly select the running local API:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000/api yarn build
+yarn preview --host 127.0.0.1 --port 5174
+```
+
+For deployment, set `VITE_API_BASE_URL` to the actual API address before building. Vite embeds this value into the bundle. An ignored `.env.production` can override the development default; builds now reject the `YOUR_EC2_PUBLIC_IP` placeholder instead of producing an unusable release. The browser review and PNG evidence are recorded in [QA results](../docs/design/qa/README.md).
+
 | Script           | Description                                                     |
 | ---------------- | --------------------------------------------------------------- |
 | `yarn dev`       | Start Vite dev server with HMR                                  |

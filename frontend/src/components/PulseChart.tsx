@@ -156,7 +156,7 @@ export function PulseChart({
                   name={title}
                   stroke="var(--accent-primary)"
                   strokeWidth={2.5}
-                  dot={{ r: 2, strokeWidth: 0 }}
+                  dot={{ r: 2, strokeWidth: 0, fill: "var(--accent-primary)" }}
                   activeDot={{ r: 4 }}
                   connectNulls={false}
                   isAnimationActive={false}
@@ -169,7 +169,11 @@ export function PulseChart({
                     stroke="var(--comparison-color)"
                     strokeWidth={2.5}
                     strokeDasharray="6 4"
-                    dot={{ r: 2, strokeWidth: 0 }}
+                    dot={{
+                      r: 2,
+                      strokeWidth: 0,
+                      fill: "var(--comparison-color)",
+                    }}
                     connectNulls={false}
                     isAnimationActive={false}
                   />

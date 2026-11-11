@@ -61,11 +61,9 @@
     background: var(--accent-primary);
   }
   .comparison i {
-    background: repeating-linear-gradient(
-      to right,
-      var(--comparison-color) 0 5px,
-      transparent 5px 8px
-    );
+    background: none;
+    height: 0;
+    border-top: 2px dashed var(--comparison-color);
   }
 }
 .chartWrapper {

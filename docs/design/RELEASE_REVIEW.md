@@ -1,10 +1,10 @@
 # Compact explorer release review
 
-Application integration: 11 November 2026. The user-approved prototype is integrated into the main app. Automated checks pass; main-app browser and release checks remain open.
+Application integration: 11 November 2026. The user-approved prototype is integrated into the main app. Automated checks and the scoped Chromium browser/PNG review pass. Broader release validation remains open.
 
 ## Verified
 
-- Frontend: `npm run typecheck`, `npm run lint`, `npm test` and `npm run build` pass.
+- Frontend: `npm run typecheck`, `npm run lint`, `npm test` and `VITE_API_BASE_URL=http://127.0.0.1:8000/api npm run build` pass. Builds reject the known placeholder API address; deployment requires the actual API URL.
 - Thirty-five frontend tests cover chart gaps/zeros, 30/90-day and yearly windows, comparison alignment and summary coverage, calendar/Unicode routes, collection merging, category/query filtering, sorting, pagination retention/reset, real percentage rules, search resolution and server-rendered app routes, including reporting actions for accepted/rejected subjects.
 - Backend: `.venv/bin/python -m pytest -q` passes all thirty-nine tests, including collection coverage, no writes during cached serialization, report validation/privacy/persistence and reviewed relevance overrides across topic and discovery surfaces.
 - Fixed the cache freshness failure caused by subtracting a timezone-naive SQLite timestamp from a timezone-aware UTC timestamp. Existing fresh/stale/legacy timestamp tests pass.
@@ -21,7 +21,7 @@ Server-rendered tests use seeded query data and do not render browser pixels or 
 
 After checkpoint `718d468`, all 25 real-HTTP and separate-process CLI checks passed against a temporary SQLite/FastAPI instance and the production Vite preview. These cover report CORS, receipt privacy, pending deduplication, approval/reversal/dismissal, queue access, validation, SPA entry paths, production bundles and font retrieval. See [recorded results](release-smoke.json).
 
-Repeat from the repository root after `cd frontend && npm run build`, returning to the root before running `python3 scripts/release_smoke.py`. The script uses the existing backend virtual environment and frontend dependencies, writes fresh evidence and cleans up its temporary servers/database. It does not submit to the real queue. Browser interaction and image checks below remain outstanding.
+Repeat from the repository root after building with the intended API URL from `frontend/`, returning to the root before running `python3 scripts/release_smoke.py`. The script uses the existing backend virtual environment and frontend dependencies, writes fresh evidence and cleans up its temporary servers/database. It does not submit to the real queue. Scoped browser interaction and PNG results are recorded below; broader release checks remain outstanding.
 
 ## Delivered behavior
 
@@ -32,45 +32,42 @@ Repeat from the repository root after `cd frontend && npm run build`, returning 
 - Topic pages focus on short context and charts. The chart offers 30 days, 90 days, one year, and all available history, plus a daily table.
 - Comparison and PNG export remain available, including export of comparisons. Export waits for fonts/layout and omits controls. No dynamic article photo is included in the quick-page export.
 - Comparison search receives focus on opening and includes loading feedback, selected-pair confirmation and error retry. Failed comparisons disable export. Chart totals and recorded-day coverage are presented separately for each subject.
-- Export branding and padding are applied to the capture clone; the live page no longer expands to 1200px during image preparation. Downloaded-image inspection remains pending.
+- Export branding and padding are applied to the capture clone; the live page no longer expands to 1200px during image preparation. Single/comparison downloaded images were inspected in both themes.
 - Narratives, the data guide, and per-subject citation breakdowns live in Stories.
 - Theme variables are set on the document root. The saved theme preference key is preserved.
-- Narrow-screen header navigation occupies a separate row; mobile search retains 16px text and long suggestion labels can wrap. These are source-reviewed changes awaiting rendered verification.
-- Expanded results stay in app-level browse state, survive layout switching, and reset when filters change. Returning to Explore restores its saved scroll position after collection loading; actual browser history/scroll behavior remains unverified.
-- Export preparation cancels if navigation unmounts the originating subject before capture begins. Comparison changes are disabled while preparing an image. Actual image inspection remains pending.
+- Narrow-screen header navigation occupies a separate row; mobile search retains 16px text and long suggestion labels can wrap. Layouts were inspected at mobile/tablet/desktop widths.
+- Expanded results stay in app-level browse state, survive layout switching, and reset when filters change. Returning to Explore restores its saved scroll position after collection loading; back navigation, pagination and scroll restoration passed the browser check.
+- Export preparation cancels if navigation unmounts the originating subject before capture begins. Comparison changes are disabled while preparing an image. Actual downloaded PNGs were inspected for clipping and legibility.
 - The shared footer warns that Wikipedia descriptions can contain errors or outdated details. The data guide explains that summary API descriptions can differ from the article and directs readers to cited sources.
-- Accepted subjects and relevance rejections offer Report classification, including rejected comparison subjects. Reports persist as pending and do not change relevance automatically. A local maintainer queue applies or dismisses corrections with a note and timestamp. See [review instructions](../CLASSIFICATION_REPORTS.md). Browser form interaction remains pending.
+- Accepted subjects and relevance rejections offer Report classification, including rejected comparison subjects. Reports persist as pending and do not change relevance automatically. A local maintainer queue applies or dismisses corrections with a note and timestamp. See [review instructions](../CLASSIFICATION_REPORTS.md). Browser success/error/retry states were exercised with intercepted responses; real persistence/review was checked separately.
 
 ## Build comparison
 
 | Asset                | Original baseline | Integrated app     | Interpretation                                          |
 | -------------------- | ----------------- | ------------------ | ------------------------------------------------------- |
 | Main JavaScript gzip | 178.00 kB         | 185.21 kB          | Modest increase; runtime measurement still needed       |
-| CSS gzip             | 5.50 kB           | 5.41 kB            | Smaller                                                 |
+| CSS gzip             | 5.50 kB           | 5.40 kB            | Smaller                                                 |
 | Noto Sans WOFF files | None              | 354.78 kB combined | Three self-hosted weights; browser loads matching faces |
 | Stories portrait     | None              | 74.74 kB           | Local image, credited on the Stories index              |
 
 The existing JavaScript chunk-size warning remains. No browser LCP, CLS or INP measurements have been performed. Transfer sizes alone are not runtime performance evidence.
 
-## Browser checklist
+## Browser and PNG review
 
-Run the frontend and configured backend, then check:
+All **47 checks pass** against the configured production preview in isolated Chromium 156.0.8078.4. See [QA scope, reproduction and inspected images](qa/README.md) and [machine-readable results](qa/browser-review.json). No project browser dependency or personal browser profile was used.
 
-- [ ] Home/Discover, person, event, place, long-title and image-free subjects at 360, 768 and 1440 CSS pixels.
-- [ ] Default grid, icon ordering, list/grid switching, category filters, sort and load more.
-- [ ] Paper/night themes across Explore, subjects, Stories, inputs, selected states and chart/tooltips; remembered preference after reload.
-- [ ] 200% zoom, wrapping names, no clipped controls or unintended horizontal scrolling.
-- [ ] Skip link and search ArrowUp/ArrowDown/Enter/Escape; pointer selection and recovery from suggestion errors.
-- [ ] Explore → topic → Stories → Explore, plus back/forward and preserved browse state.
-- [ ] Direct URL loads, page title, canonical URL and social metadata after navigation.
-- [ ] Loading, API error/retry, no results, empty collections, absent/sparse pageviews and partial comparison data.
-- [ ] Comparison selection/removal and navigation to a new primary subject without stale secondary data.
-- [ ] Chart timeframes, sparse points, dashed series, tooltips, daily table and touch interaction.
-- [ ] Downloaded PNG in each theme and from narrow/wide screens: titles, selected dates, source, comparison and no clipping.
-- [ ] Noto Sans composed/decomposed accents, focus visibility, reduced motion and screen-reader output.
-- [ ] Runtime performance under comparable network/data conditions.
+- Explore, topic and Stories layouts in paper/night themes at 360/768/1440px; comparison, reports, keyboard search and touch cases at 390px.
+- Grid/list, categories, sorting, load-more, back navigation with expanded results and scroll restoration, live autocomplete ArrowDown/Escape/Enter, and saved theme after reload.
+- Comparison focus/selection/removal, chart period changes, keyboard focus in the daily table, and emulated touch comparison/theme controls.
+- Report failure, retained text, retry and both correction directions using intercepted responses. The real queue was untouched; real HTTP/CLI checks independently establish persistence and moderation behavior.
+- Labeled long-title/image-free, sparse/zero-data and empty-history fixtures. Checked layouts have no horizontal overflow and the run has no uncaught page errors.
+- Six actual PNG downloads covering single-topic mobile/desktop and mobile comparison in both themes. Inspected titles, dates, source labels, summaries and clipping. Fixed series dots and the comparison legend based on that inspection.
 
-Browser automation is not exposed in the current session. Prototype feedback established the preferred direction; these integrated-app checks remain open.
+Production browser testing also caught the ignored local `.env.production` placeholder `http://YOUR_EC2_PUBLIC_IP/api`. The file was left untouched; builds now reject it, and the verified QA bundle uses the explicit local API URL.
+
+## Remaining release checks
+
+Physical-device and Safari/Firefox review; native 200% browser zoom; full assistive-technology, focus-order, Unicode shaping and reduced-motion review; exhaustive metadata/history/state variants; runtime performance and participant review remain outstanding. Some screenshots include loading related-topic skeletons and do not certify completion of that upstream request. These limits do not invalidate the completed scoped Chromium pass, but it is not a complete release certification.
 
 ## Content and future work
 

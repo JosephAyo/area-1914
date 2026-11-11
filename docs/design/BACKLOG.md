@@ -17,8 +17,8 @@ The main app should be a simple, direct explorer. In-depth pages belong in a sep
 
 | ID  | Item and acceptance                                                                                             | State                                                                         |
 | --- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| D21 | Integrate the approved grid-first explorer, fonts, themes, Stories and quick topic flow using API data          | Review — implemented; 32 frontend and 25 backend tests plus build checks pass |
-| D22 | Review the integrated app in the browser, including autocomplete, history, responsive layouts and exported PNGs | In progress — mobile/navigation/export source fixes; 34 frontend tests pass; browser execution and PNG inspection remain open |
+| D21 | Integrate the approved grid-first explorer, fonts, themes, Stories and quick topic flow using API data          | Done — approved integration; 35 frontend and 39 backend tests pass |
+| D22 | Review the integrated app in the browser, including autocomplete, history, responsive layouts and exported PNGs | Done for scoped Chromium review — 47 browser checks pass; screenshots and actual PNGs inspected; broader release validation remains in D15/D16 |
 
 ## Cycle 1
 
@@ -54,7 +54,7 @@ Goal: carry the recommended editorial direction into the application while prese
 
 | ID | Item and acceptance | State |
 | --- | --- | --- |
-| D23 | Report false inclusions/exclusions, persist for review, and apply approved relevance overrides | Review — implemented; 35 frontend and 39 backend tests pass; browser form interaction pending |
+| D23 | Report false inclusions/exclusions, persist for review, and apply approved relevance overrides | Done — browser form/retry states checked with intercepted responses; persistence and moderation validated separately by real HTTP/CLI checks |
 
 See [maintainer instructions](../CLASSIFICATION_REPORTS.md) for the local review queue.
 

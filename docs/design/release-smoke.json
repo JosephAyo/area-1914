@@ -1,6 +1,6 @@
 {
-  "recorded_at": "2026-11-11T07:10:26.567367+00:00",
-  "checkpoint": "718d468",
+  "recorded_at": "2026-11-11T07:59:41.802423+00:00",
+  "checkpoint": "1ef11c8",
   "scope": "Real HTTP requests against isolated SQLite/FastAPI and the production Vite preview; separate-process maintainer CLI.",
   "exclusions": [
     "No browser rendering or interactions",
@@ -87,7 +87,7 @@
       "passed": true
     },
     {
-      "check": "Production bundle index-CFUK7a5y.js",
+      "check": "Production bundle index-Ac0Oqx1w.js",
       "passed": true
     },
     {
@@ -95,7 +95,7 @@
       "passed": true
     },
     {
-      "check": "Production bundle index-CRMQPRgv.css",
+      "check": "Production bundle index-CvzOhC2_.css",
       "passed": true
     },
     {
