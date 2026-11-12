@@ -47,8 +47,8 @@ Goal: carry the recommended editorial direction into the application while prese
 | D12 | Comparison: distinguishable series, appropriate handling of missing dates, existing actions preserved | M5        | Review — series alignment tested; browser interaction pending              |
 | D13 | Export: legible branded image with dates, metric, source, credits, theme-safe capture                 | M5        | Review — theme-aware capture implemented; PNG inspection pending           |
 | D14 | Data notes: explain ranking floor, date coverage, and archive meaning; remove implementation prose    | M5        | Review — implemented with accurate growth-score and archive wording        |
-| D15 | Release checks: accessibility, responsive layouts, direct links, history, metadata, lint/types/build  | M6        | Review — automated checks pass; browser checklist remains                  |
-| D16 | Performance comparison and task-based participant review; record remaining release risks              | M6        | Review — build sizes recorded; runtime metrics and participant review open |
+| D15 | Release checks: accessibility, responsive layouts, direct links, history, metadata, lint/types/build  | M6        | Review — scoped browser, eight accessibility snapshots and eight keyboard checks pass; physical-device/assistive-technology review remains |
+| D16 | Performance comparison and task-based participant review; record remaining release risks              | M6        | Review — local API/native-browser timings recorded; first-load, representative network/device measurement and participant review remain |
 
 ## Classification feedback
 

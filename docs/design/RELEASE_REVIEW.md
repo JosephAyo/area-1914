@@ -6,7 +6,7 @@ Application integration: 11 November 2026. The user-approved prototype is integr
 
 - Frontend: `npm run typecheck`, `npm run lint`, `npm test` and `VITE_API_BASE_URL=http://127.0.0.1:8000/api npm run build` pass. Builds reject the known placeholder API address; deployment requires the actual API URL.
 - Thirty-five frontend tests cover chart gaps/zeros, 30/90-day and yearly windows, comparison alignment and summary coverage, calendar/Unicode routes, collection merging, category/query filtering, sorting, pagination retention/reset, real percentage rules, search resolution and server-rendered app routes, including reporting actions for accepted/rejected subjects.
-- Backend: `.venv/bin/python -m pytest -q` passes all thirty-nine tests, including collection coverage, no writes during cached serialization, report validation/privacy/persistence and reviewed relevance overrides across topic and discovery surfaces.
+- Backend: `.venv/bin/python -m pytest -q` passes all forty-three tests, including collection coverage, no writes during cached serialization, report validation/privacy/persistence, reviewed relevance overrides and the bounded missing-summary cache.
 - Fixed the cache freshness failure caused by subtracting a timezone-naive SQLite timestamp from a timezone-aware UTC timestamp. Existing fresh/stale/legacy timestamp tests pass.
 - Fixed a follow-on SQLite lock failure: UTC normalization now preserves committed ORM state, avoiding autoflush writes during response serialization. The restarted local API returned 200 for health and nine concurrent cached-subject requests across a person, place and event. These live checks establish local HTTP behavior, not general upstream availability or load capacity.
 - Local HTTP responses return 200 for `/`, `/discover`, `/topics/Fela_Kuti`, `/stories`, both authored Stories, `/stories/subjects/Fela_Kuti`, and the three production font files.
@@ -50,7 +50,7 @@ Repeat from the repository root after building with the intended API URL from `f
 | Noto Sans WOFF files | None              | 354.78 kB combined | Three self-hosted weights; browser loads matching faces |
 | Stories portrait     | None              | 74.74 kB           | Local image, credited on the Stories index              |
 
-The existing JavaScript chunk-size warning remains. No browser LCP, CLS or INP measurements have been performed. Transfer sizes alone are not runtime performance evidence.
+The existing JavaScript chunk-size warning remains. Local native-browser timing observations are now recorded in the [hardening review](qa/hardening/README.md); they are not field web-vitals or representative network/device evidence. Transfer sizes alone are not runtime performance evidence.
 
 ## Browser and PNG review
 
@@ -67,7 +67,9 @@ Production browser testing also caught the ignored local `.env.production` place
 
 ## Remaining release checks
 
-Physical-device and Safari/Firefox review; native 200% browser zoom; full assistive-technology, focus-order, Unicode shaping and reduced-motion review; exhaustive metadata/history/state variants; runtime performance and participant review remain outstanding. Some screenshots include loading related-topic skeletons and do not certify completion of that upstream request. These limits do not invalidate the completed scoped Chromium pass, but it is not a complete release certification.
+The follow-up [hardening pass](qa/hardening/README.md) fixes heading order, passes eight automated accessibility snapshots in both themes, and passes eight focused keyboard/reduced-motion checks. Repeated collection requests improve from a local median 5.504 to 1.263 seconds after warming the new five-minute missing-summary cache; the cold-process request remains 5.583 seconds. Thirty-five frontend and forty-three backend tests pass. No real reports or classification decisions changed.
+
+Physical-device and Safari/Firefox review; native 200% browser zoom; full assistive-technology, focus-order and Unicode shaping review; exhaustive metadata/history/state variants; representative runtime performance and participant review remain outstanding. Some screenshots include loading related-topic skeletons and do not certify completion of that upstream request. These limits do not invalidate the completed scoped Chromium pass, but it is not a complete release certification.
 
 ## Content and future work
 

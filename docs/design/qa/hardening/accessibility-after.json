@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-11-12T03:02:18.724Z",
+  "target": "http://127.0.0.1:5174",
+  "browser": "HeadlessChrome/156.0.8078.4",
+  "tool": "Lighthouse accessibility snapshot",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "scope": "Automated rendered-page checks only; not screen-reader, WCAG, physical-device or cross-browser certification.",
+  "results": [
+    {
+      "state": "explore",
+      "theme": "light",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "explore",
+      "theme": "dark",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "topic",
+      "theme": "light",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "topic",
+      "theme": "dark",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "report",
+      "theme": "light",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "report",
+      "theme": "dark",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "stories",
+      "theme": "light",
+      "score": 1,
+      "failures": []
+    },
+    {
+      "state": "stories",
+      "theme": "dark",
+      "score": 1,
+      "failures": []
+    }
+  ]
+}

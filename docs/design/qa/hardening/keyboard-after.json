@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-11-12T03:07:55.780Z",
+  "target": "http://127.0.0.1:5174",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "scope": "Keyboard and CSS reduced-motion checks in isolated Chromium. Suggestion responses are controlled fixtures; topic lookup uses the local API. No report submitted; not a screen-reader audit.",
+  "results": [
+    {
+      "check": "Result count retains level-two heading semantics",
+      "passed": true
+    },
+    {
+      "check": "Visible skip link transfers keyboard focus to main",
+      "passed": true
+    },
+    {
+      "check": "Tab reaches labeled search after main focus",
+      "passed": true
+    },
+    {
+      "check": "ArrowUp/ArrowDown wrap selection and Escape dismisses suggestions",
+      "passed": true
+    },
+    {
+      "check": "Keyboard clear restores focus to the empty search",
+      "passed": true
+    },
+    {
+      "check": "Explicit keyboard search works when suggestion lookup fails",
+      "passed": true
+    },
+    {
+      "check": "Report disclosure, radio group and explanation work by keyboard",
+      "passed": true
+    },
+    {
+      "check": "Reduced-motion preference disables CSS animation and transitions",
+      "passed": true
+    }
+  ]
+}

@@ -150,12 +150,14 @@ export function ExplorePage({
         </label>
       </div>
       <div className={ui.resultsHeading}>
-        <h2 role="status" aria-live="polite">
-          {isLoading
-            ? "Loading subjects…"
-            : isError
-              ? "Collection unavailable"
-              : `${filtered.length} ${filtered.length === 1 ? "subject" : "subjects"}${browse.query ? ` matching “${browse.query}”` : " to explore"}`}
+        <h2>
+          <span role="status" aria-live="polite">
+            {isLoading
+              ? "Loading subjects…"
+              : isError
+                ? "Collection unavailable"
+                : `${filtered.length} ${filtered.length === 1 ? "subject" : "subjects"}${browse.query ? ` matching “${browse.query}”` : " to explore"}`}
+          </span>
         </h2>
         <div className={ui.tools}>
           <p>Views · most recent 30 returned days</p>

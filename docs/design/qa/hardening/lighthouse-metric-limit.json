@@ -1,0 +1,25 @@
+{
+  "lighthouseVersion": "13.5.0",
+  "testedUrl": "http://127.0.0.1:5174/",
+  "performanceScoreUsed": false,
+  "reason": "The locally available bundled runner produced no numeric FCP/LCP/TBT/Speed Index values and assigned those metrics zero scoring weights. Its aggregate performance score is not used. Native browser timings are recorded separately.",
+  "audits": {
+    "first-contentful-paint": {
+      "scoreDisplayMode": "notApplicable",
+      "numericValue": null
+    },
+    "largest-contentful-paint": {
+      "scoreDisplayMode": "notApplicable",
+      "numericValue": null
+    },
+    "total-blocking-time": {
+      "scoreDisplayMode": "notApplicable",
+      "numericValue": null
+    },
+    "speed-index": {
+      "scoreDisplayMode": "notApplicable",
+      "numericValue": null
+    }
+  },
+  "availableLayoutShiftValue": 0.008664907179354715
+}

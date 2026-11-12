@@ -5,16 +5,20 @@ from typing import Optional, Dict, Any, List
 from urllib.parse import urlencode
 from app.settings import settings
 import logging
+from time import monotonic
 
 # Configure logger
 logger = logging.getLogger(__name__)
 
 class WikipediaService:
+    MISSING_SUMMARY_TTL_SECONDS = 300
+    MAX_MISSING_SUMMARIES = 256
     BASE_URL_PAGEVIEWS = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"
     BASE_URL_SUMMARY = "https://en.wikipedia.org/api/rest_v1/page/summary"
     BASE_URL_ACTION_API = "https://en.wikipedia.org/w/api.php"
 
     def __init__(self):
+        self._missing_summaries: dict[str, float] = {}
         self.headers = {
             "User-Agent": settings.WIKIMEDIA_USER_AGENT
         }
@@ -23,6 +27,11 @@ class WikipediaService:
         """
         Internal helper to make requests with retry logic for rate limiting (429).
         """
+        cached_until = self._missing_summaries.get(url)
+        if cached_until is not None:
+            if cached_until > monotonic():
+                return None
+            del self._missing_summaries[url]
         max_retries = 3
         backoff_factor = 1.0
 
@@ -35,6 +44,13 @@ class WikipediaService:
                         return response.json()
 
                     if response.status_code == 404:
+                        # Curated slugs can be missing/renamed on Wikipedia.
+                        # Avoid repeating those network misses on every browse.
+                        # Do not cache pageview gaps, 429s or transport failures.
+                        if url.startswith(f"{self.BASE_URL_SUMMARY}/"):
+                            if len(self._missing_summaries) >= self.MAX_MISSING_SUMMARIES:
+                                self._missing_summaries.pop(next(iter(self._missing_summaries)))
+                            self._missing_summaries[url] = monotonic() + self.MISSING_SUMMARY_TTL_SECONDS
                         logger.warning(f"Wikipedia page not found: {url}")
                         return None
 

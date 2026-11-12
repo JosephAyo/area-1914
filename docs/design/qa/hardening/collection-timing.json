@@ -1,0 +1,48 @@
+{
+  "recorded_at": "2026-11-12T03:00:22.058868+00:00",
+  "endpoint": "local /api/topics/featured",
+  "conditions": "Sequential requests, existing topic DB; before process-local missing-summary cache. Upstream Wikimedia timing is uncontrolled.",
+  "before": [
+    {
+      "seconds": 5.504,
+      "categories": 12,
+      "unique_subjects": 73
+    },
+    {
+      "seconds": 5.621,
+      "categories": 12,
+      "unique_subjects": 73
+    },
+    {
+      "seconds": 5.472,
+      "categories": 12,
+      "unique_subjects": 73
+    }
+  ],
+  "after_recorded_at": "2026-11-12T03:01:36.309516+00:00",
+  "after_cold_process": {
+    "seconds": 5.583,
+    "categories": 12,
+    "unique_subjects": 73
+  },
+  "after_warm": [
+    {
+      "seconds": 1.265,
+      "categories": 12,
+      "unique_subjects": 73
+    },
+    {
+      "seconds": 1.263,
+      "categories": 12,
+      "unique_subjects": 73
+    },
+    {
+      "seconds": 1.252,
+      "categories": 12,
+      "unique_subjects": 73
+    }
+  ],
+  "before_median_seconds": 5.504,
+  "after_warm_median_seconds": 1.263,
+  "limits": "Small local sample; first process request still performs upstream lookups. Cache is process-local, bounded to 256 confirmed 404 summary URLs and expires after five minutes. Not a load test or field web-vitals measurement."
+}

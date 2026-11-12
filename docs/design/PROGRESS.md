@@ -1,5 +1,13 @@
 # Revamp progress and decisions
 
+## 12 November 2026
+
+- Continued with release hardening. An existing standalone Lighthouse/Puppeteer bundle found a skipped heading level in Explore: the result-count live region replaced the `h2` role. Moved the live region inside the heading without changing its appearance. Baseline Explore accessibility was 98/100; all eight post-fix automated snapshots (four page states, both themes) are 100/100 with no automated failures.
+- All eight focused keyboard checks pass, including skip-link/main focus, search selection and error fallback, clearing search, report-form controls and reduced motion. These complement the earlier 47 scoped browser checks; they do not certify real assistive technology or devices.
+- Measured repeated collection API calls at a median 5.504 seconds. Added a bounded, process-local five-minute cache for confirmed missing summary pages only. The warmed median became 1.263 seconds with the same 73 unique subjects. The cold-process request remains 5.583 seconds; no first-load improvement is claimed. Four new backend regressions cover expiry, retryable failures/rate limits and eviction.
+- Recorded three fresh-context native browser timing samples: collection and font readiness ranged from 1.36 to 1.91 seconds on the unthrottled local production preview with a warmed backend cache. The bundled Lighthouse runner lacked numeric navigation timing audits, so its aggregate performance score was discarded.
+- Verification: 35 frontend tests, 43 backend tests, lint, typecheck and configured production build pass. No new runtime/test package was installed. Results, limits and reproduction instructions are in [hardening evidence](qa/hardening/README.md). Real report submissions/classification decisions were untouched. The local API was restarted with the cache change.
+
 ## 10 November 2026
 
 - Saved the agreed six-milestone plan in the repository to keep it reviewable with implementation.

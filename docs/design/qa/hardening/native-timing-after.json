@@ -1,0 +1,34 @@
+{
+  "recordedAt": "2026-11-12T03:02:53.179Z",
+  "target": "http://127.0.0.1:5174/",
+  "samples": [
+    {
+      "firstContentfulPaintMs": 40,
+      "lastObservedLcpMs": 104,
+      "collectionAndFontsReadyMs": 1909.0999999046326,
+      "noInputLayoutShiftSum": 0.008854424485794373,
+      "longTaskCount": 0,
+      "collectionRequestMs": 1310.6000000238419,
+      "javascriptDecodedBytes": 616259
+    },
+    {
+      "firstContentfulPaintMs": 20,
+      "lastObservedLcpMs": 20,
+      "collectionAndFontsReadyMs": 1357,
+      "noInputLayoutShiftSum": 0.008854424485794373,
+      "longTaskCount": 0,
+      "collectionRequestMs": 1213.7999999523163,
+      "javascriptDecodedBytes": 616259
+    },
+    {
+      "firstContentfulPaintMs": 24,
+      "lastObservedLcpMs": 24,
+      "collectionAndFontsReadyMs": 1862,
+      "noInputLayoutShiftSum": 0.008854424485794373,
+      "longTaskCount": 0,
+      "collectionRequestMs": 1299.6999999284744,
+      "javascriptDecodedBytes": 616259
+    }
+  ],
+  "conditions": "Fresh isolated Chromium contexts at 390x844; local unthrottled production preview, warmed backend missing-page cache; ready means collection and fonts available. No-input layout-shift sum is a short observation, not field CLS. LCP is last observed before leaving the page. Not a production network or field web-vitals study."
+}
