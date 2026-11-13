@@ -17,8 +17,8 @@ The main app should be a simple, direct explorer. In-depth pages belong in a sep
 
 | ID  | Item and acceptance                                                                                             | State                                                                         |
 | --- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| D21 | Integrate the approved grid-first explorer, fonts, themes, Stories and quick topic flow using API data          | Done — approved integration; 35 frontend and 39 backend tests pass |
-| D22 | Review the integrated app in the browser, including autocomplete, history, responsive layouts and exported PNGs | Done for scoped Chromium review — 47 browser checks pass; screenshots and actual PNGs inspected; broader release validation remains in D15/D16 |
+| D21 | Integrate the approved grid-first explorer, fonts, themes, Stories and quick topic flow using API data          | Done — approved integration; 35 frontend and 43 backend tests pass |
+| D22 | Review the integrated app in the browser, including autocomplete, history, responsive layouts and exported PNGs | Done for scoped engine review — 49 checks pass in each of Chromium, Firefox and WebKit; screenshots and PNGs inspected; broader validation remains in D15/D16 |
 
 ## Cycle 1
 

@@ -2,6 +2,8 @@
 
 11 November 2026: **47 checks passed** in isolated standalone Chromium 156.0.8078.4 against the configured production preview. See [machine-readable results](browser-review.json). Browser contexts used fresh temporary profiles. No personal browser profile or real report queue was accessed.
 
+13 November follow-up: **49 checks pass in each of Chromium, Firefox and WebKit**, including repairs for WebKit date wrapping and the native sort target. See [cross-browser evidence and reproduction](CROSS_BROWSER_REVIEW.md).
+
 Reviewed Explore, a real subject, comparison, Stories and an authored story at 360/390/768/1440px widths in paper and night themes. The harness exercises filters, sorting, grid/list, pagination, back/scroll restoration, live keyboard autocomplete, theme persistence, comparison, chart periods, daily-table focus and emulated touch. Checked layouts have no horizontal overflow and the run has no uncaught page errors.
 
 Report submissions use intercepted responses to exercise failure, retained input, retry and both correction directions. Rejected/long-title/sparse/empty subjects are labeled fixtures. Real report persistence, CORS, approvals, reversal and dismissal were verified separately through the [HTTP/CLI smoke checks](../release-smoke.json).
@@ -39,4 +41,4 @@ Production builds reject `YOUR_EC2_PUBLIC_IP` in the API address. Environment va
 
 ## Limits
 
-This is one Chromium visual/interaction pass with mobile emulation. It does not certify Safari/Firefox, physical touch devices, native 200% browser zoom, screen readers, reduced-motion behavior, all metadata variants, or a complete performance/participant study. No deployment or publication occurred. Some subject screenshots include asynchronously loading related-topic skeletons; they establish the surrounding layout, not completion of that upstream request.
+The original pass covers Chromium; the linked follow-up adds the recorded Firefox and WebKit test versions. These do not certify actual Safari, physical touch devices, native 200% browser zoom, screen readers, all metadata variants, or a complete performance/participant study. Focused reduced-motion and automated accessibility checks are recorded in the [hardening pass](hardening/README.md). Some subject screenshots include asynchronously loading related-topic skeletons; they establish the surrounding layout, not completion of that upstream request.

@@ -47,6 +47,7 @@ select:focus-visible {
   outline-offset: 4px;
 }
 select {
+  height: 44px;
   min-height: 44px;
   background: var(--surface);
   border: 1px solid var(--glass-border);

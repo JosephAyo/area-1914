@@ -1,5 +1,13 @@
 # Revamp progress and decisions
 
+## 13 November 2026
+
+- User requested push and continuation. Pushed the four completed commits through `0fada4a` to `origin/main`; unrelated installed skills remain untracked.
+- Continued with Firefox/WebKit engine review using isolated temporary profiles. Installed only a compatible Playwright Core driver in `/tmp` after verifying its browser revision manifest; no application dependency or lockfile changed. The incompatible initial probe and its helper processes were closed.
+- All 49 checks now pass in each of Chromium 156.0.8078.4, Firefox 146.0.1 and WebKit 26.0. Saved engine-specific JSON, representative screenshots and actual single/comparison PNGs. Inspected exports and key states; no uncaught page errors or checked-layout horizontal overflow. Report submissions and edge cases are controlled fixtures, with the real queue untouched.
+- Visual inspection found two WebKit issues missed by the original interaction matrix: the date label wrapped to four lines (72px), and the native sort control rendered at 23px despite its minimum height. Preserved the date's explicit two-line layout and set a 44px select height. Verified desktop geometry and added date/target assertions, with a small subpixel tolerance for Firefox.
+- Verification after fixes: 35 frontend tests, lint, typecheck and configured production build pass. Backend source is unchanged from the 43 passing tests. See [cross-browser review](qa/CROSS_BROWSER_REVIEW.md). These cached test engines do not establish actual Safari/physical-device, native zoom, screen-reader or participant acceptance.
+
 ## 12 November 2026
 
 - Continued with release hardening. An existing standalone Lighthouse/Puppeteer bundle found a skipped heading level in Explore: the result-count live region replaced the `h2` role. Moved the live region inside the heading without changing its appearance. Baseline Explore accessibility was 98/100; all eight post-fix automated snapshots (four page states, both themes) are 100/100 with no automated failures.

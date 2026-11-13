@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-11-13T03:03:32.461Z",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "results": [
+    {
+      "name": "firefox",
+      "date": {
+        "height": 37.399993896484375,
+        "width": 107.36666870117188,
+        "lineHeight": "18.7px"
+      },
+      "select": {
+        "x": 1147.0167236328125,
+        "y": 307.6000061035156,
+        "width": 140.9832763671875,
+        "height": 44
+      }
+    },
+    {
+      "name": "webkit",
+      "date": {
+        "height": 36,
+        "width": 107.40625,
+        "lineHeight": "18.700001px"
+      },
+      "select": {
+        "x": 1175,
+        "y": 305,
+        "width": 113,
+        "height": 44
+      }
+    }
+  ]
+}

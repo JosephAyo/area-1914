@@ -1,13 +1,19 @@
 // Use an existing Playwright installation; this script adds no project dependencies.
-const { chromium } = await import(
-  process.env.PLAYWRIGHT_MODULE || "playwright"
-);
+const engines = await import(process.env.PLAYWRIGHT_MODULE || "playwright");
 import fs from "node:fs/promises";
 import path from "node:path";
 import assert from "node:assert/strict";
-const destination = path.resolve(import.meta.dirname, "../docs/design/qa");
+const engineName = process.env.REVIEW_BROWSER || "chromium";
+assert.ok(["chromium", "firefox", "webkit"].includes(engineName));
+const destination = process.env.REVIEW_EVIDENCE_DIR
+  ? path.resolve(process.env.REVIEW_EVIDENCE_DIR)
+  : path.resolve(
+      import.meta.dirname,
+      "../docs/design/qa",
+      engineName === "chromium" ? "" : engineName,
+    );
 await fs.mkdir(destination, { recursive: true });
-const browser = await chromium.launch({
+const browser = await engines[engineName].launch({
   headless: true,
   executablePath: process.env.PLAYWRIGHT_BROWSER_BINARY,
 });
@@ -44,6 +50,20 @@ async function noOverflow(name) {
     document.documentElement.scrollWidth,
   ]);
   assert.ok(widths[1] <= widths[0] + 1, `${name}: ${widths}`);
+  const date = page
+    .locator("p")
+    .filter({ hasText: /Wikipedia pageviews/ })
+    .filter({ hasText: /Through/ });
+  if (await date.count()) {
+    const size = await date.evaluate((el) => ({
+      height: el.getBoundingClientRect().height,
+      lineHeight: parseFloat(getComputedStyle(el).lineHeight),
+    }));
+    assert.ok(
+      size.height <= size.lineHeight * 2 + 1,
+      `${name}: date label wrapped`,
+    );
+  }
   pass(name + " no overflow");
 }
 async function theme(value) {
@@ -55,6 +75,17 @@ async function theme(value) {
       .click();
 }
 async function screenshot(name) {
+  if (
+    process.env.REVIEW_SCREENSHOTS === "key" &&
+    ![
+      "topic-360-light",
+      "topic-360-dark",
+      "explore-1440-light",
+      "stories-768-dark",
+      "report-rejected-mobile-dark",
+    ].includes(name)
+  )
+    return;
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({
     path: path.join(destination, name + ".png"),
@@ -78,6 +109,24 @@ async function download(name) {
 try {
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await readyExplore();
+  const date = page
+    .locator("p")
+    .filter({ hasText: /Wikipedia pageviews/ })
+    .filter({ hasText: /Through/ });
+  const dateSize = await date.evaluate((el) => ({
+    height: el.getBoundingClientRect().height,
+    lineHeight: parseFloat(getComputedStyle(el).lineHeight),
+  }));
+  assert.ok(dateSize.height <= dateSize.lineHeight * 2 + 1);
+  pass("Collection date stays on its two intended lines");
+  const sortTarget = await page
+    .getByRole("combobox", { name: /Sort by/ })
+    .boundingBox();
+  assert.ok(
+    sortTarget.height >= 44 - 0.01,
+    `Sort target height: ${sortTarget.height}`,
+  );
+  pass("Sort control has a 44px touch target");
   assert.equal(
     await page
       .getByRole("button", { name: "Grid view", exact: true })
@@ -311,7 +360,7 @@ try {
   pass("Live autocomplete ArrowDown/Escape/Enter navigation");
   const touch = await browser.newContext({
     viewport: { width: 390, height: 844 },
-    isMobile: true,
+    isMobile: engineName !== "firefox",
     hasTouch: true,
   });
   const touchPage = await touch.newPage();
@@ -423,7 +472,8 @@ try {
     JSON.stringify(
       {
         recordedAt: new Date().toISOString(),
-        browser: "Isolated standalone Chromium " + browserVersion,
+        browser: `Isolated standalone ${engineName} ${browserVersion}`,
+        mobileEmulation: engineName !== "firefox",
         target: base,
         viewports: [360, 390, 768, 1440],
         reportSubmission:

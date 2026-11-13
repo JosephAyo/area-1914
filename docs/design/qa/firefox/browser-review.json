@@ -1,0 +1,213 @@
+{
+  "recordedAt": "2026-11-13T03:03:39.009Z",
+  "browser": "Isolated standalone firefox 146.0.1",
+  "mobileEmulation": false,
+  "target": "http://127.0.0.1:5174",
+  "viewports": [
+    360,
+    390,
+    768,
+    1440
+  ],
+  "reportSubmission": "Intercepted browser responses; real HTTP persistence and CLI validated separately; real queue untouched",
+  "edgeCases": "Long-title, sparse/zero-data and empty-history subjects are explicitly labeled browser fixtures.",
+  "errors": [],
+  "results": [
+    {
+      "check": "Collection date stays on its two intended lines",
+      "passed": true
+    },
+    {
+      "check": "Sort control has a 44px touch target",
+      "passed": true
+    },
+    {
+      "check": "Category and sort controls",
+      "passed": true
+    },
+    {
+      "check": "Mobile list no overflow",
+      "passed": true
+    },
+    {
+      "check": "Grid/list switching",
+      "passed": true
+    },
+    {
+      "check": "Back navigation restores expanded results and scroll",
+      "passed": true
+    },
+    {
+      "check": "Topic 360 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-360-light downloaded 752×1924",
+      "passed": true
+    },
+    {
+      "check": "export-360-light after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "Topic 360 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-360-dark downloaded 752×1924",
+      "passed": true
+    },
+    {
+      "check": "export-360-dark after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "Topic 768 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Topic 768 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Topic 1440 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-1440-light downloaded 2368×1888",
+      "passed": true
+    },
+    {
+      "check": "export-1440-light after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "Topic 1440 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-1440-dark downloaded 2368×1888",
+      "passed": true
+    },
+    {
+      "check": "export-1440-dark after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "Mobile comparison no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-comparison-mobile-light downloaded 796×2458",
+      "passed": true
+    },
+    {
+      "check": "export-comparison-mobile-light after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "export-comparison-mobile-dark downloaded 796×2458",
+      "passed": true
+    },
+    {
+      "check": "export-comparison-mobile-dark after download no overflow",
+      "passed": true
+    },
+    {
+      "check": "Comparison focus, selection and removal",
+      "passed": true
+    },
+    {
+      "check": "Chart timeframe switching",
+      "passed": true
+    },
+    {
+      "check": "Daily table keyboard focus",
+      "passed": true
+    },
+    {
+      "check": "Accepted report failure/retry preserves input and sends exclusion",
+      "passed": true
+    },
+    {
+      "check": "Rejected subject report sends inclusion",
+      "passed": true
+    },
+    {
+      "check": "Stories 360 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Stories 360 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Stories 768 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Stories 768 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Stories 1440 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Stories 1440 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Mobile story no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 360 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 360 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 768 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 768 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 1440 light no overflow",
+      "passed": true
+    },
+    {
+      "check": "Explore 1440 dark no overflow",
+      "passed": true
+    },
+    {
+      "check": "Saved theme survives reload",
+      "passed": true
+    },
+    {
+      "check": "Live autocomplete ArrowDown/Escape/Enter navigation",
+      "passed": true
+    },
+    {
+      "check": "Emulated touch comparison and theme controls",
+      "passed": true
+    },
+    {
+      "check": "Controlled long-title, image-free, sparse/zero-data mobile state",
+      "passed": true
+    },
+    {
+      "check": "Controlled empty-history mobile state",
+      "passed": true
+    },
+    {
+      "check": "No browser page errors",
+      "passed": true
+    }
+  ]
+}

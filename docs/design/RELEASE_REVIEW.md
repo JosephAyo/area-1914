@@ -1,6 +1,6 @@
 # Compact explorer release review
 
-Application integration: 11 November 2026. The user-approved prototype is integrated into the main app. Automated checks and the scoped Chromium browser/PNG review pass. Broader release validation remains open.
+Application integration: 11 November 2026, with hardening through 13 November. The user-approved prototype is integrated into the main app. Automated checks and scoped Chromium/Firefox/WebKit browser/PNG reviews pass. Broader release validation remains open.
 
 ## Verified
 
@@ -45,8 +45,8 @@ Repeat from the repository root after building with the intended API URL from `f
 
 | Asset                | Original baseline | Integrated app     | Interpretation                                          |
 | -------------------- | ----------------- | ------------------ | ------------------------------------------------------- |
-| Main JavaScript gzip | 178.00 kB         | 185.21 kB          | Modest increase; runtime measurement still needed       |
-| CSS gzip             | 5.50 kB           | 5.40 kB            | Smaller                                                 |
+| Main JavaScript gzip | 178.00 kB         | 185.22 kB          | Modest increase; runtime measurement still needed       |
+| CSS gzip             | 5.50 kB           | 5.41 kB            | Smaller                                                 |
 | Noto Sans WOFF files | None              | 354.78 kB combined | Three self-hosted weights; browser loads matching faces |
 | Stories portrait     | None              | 74.74 kB           | Local image, credited on the Stories index              |
 
@@ -54,7 +54,7 @@ The existing JavaScript chunk-size warning remains. Local native-browser timing 
 
 ## Browser and PNG review
 
-All **47 checks pass** against the configured production preview in isolated Chromium 156.0.8078.4. See [QA scope, reproduction and inspected images](qa/README.md) and [machine-readable results](qa/browser-review.json). No project browser dependency or personal browser profile was used.
+Latest follow-up: **49 checks pass in each of Chromium 156.0.8078.4, Firefox 146.0.1 and WebKit 26.0** against the configured production preview. See [cross-browser scope and evidence](qa/CROSS_BROWSER_REVIEW.md). This expands the original [47-check Chromium pass](qa/README.md). No project browser dependency or personal browser profile was used.
 
 - Explore, topic and Stories layouts in paper/night themes at 360/768/1440px; comparison, reports, keyboard search and touch cases at 390px.
 - Grid/list, categories, sorting, load-more, back navigation with expanded results and scroll restoration, live autocomplete ArrowDown/Escape/Enter, and saved theme after reload.
@@ -62,6 +62,7 @@ All **47 checks pass** against the configured production preview in isolated Chr
 - Report failure, retained text, retry and both correction directions using intercepted responses. The real queue was untouched; real HTTP/CLI checks independently establish persistence and moderation behavior.
 - Labeled long-title/image-free, sparse/zero-data and empty-history fixtures. Checked layouts have no horizontal overflow and the run has no uncaught page errors.
 - Six actual PNG downloads covering single-topic mobile/desktop and mobile comparison in both themes. Inspected titles, dates, source labels, summaries and clipping. Fixed series dots and the comparison legend based on that inspection.
+- Firefox/WebKit follow-up includes actual downloads and key screenshots. Corrected WebKit's four-line date label and 23px native sort target; date wrapping and intended 44px targets now have explicit assertions. Firefox uses mobile-width viewports with touch events rather than Playwright's unsupported Firefox `isMobile` option.
 
 Production browser testing also caught the ignored local `.env.production` placeholder `http://YOUR_EC2_PUBLIC_IP/api`. The file was left untouched; builds now reject it, and the verified QA bundle uses the explicit local API URL.
 
@@ -69,7 +70,7 @@ Production browser testing also caught the ignored local `.env.production` place
 
 The follow-up [hardening pass](qa/hardening/README.md) fixes heading order, passes eight automated accessibility snapshots in both themes, and passes eight focused keyboard/reduced-motion checks. Repeated collection requests improve from a local median 5.504 to 1.263 seconds after warming the new five-minute missing-summary cache; the cold-process request remains 5.583 seconds. Thirty-five frontend and forty-three backend tests pass. No real reports or classification decisions changed.
 
-Physical-device and Safari/Firefox review; native 200% browser zoom; full assistive-technology, focus-order and Unicode shaping review; exhaustive metadata/history/state variants; representative runtime performance and participant review remain outstanding. Some screenshots include loading related-topic skeletons and do not certify completion of that upstream request. These limits do not invalidate the completed scoped Chromium pass, but it is not a complete release certification.
+Physical-device and actual Safari review; native 200% browser zoom; full assistive-technology, focus-order and Unicode shaping review; exhaustive metadata/history/state variants; representative runtime performance and participant review remain outstanding. Cached test-engine versions do not certify every current browser release. Some screenshots include loading related-topic skeletons and do not certify completion of that upstream request. These limits do not invalidate the completed engine passes, but they are not a complete release certification.
 
 ## Content and future work
 
