@@ -30,6 +30,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn typecheck
       - run: yarn lint
+      - run: yarn test
       - run: yarn build
         env:
           VITE_API_BASE_URL: https://api-area1914.ayojoseph.dev/api

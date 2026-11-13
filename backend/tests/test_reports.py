@@ -152,10 +152,14 @@ async def test_submission_and_review_persist_across_database_sessions(tmp_path):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             receipt = (await client.post("/api/classification-reports", json=payload())).json()
         with Session(engine) as session:
-            assert session.get(ClassificationReport, receipt["id"]).status == "pending"
+            pending = session.get(ClassificationReport, receipt["id"])
+            assert pending is not None
+            assert pending.status == "pending"
             review_report(session, receipt["id"], "approve", "Verified reference.")
         with Session(engine) as session:
-            assert session.get(ClassificationReport, receipt["id"]).status == "approved"
+            approved = session.get(ClassificationReport, receipt["id"])
+            assert approved is not None
+            assert approved.status == "approved"
             assert session.exec(select(RelevanceOverride)).one().relevant is True
     finally:
         app.dependency_overrides.pop(get_session, None)

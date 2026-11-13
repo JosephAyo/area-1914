@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class WikipediaService:
     MISSING_SUMMARY_TTL_SECONDS = 300
-    MAX_MISSING_SUMMARIES = 256
+    MAX_MISSING_SUMMARIES: int = 256
     BASE_URL_PAGEVIEWS = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"
     BASE_URL_SUMMARY = "https://en.wikipedia.org/api/rest_v1/page/summary"
     BASE_URL_ACTION_API = "https://en.wikipedia.org/w/api.php"

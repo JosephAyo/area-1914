@@ -3,7 +3,7 @@ import argparse
 import json
 from datetime import datetime, timezone
 
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from app.database import create_db_and_tables, engine
 from app.models import ClassificationReport, RelevanceOverride
@@ -52,7 +52,7 @@ def main():
         if args.command == "list":
             reports = session.exec(select(ClassificationReport).where(
                 ClassificationReport.status == args.status
-            ).order_by(ClassificationReport.created_at, ClassificationReport.id).limit(max(1, min(args.limit, 500)))).all()
+            ).order_by(col(ClassificationReport.created_at), col(ClassificationReport.id)).limit(max(1, min(args.limit, 500)))).all()
             for report in reports:
                 print(json.dumps(report.model_dump(mode="json"), ensure_ascii=False))
         else:

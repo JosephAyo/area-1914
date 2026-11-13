@@ -41,6 +41,7 @@ async def submit_report(payload: ReportInput, session: Session = Depends(get_ses
         ClassificationReport.status == "pending",
     )).first()
     if existing:
+        assert existing.id is not None
         return ReportReceipt(id=existing.id)
     report = ClassificationReport(
         slug=payload.slug, topic_key=topic_key,
@@ -50,4 +51,5 @@ async def submit_report(payload: ReportInput, session: Session = Depends(get_ses
     session.add(report)
     session.commit()
     session.refresh(report)
+    assert report.id is not None
     return ReportReceipt(id=report.id)

@@ -18,7 +18,9 @@ async def test_confirmed_missing_summary_is_cached_only_until_expiry(monkeypatch
     assert await service.get_page_summary("Missing_Slug") is None
     assert route.call_count == 1
     clock[0] += service.MISSING_SUMMARY_TTL_SECONDS
-    assert (await service.get_page_summary("Missing_Slug"))["title"] == "Now available"
+    recovered = await service.get_page_summary("Missing_Slug")
+    assert recovered is not None
+    assert recovered["title"] == "Now available"
     assert route.call_count == 2
 
 
@@ -36,7 +38,9 @@ async def test_pageview_not_found_and_server_errors_remain_retryable():
     ])
     with pytest.raises(httpx.HTTPStatusError):
         await service.get_page_summary("Temporary_Failure")
-    assert (await service.get_page_summary("Temporary_Failure"))["title"] == "Recovered"
+    recovered = await service.get_page_summary("Temporary_Failure")
+    assert recovered is not None
+    assert recovered["title"] == "Recovered"
     assert summary.call_count == 2
 
 
@@ -50,7 +54,9 @@ async def test_exhausted_rate_limits_are_not_cached_as_missing():
     ])
     assert await service.get_page_summary("Rate_Limited") is None
     assert not service._missing_summaries
-    assert (await service.get_page_summary("Rate_Limited"))["title"] == "Recovered"
+    recovered = await service.get_page_summary("Rate_Limited")
+    assert recovered is not None
+    assert recovered["title"] == "Recovered"
     assert route.call_count == 4
 
 
@@ -65,5 +71,7 @@ async def test_missing_summary_cache_is_bounded_and_does_not_hide_other_pages():
     assert len(service._missing_summaries) == 2
     assert f"{service.BASE_URL_SUMMARY}/First" not in service._missing_summaries
     available = respx.get(f"{service.BASE_URL_SUMMARY}/Available").mock(return_value=httpx.Response(200, json={"title": "Available"}))
-    assert (await service.get_page_summary("Available"))["title"] == "Available"
+    result = await service.get_page_summary("Available")
+    assert result is not None
+    assert result["title"] == "Available"
     assert available.call_count == 1

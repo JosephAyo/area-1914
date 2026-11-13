@@ -151,6 +151,8 @@ async def test_cached_topic_serialization_does_not_write(session: Session):
     event.listen(engine, "before_cursor_execute", record_statement)
     try:
         result = await TopicManager(session).get_topic_with_history("Cached_Read")
+        assert result is not None
+        assert result.last_fetched_at is not None
         assert result.last_fetched_at.tzinfo is timezone.utc
         # Access the lazy relationship as FastAPI response serialization does.
         assert [record.views for record in result.pageviews] == [42]

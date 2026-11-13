@@ -2,6 +2,12 @@
 
 ## 13 November 2026
 
+### GitHub Actions correction
+
+- User requested an Actions check. Both recent pushes failed the backend Pyright step; the latest failed run was [43356842149](https://github.com/JosephAyo/area-1914/actions/runs/43356842149). Frontend checks and the backend container build passed. Local validation had omitted Pyright; the passing unit tests did not establish CI success.
+- Reproduced and corrected all 14 errors: narrowed optional persisted IDs and test results, used SQLModel `col()` for queue ordering, and annotated the configurable cache-size integer. No type-check suppressions or weakened CI rules were introduced.
+- Local backend verification now includes `.venv/bin/pyright` (zero errors/warnings) and all 43 passing tests. Added `yarn test` to the frontend CI job so its 35 tests run alongside lint, typecheck and build.
+
 - User requested push and continuation. Pushed the four completed commits through `0fada4a` to `origin/main`; unrelated installed skills remain untracked.
 - Continued with Firefox/WebKit engine review using isolated temporary profiles. Installed only a compatible Playwright Core driver in `/tmp` after verifying its browser revision manifest; no application dependency or lockfile changed. The incompatible initial probe and its helper processes were closed.
 - All 49 checks now pass in each of Chromium 156.0.8078.4, Firefox 146.0.1 and WebKit 26.0. Saved engine-specific JSON, representative screenshots and actual single/comparison PNGs. Inspected exports and key states; no uncaught page errors or checked-layout horizontal overflow. Report submissions and edge cases are controlled fixtures, with the real queue untouched.
